@@ -1,4 +1,4 @@
-f#######################
+########################
 ## make cmap database ##
 ########################
 
@@ -221,9 +221,9 @@ lincs42_expr <- SummarizedExperiment(
 ## Save 'lincs42_expr' as an HDF5-based SummarizedExperiment object:
 lincs42_expr <- saveHDF5SummarizedExperiment(lincs42_expr, "./data/lincs_expr")
 
-#################################
+################################
 ## make dtlink_db_clue_sti.db ##
-#################################
+################################
 
 # This SQLite database contains drug-target links (dtlink) in DrugBank, CLUE, 
 # and STITCH databases
@@ -264,7 +264,7 @@ dtlink_db <- tdlink_db[,c("drug_name","t_gn_sym")]
 length(unique(dtlink_db$drug_name)) # 5250
 length(unique(dtlink_db$t_gn_sym)) # 2443
 write.table(dtlink_db, "./data/dtlink_db_5.1.2.xls", 
-            quote=FALSE, col.names = NA, sep="\t")
+            quote=FALSE, row.names=FALSE, sep="\t")
 
 ## Get dtlink in CLUE touchstone database at <https://clue.io/touchstone>
 ### Get pertabation information in CLUE touchstone (version 1.1.1.2) from API
@@ -307,7 +307,6 @@ length(unique(dtlink_clue$drug_name)) # 1949
 length(unique(dtlink_clue$t_gn_sym)) # 1325
 write.table(dtlink_clue, "data/dtlink_clue_1.1.1.2.xls", 
             quote=FALSE, sep="\t", row.names=FALSE)
-dtlink_clue <- read.delim("./data/dtlink_clue_1.1.1.2.xls", stringsAsFactors=FALSE)
 
 ## Get dtlink in STITCH database (v5.0) 
 ### At STITCH Download page 
@@ -362,6 +361,50 @@ length(unique(dtlink_sti$t_gn_sym)) # 5,119
 write.table(dtlink_sti, "./data/dtlink_sti_v5.0.xls", 
             quote=FALSE, sep="\t", row.names=FALSE)
 
+## Get dtlink tables in DrugBank/CLUE/STITCH databases and store in 
+## SQLite database
+### dtlink: drug_name-t_gn_sym and drug_name-ENTREZ 
+### (Note: drug_name in dtlink are all lowercase)
+#### Combine dtlink in DrugBank/CLUE/STITCH databases
+dtlink_db <- read.delim("data/dtlink_db_5.1.2.xls", stringsAsFactors=FALSE)
+dtlink_clue <- read.delim("data/dtlink_clue_1.1.1.2.xls", stringsAsFactors=FALSE)
+dtlink_sti <- read.delim("data/dtlink_sti_v5.0.xls", stringsAsFactors=FALSE)
+dtlink <- rbind(dtlink_db, dtlink_clue, dtlink_sti) %>% unique
+#### Exlude proteins or drugs that have more than 100 targets
+dtlist <- split(dtlink$t_gn_sym, dtlink$drug_name)
+tdlist <- split(dtlink$drug_name, dtlink$t_gn_sym)
+dt_num <- sapply(dtlist, length)
+sum(dt_num>100) # 0
+td_num <- sapply(tdlist, length)
+sum(td_num>100) # 29
+tdlist <- tdlist[td_num<=100]
+tdlink <- list2link(tdlist, type="td")
+dtlink <- tdlink[,c("drug_name","t_gn_sym")] # 62,228 X 2
+write.table(dtlink, "data/dtlink3.xls", quote=FALSE, row.names=FALSE, sep="\t")
+length(unique(dtlink$drug_name)) # 22647
+length(unique(dtlink$t_gn_sym)) # 5729
+#### Map gene SYMBOL to entrez id to get drug_name-entrez links
+library(org.Hs.eg.db)
+sym <- AnnotationDbi::keys(org.Hs.eg.db, keytype = "SYMBOL")
+sym_entrez <- AnnotationDbi::select(org.Hs.eg.db, keys = sym, 
+                                    keytype = "SYMBOL", columns = "ENTREZID")
+dtlink_entrez <- left_join(as_tibble(dtlink), sym_entrez, 
+                           by = c("t_gn_sym"="SYMBOL")) %>% 
+                 dplyr::select(drug_name, ENTREZID) %>% 
+                 distinct(.keep_all = TRUE)
+write.table(dtlink_entrez, "data/dtlink_entrez3.xls", quote=FALSE, 
+            row.names=FALSE, sep="\t")
+### Store dtlinks in SQLite database
+library(RSQLite)
+mydb <- dbConnect(SQLite(), "data/dtlink_db_clue_sti.db")
+dbWriteTable(mydb, "dtlink_db", dtlink_db, overwrite = TRUE)
+dbWriteTable(mydb, "dtlink_clue", dtlink_clue, overwrite = TRUE)
+dbWriteTable(mydb, "dtlink_sti", dtlink_sti, overwrite = TRUE)
+dbWriteTable(mydb, "dtlink", dtlink, overwrite = TRUE)
+dbWriteTable(mydb, "dtlink_entrez", dtlink_entrez, overwrite = TRUE)
+dbListTables(mydb)
+dbDisconnect(mydb)
+
 #####################
 ## make goAnno.rds ##
 #####################
@@ -371,8 +414,8 @@ write.table(dtlink_sti, "./data/dtlink_sti_v5.0.xls",
 
 OrgDb <- GOSemSim::load_OrgDb(OrgDb = "org.Hs.eg.db")
 kk <- keys(OrgDb, keytype="SYMBOL")
-goAnno <- suppressMessages(AnnotationDbi::select(OrgDb, keys=kk, keytype="SYMBOL",
-                        columns=c("GOALL", "ONTOLOGYALL")))
+goAnno <- AnnotationDbi::select(OrgDb, keys=kk, keytype="SYMBOL",
+                                columns=c("GOALL", "ONTOLOGYALL"))
 goAnno <- unique(na.omit(goAnno)) # 3,430,396 X 4
 saveRDS(goAnno, "./data/goAnno.rds")
 
@@ -384,18 +427,240 @@ saveRDS(goAnno, "./data/goAnno.rds")
 # for `dsea` functions in `signatureSearch` package
 
 ## convert GOALL-SYMBOL in goAnno to GOALL-drug
-## Get drug-target annotation in DrugBank, CLUE and STITCH databases from
-## `dtlink_db_clue_sti.db` created above
-library(RSQLite)
-##
-goAnno_drug <- left_join(as_tibble(goAnno[,c(2,1,4)]), as_tibble(dtlink), by = c("SYMBOL"="t_gn_sym"))
-rm(dtlink)
+### Get drug-target mapping information in DrugBank, CLUE and STITCH databases 
+### from `dtlink_db_clue_sti.db` created above
+library(RSQLite); library(dplyr)
+conn <- dbConnect(SQLite(), "./data/dtlink_db_clue_sti.db")
+dtlink <- dbGetQuery(conn, 'SELECT * FROM dtlink') # 62,228 X 2
+dbDisconnect(conn)
+### Convert GO-GENE mappings to GO-drug mappings
+goAnno <- readRDS("./data/goAnno.rds")
+goAnno_drug <- left_join(as_tibble(goAnno[,c(2,1,4)]), dtlink, 
+                         by = c("SYMBOL"="t_gn_sym"))
 goAnno_drug <- as.data.frame(goAnno_drug)[,c("GOALL","ONTOLOGYALL","drug_name")]
-message("remove na in goAnno_drug")
 goAnno_drug <- na.omit(goAnno_drug)
-message("unique GOALL and drug_name in goAnno_drug")
 goAnno_drug <- goAnno_drug[!duplicated(goAnno_drug[,c("GOALL","drug_name")]),]
-message("unique is done")
-# goAnno_drug <- goAnno_drug %>% filter(!is.na(drug_name)) %>% distinct(GOALL, drug_name, .keep_all = TRUE)
-# goAnno_drug <- as.data.frame(goAnno_drug)
+saveRDS(goAnno_drug, "./data/goAnno_drug.rds") # 7,517,403 X 3
 
+######################
+## make GO_DATA.rds ##
+######################
+
+# It is an intermediate file storing the GO annotation environment (GO term to 
+# gene sets, gene to GO terms, GO term ID to description, GO ID to ontology) 
+# used for `tsea` methods to accelarate the speed by avoiding building this 
+# environment every time running the tsea functions 
+
+GO_DATA <- clusterProfiler:::get_GO_data(
+  OrgDb="org.Hs.eg.db", ont="ALL", keytype="SYMBOL")
+saveRDS(GO_DATA, "./data/GO_DATA.rds")
+
+###########################
+## make GO_DATA_drug.rds ##
+###########################
+
+# It is an intermediate file storing the GO annotation environment (GO term to 
+# drug sets, drug to GO terms, GO term ID to description, GO ID to ontology) 
+# used for `dsea` methods to accelarate the speed by avoiding building this 
+# environment every time running the dsea functions 
+
+## Read in `goAnno_drug.rds` generated above
+goAnno_drug <- readRDS("data/goAnno_drug.rds")
+GO2GENE <- goAnno_drug[,c("GOALL","drug_name")]
+GO_DATA_drug <- clusterProfiler:::build_Anno(GO2GENE, 
+                                  clusterProfiler:::get_GO2TERM_table())
+saveRDS(GO_DATA_drug, "./data/GO_DATA_drug.rds")
+
+#########################
+## make taurefList.rds ##
+#########################
+
+# It uses signatures in the reference database (such as LINCS) to query against 
+# itself as Qref to compute tau score of `gess_lincs` 
+# method in `signatureSearch` package. Tau score compares observed enrichment 
+# score to all others in Qref. Query results are 
+# scored with tau as a standardized measure ranging from −100 to 100. A tau of 
+# 90 indicates that only 10% of reference perturbations showed stronger 
+# connectivity to the query. Tau represents the percentage of reference queries 
+# with a lower |NCS| than |NCSq,r|, adjusted to retain the sign of NCSq,r. 
+# NCSq,r is the normalized connectivity score for signature r relative to 
+# query q. For more details, please refer to Subramanian et al., 2017, Cell
+# (A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles)
+
+## Create Query Reference DB for Tau Score Computation of `gess_lincs` method
+### Load `lincs` database created above
+library(HDF5Array); library(SummarizedExperiment)
+lincs = loadHDF5SummarizedExperiment("./data/lincs")
+queryReferenceDB <- function(se, Nup=150, Ndown=150, ES_NULL="Default", dest_path, partition) {
+  dir = dirname(dest_path)
+  score_mat = assay(se)
+  ## Create query list for all signatures in se
+  query_list <- lapply(colnames(score_mat), function(x) {
+    sigvec = sort(as.matrix(score_mat[,x]), decreasing = TRUE)
+    list(upset=utils::head(names(sigvec), Nup), downset=utils::tail(names(sigvec), Ndown))
+  })
+  names(query_list) = colData(se)$pert_cell_factor
+  ## Define submission function
+  f <- function(x, se, query_list, ES_NULL, dest_path) {
+    chunkno <- x 
+    sz <- 10 # small enough to use short queue 
+    qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
+    myMA <- matrix(, length(query_list), sz, dimnames=list(names(query_list), seq_len(sz)))
+    qlistone <- qlist[[chunkno]] 
+    for(i in seq_along(qlistone)) {
+      resultDF <- lincsEnrich(se, upset=qlistone[[i]]$up, downset=qlistone[[i]]$down, 
+                              sortby=NA, output="no_tau", ES_NULL=ES_NULL, taurefList="Default")
+      ncs <- resultDF$NCS
+      mynames <- paste(resultDF$Pert, resultDF$Type, sep="__")
+      mynames <- gsub("__up|__down", "", mynames)
+      names(ncs) <- mynames
+      myMA[,i] <- ncs[rownames(myMA)]
+      colnames(myMA)[i] <- names(qlistone[i])
+    }
+    myMA <- myMA[, seq_along(qlistone)] # Only relevant for last entry that may not have as many colums as sz
+    return(myMA)
+  }
+  ## Split query into chunks, each chunk will be processed on cluster as one process
+  sz <- 10 # small enough to use short queue 
+  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+  # qlist <-  qlist[seq_len(200)] # test
+  # qlist <-  qlist[201:length(qlist)] # test
+  dir = dirname(dest_path)
+  setwd(dir)
+  if(! file.exists("slurm.tmpl")) download.file("https://goo.gl/tLMddb", "slurm.tmpl", quiet=TRUE)
+  if(! file.exists(".batchtools.conf.R")) download.file("https://goo.gl/5HrYkE", ".batchtools.conf.R", quiet=TRUE)
+  if(dir.exists("tau_queries_reg")) unlink("tau_queries_reg", recursive=TRUE)
+  reg = makeRegistry(file.dir="tau_queries_reg", conf.file=".batchtools.conf.R", packages="signatureSearch")
+  ids = batchMap(f, x = seq(along=qlist), more.args = list(se=se, query_list=query_list, ES_NULL=ES_NULL, dest_path=dest_path))
+  #testJob(id = 1)
+  done <- submitJobs(ids, resources=list(walltime=43200, ncpus=1, memory=2048, partition=partition), reg=reg)
+  print(waitForJobs())
+  #getJobTable()
+  print(getStatus())
+  print(getErrorMessages())
+  #showLog(1)
+  # removeRegistry(wait=0, reg=reg)
+  
+  ## Inspect result and resubmit jobs for missing and empty files
+  #dir = dirname(dest_path)
+  #fileDF <- file.info(list.files(paste0(dir, "/tau_queries"), pattern="result_*", full.names=TRUE))
+  #index_empty <- as.numeric(gsub(".*_", "", row.names(fileDF[fileDF$size==0, ])))
+  #qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+  #index_all_files <- seq_along(qlist)
+  #index_exist <- as.numeric(gsub(".*_", "", row.names(fileDF)))
+  #index_missing <- index_all_files[!index_all_files %in% index_exist]
+  #index_repeat <- unique(sort(c(index_empty, index_missing)))
+  #if(length(index_repeat)!=0) outlist <- bplapply(index_repeat, f)
+  
+  ## Organize results in list where each component contains data.frame with query results from one cell type
+  if(waitForJobs){
+    pathDF <- data.frame(query=names(query_list), path=rep(seq_along(qlist), each=sz))
+    pathDF <- data.frame(pathDF, target=gsub("^.*?__", "", pathDF$query))
+    pathList <- split(as.character(pathDF$path), factor(pathDF$target))
+    pathList <- vapply(pathList, unique) # eliminates unnecessary/duplicated imports of files
+    taurefList <- rep(NA, length(pathList)); names(taurefList) <- names(pathList)
+    taurefList <- as.list(taurefList) 
+    for(celltype in names(pathList)) {
+      for(i in seq_along(pathList[[celltype]])) {
+        tmpDF <- loadResult(as.numeric(pathList[[celltype]][i]))
+        tmpDF <- round(tmpDF, 2) # Reduces data size
+        colindex <- gsub("^.*?__", "", colnames(tmpDF)) %in% celltype
+        tmpDF <- tmpDF[, colindex, drop=FALSE] 
+        if(i==1) { 
+          rowindex <- gsub("^.*?__", "", rownames(tmpDF)) %in% celltype
+          containerDF <- tmpDF[rowindex, , drop=FALSE]
+        } else {
+          containerDF <- cbind(containerDF, tmpDF[rownames(containerDF),])
+        }
+        print(paste("Finished", i, "of", length(pathList[[celltype]]), "results collected in", ncol(containerDF), "columns."))
+      }
+      taurefList[[celltype]] <- containerDF
+      rm(containerDF); gc()
+    }
+    saveRDS(taurefList, file=dest_path)
+  } else {
+    print("Not all the submitted jobs are successfully completed, please check!")
+  }
+}
+## Create query list, here all signatures in 
+lincsvolumes <- list.files("data/cmapdbprofiles", pattern="*GSE92742*", full.names=TRUE) # Uses only TouchstoneV1 = CMap-L1000v1 = GSE92742
+query_list <- queryList(volumes=lincsvolumes, Nup=150, Ndown=150) 
+saveRDS(query_list, "data/tau_queries/query_list.rds")
+## Define submission function
+f <- function(x) {
+  source("/rhome/tgirke/Projects/longevity/cmapEnrichmentFct/cmapVolSearch_Fct.R")
+  chunkno <- x 
+  lincsvolumes <- list.files("data/cmapdbprofiles", pattern="*GSE92742*", full.names=TRUE) # Uses only TouchstoneV1 = CMap-L1000v1 = GSE92742
+  query_list <- readRDS("data/tau_queries/query_list.rds") 
+  sz <- 10 # small enough to use short queue 
+  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+  myMA <- matrix(, length(query_list), sz, dimnames=list(names(query_list), 1:sz))
+  qlistone <- qlist[[chunkno]] 
+  for(i in seq_along(qlistone)) {
+    resultDF <- lincsEnrichByVolume(lincsvolumes, upset=qlistone[[i]]$up, downset=qlistone[[i]]$down, sortby=NA)
+    ncs <- resultDF$NCS
+    mynames <- paste(resultDF$Pert, resultDF$Type, sep="__")
+    mynames <- gsub("__up|__down", "", mynames)
+    names(ncs) <- mynames
+    myMA[,i] <- ncs[rownames(myMA)]
+    colnames(myMA)[i] <- names(qlistone[i])
+  }
+  myMA <- myMA[, seq_along(qlistone)] # Only relevant for last entry that may not have as many colums as sz
+  write.table(as.data.frame(myMA), file=paste0("data/tau_queries/result_", sprintf("%03d", chunkno)), col.names = NA, quote=FALSE, sep="\t")
+}
+## Split query into chunks, each chunk will be processed on cluster as one process
+query_list <- readRDS("data/tau_queries/query_list.rds") 
+sz <- 10 # small enough to use short queue 
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+library(BiocParallel); library(BatchJobs)
+# qlist <-  qlist[1:200] # test
+# qlist <-  qlist[201:length(qlist)] # test
+funs <- makeClusterFunctionsSLURM("slurm.tmpl")
+param <- BatchJobsParam(length(qlist), resources=list(walltime="1:50:00", ntasks=1, ncpus=1, memory="10gb"), cluster.functions=funs)
+register(param)
+outlist <- bplapply(seq(along=qlist), f)
+
+## Inspect result and resubmit jobs for missing and empty files
+fileDF <- file.info(list.files("data/tau_queries/", "result_*", full.names=TRUE)) 
+index_empty <- as.numeric(gsub(".*_", "", row.names(fileDF[fileDF$size==0, ])))
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+index_all_files <- seq_along(qlist)
+index_exist <- as.numeric(gsub(".*_", "", row.names(fileDF)))
+index_missing <- index_all_files[!index_all_files %in% index_exist]
+index_repeat <- unique(sort(c(index_empty, index_missing)))
+if(length(index_repeat)!=0) outlist <- bplapply(index_repeat, f)
+
+## Organize results in list where each component contains data.frame with query results from one cell type
+pathDF <- data.frame(query=names(query_list), path=rep(paste0("data/tau_queries/result_", sprintf("%03d", seq_along(qlist))), sapply(qlist, length)))
+pathDF <- data.frame(pathDF, target=gsub("^.*?__", "", pathDF$query))
+pathList <- split(as.character(pathDF$path), factor(pathDF$target))
+pathList <- sapply(pathList, unique) # eliminates unnecessary/duplicated imports of files
+taurefList <- rep(NA, length(pathList)); names(taurefList) <- names(pathList)
+taurefList <- as.list(taurefList) 
+for(celltype in names(pathList)) {
+  for(i in seq_along(pathList[[celltype]])) {
+    tmpDF <- read.delim(pathList[[celltype]][i], row.names=1, check.names=FALSE)
+    tmpDF <- round(tmpDF, 2) # Reduces data size
+    colindex <- gsub("^.*?__", "", colnames(tmpDF)) %in% celltype
+    tmpDF <- tmpDF[, colindex, drop=FALSE] 
+    if(i==1) { 
+      rowindex <- gsub("^.*?__", "", rownames(tmpDF)) %in% celltype
+      containerDF <- tmpDF[rowindex, , drop=FALSE]
+    } else {
+      containerDF <- cbind(containerDF, tmpDF[rownames(containerDF),])
+    }
+    print(paste("Finished", i, "of", length(pathList[[celltype]]), "files collected in", ncol(containerDF), "columns."))
+  }
+  taurefList[[celltype]] <- containerDF
+  saveRDS(taurefList, file="data/tau_queries/taurefList.rds")
+  rm(containerDF); gc()
+}
+#' @param se `SummarizedExperiment` object represents refernce database
+#' @param Nup number of up-regulated genes subsetted for each signature in reference database `se` as query signature
+#' @param Ndown number of down-regulated genes subsetted for each signature in reference database `se` as query signature
+#' @param ES_NULL path to the ES_NULL file. ES_null distribution is generated with random queryies for computing nominal P-values for ES by 
+#' `randQueryES_slurm` or `randQueryES_local` function. If `ES_NULL` is set as `Default`, it uses the ES_null distribution that we generated.
+#' @param dest_path path to the destination file, including the file name "taurefList.rds"
+#' @param partition partition node used to submit jobs on cluster
+#' @return creat "taurefList.rds" file
+#' @export
