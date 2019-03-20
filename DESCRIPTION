@@ -1,11 +1,10 @@
 Package: signatureSearch_data
 Title: Datasets for signatureSearch package
-Description: CMAP/LINCS hdf5 backed databases and other annotations used to do signature search
-and functional enrichment analysis
-Version: 0.99.2
-Author: Yuzhu Duan
+Description: CMAP/LINCS hdf5 backed databases and other annotations used for signatureSearch software package
+Version: 0.99.0
+Author: Yuzhu Duan <yduan004@ucr.edu>
 Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
-Depends: R (>= 3.5.0)
-Imports: methods
+Depends: R (>= 3.5.0), 
+Imports: AnnotationHub, utils
 License: Artistic-2.0
-biocViews: AnnotationData, FunctionalAnnotation
+biocViews: AnnotationHub, AnnotationData, FunctionalAnnotation

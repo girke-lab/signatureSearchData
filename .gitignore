@@ -35,8 +35,3 @@ vignettes/*.pdf
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 
-# Large data in inst/extdata
-inst/extdata/*.rds
-inst/extdata/*.db
-inst/extdata/cmap*
-inst/extdata/lincs*

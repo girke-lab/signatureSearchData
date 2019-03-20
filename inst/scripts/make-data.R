@@ -18,7 +18,8 @@
 # cmap log2FC database
 library(SummarizedExperiment)
 library(HDF5Array)
-source("fct.R") # at the same place as this R script, contains some functions used below 
+source("fct.R") 
+## at the same place as this R script, contains some functions used below 
 degList <- readRDS("degList.rds")
 logMA <- degList$logFC
 pert_cell_factor = gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA))
@@ -40,15 +41,16 @@ cmap <- saveHDF5SummarizedExperiment(cmap, "./cmap")
 ## make cmap_expr database ##
 #############################
 
-# The `cmap_expr` database represents mean expression values of 1,309 drug
-# treatment samples in 4 cells (3,587 signatures in total).
-
 # For correlation based methods, the signature database containing gene 
 # expression values from drug treatment samples could also be used to search 
 # for similarity. 
+
+# The `cmap_expr` database represents mean expression values of 1,309 drug
+# treatment samples in 4 cells (3,587 signatures in total).
+
 # The `cmap_expr` database containing the rma normalized gene expression data.
 # Then, it takes mean expression values of drug treatment samples at different 
-# concentration, duration as expression values of that drug in a specific cell.
+# concentration, duration as expression values of that drug in a cell.
 
 ## Code used to generate the rma normalized expression dataset is similar to 
 ## the vignette at LT website with some modifications
@@ -60,7 +62,8 @@ celfiles <- list.files("./data/CEL", pattern=".CEL$")
 ### Normalization of CEL files
 chiptype <- readRDS("./data/chiptype.rds") # download `chiptype.rds` from LT.
 chiptype_list <- split(names(chiptype), as.character(chiptype))
-normalizeCel(chiptype_list, rerun=FALSE) # need to allocate a lot of memory, 512Gb works
+normalizeCel(chiptype_list, rerun=FALSE) 
+## need to allocate large number of memory, 512Gb works
 df1 <- read.delim("./data/HG-U133A/rma_exprs.xls", sep="\t", header=T, 
                   row.names=1, check.names=FALSE)
 df2 <- read.delim("./data/HT_HG-U133A/rma_exprs.xls", sep="\t", header=T, 
@@ -72,13 +75,15 @@ affyid <- affyid[affyid %in% rownames(df3)]
 rmadf <- cbind(df1[affyid,], df2[affyid,], df3[affyid,])
 ### Obtain annotation information
 library(hgu133a.db)
-myAnnot <- data.frame(ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=", "),
-                      SYMBOL=sapply(contents(hgu133aSYMBOL), paste, collapse=", "),
-                      UNIGENE=sapply(contents(hgu133aUNIGENE), paste, collapse=", "),
-                      ENTREZID=sapply(contents(hgu133aENTREZID), paste, collapse=", "),
-                      ENSEMBL=sapply(contents(hgu133aENSEMBL), paste, collapse=", "),
-                      DESC=sapply(contents(hgu133aGENENAME), paste, collapse=", "))
-write.table(myAnnot, file="./results/myAnnot.xls", quote=FALSE, sep="\t", col.names = NA)
+myAnnot <- data.frame(
+      ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=", "),
+      SYMBOL=sapply(contents(hgu133aSYMBOL), paste, collapse=", "),
+      UNIGENE=sapply(contents(hgu133aUNIGENE), paste, collapse=", "),
+      ENTREZID=sapply(contents(hgu133aENTREZID), paste, collapse=", "),
+      ENSEMBL=sapply(contents(hgu133aENSEMBL), paste, collapse=", "),
+      DESC=sapply(contents(hgu133aGENENAME), paste, collapse=", "))
+write.table(myAnnot, file="./results/myAnnot.xls", quote=FALSE, 
+            sep="\t", col.names = NA)
 saveRDS(myAnnot, "./results/myAnnot.rds")
 ### Transform probe set to gene level data
 myAnnot <- readRDS("./results/myAnnot.rds") 
@@ -367,7 +372,7 @@ write.table(dtlink_sti, "./data/dtlink_sti_v5.0.xls",
 ### (Note: drug_name in dtlink are all lowercase)
 #### Combine dtlink in DrugBank/CLUE/STITCH databases
 dtlink_db <- read.delim("data/dtlink_db_5.1.2.xls", stringsAsFactors=FALSE)
-dtlink_clue <- read.delim("data/dtlink_clue_1.1.1.2.xls", stringsAsFactors=FALSE)
+dtlink_clue<-read.delim("data/dtlink_clue_1.1.1.2.xls", stringsAsFactors=FALSE)
 dtlink_sti <- read.delim("data/dtlink_sti_v5.0.xls", stringsAsFactors=FALSE)
 dtlink <- rbind(dtlink_db, dtlink_clue, dtlink_sti) %>% unique
 #### Exlude proteins or drugs that have more than 100 targets
@@ -475,166 +480,117 @@ saveRDS(GO_DATA_drug, "./data/GO_DATA_drug.rds")
 ## make taurefList.rds ##
 #########################
 
-# It uses signatures in the reference database (such as LINCS) to query against 
-# itself as Qref to compute tau score of `gess_lincs` 
+# It uses all signatures in the reference database (such as LINCS) to query 
+# against itself as Qref to compute tau score of `gess_lincs` 
 # method in `signatureSearch` package. Tau score compares observed enrichment 
-# score to all others in Qref. Query results are 
-# scored with tau as a standardized measure ranging from −100 to 100. A tau of 
-# 90 indicates that only 10% of reference perturbations showed stronger 
-# connectivity to the query. Tau represents the percentage of reference queries 
+# score to all others in Qref. It represents the percentage of reference queries 
 # with a lower |NCS| than |NCSq,r|, adjusted to retain the sign of NCSq,r. 
 # NCSq,r is the normalized connectivity score for signature r relative to 
-# query q. For more details, please refer to Subramanian et al., 2017, Cell
-# (A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles)
+# query q. A tau of 90 indicates that only 10 percent of reference perturbations 
+# showed stronger connectivity to the query. For more details, please refer to 
+# Subramanian et al., 2017, Cell, A Next Generation Connectivity Map: L1000 
+# Platform and the First 1,000,000 Profiles
 
 ## Create Query Reference DB for Tau Score Computation of `gess_lincs` method
 ### Load `lincs` database created above
 library(HDF5Array); library(SummarizedExperiment)
-lincs = loadHDF5SummarizedExperiment("./data/lincs")
-queryReferenceDB <- function(se, Nup=150, Ndown=150, ES_NULL="Default", dest_path, partition) {
-  dir = dirname(dest_path)
-  score_mat = assay(se)
-  ## Create query list for all signatures in se
-  query_list <- lapply(colnames(score_mat), function(x) {
-    sigvec = sort(as.matrix(score_mat[,x]), decreasing = TRUE)
-    list(upset=utils::head(names(sigvec), Nup), downset=utils::tail(names(sigvec), Ndown))
-  })
-  names(query_list) = colData(se)$pert_cell_factor
-  ## Define submission function
-  f <- function(x, se, query_list, ES_NULL, dest_path) {
-    chunkno <- x 
-    sz <- 10 # small enough to use short queue 
-    qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
-    myMA <- matrix(, length(query_list), sz, dimnames=list(names(query_list), seq_len(sz)))
-    qlistone <- qlist[[chunkno]] 
-    for(i in seq_along(qlistone)) {
-      resultDF <- lincsEnrich(se, upset=qlistone[[i]]$up, downset=qlistone[[i]]$down, 
-                              sortby=NA, output="no_tau", ES_NULL=ES_NULL, taurefList="Default")
-      ncs <- resultDF$NCS
-      mynames <- paste(resultDF$Pert, resultDF$Type, sep="__")
-      mynames <- gsub("__up|__down", "", mynames)
-      names(ncs) <- mynames
-      myMA[,i] <- ncs[rownames(myMA)]
-      colnames(myMA)[i] <- names(qlistone[i])
-    }
-    myMA <- myMA[, seq_along(qlistone)] # Only relevant for last entry that may not have as many colums as sz
-    return(myMA)
-  }
-  ## Split query into chunks, each chunk will be processed on cluster as one process
-  sz <- 10 # small enough to use short queue 
-  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
-  # qlist <-  qlist[seq_len(200)] # test
-  # qlist <-  qlist[201:length(qlist)] # test
-  dir = dirname(dest_path)
-  setwd(dir)
-  if(! file.exists("slurm.tmpl")) download.file("https://goo.gl/tLMddb", "slurm.tmpl", quiet=TRUE)
-  if(! file.exists(".batchtools.conf.R")) download.file("https://goo.gl/5HrYkE", ".batchtools.conf.R", quiet=TRUE)
-  if(dir.exists("tau_queries_reg")) unlink("tau_queries_reg", recursive=TRUE)
-  reg = makeRegistry(file.dir="tau_queries_reg", conf.file=".batchtools.conf.R", packages="signatureSearch")
-  ids = batchMap(f, x = seq(along=qlist), more.args = list(se=se, query_list=query_list, ES_NULL=ES_NULL, dest_path=dest_path))
-  #testJob(id = 1)
-  done <- submitJobs(ids, resources=list(walltime=43200, ncpus=1, memory=2048, partition=partition), reg=reg)
-  print(waitForJobs())
-  #getJobTable()
-  print(getStatus())
-  print(getErrorMessages())
-  #showLog(1)
-  # removeRegistry(wait=0, reg=reg)
-  
-  ## Inspect result and resubmit jobs for missing and empty files
-  #dir = dirname(dest_path)
-  #fileDF <- file.info(list.files(paste0(dir, "/tau_queries"), pattern="result_*", full.names=TRUE))
-  #index_empty <- as.numeric(gsub(".*_", "", row.names(fileDF[fileDF$size==0, ])))
-  #qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
-  #index_all_files <- seq_along(qlist)
-  #index_exist <- as.numeric(gsub(".*_", "", row.names(fileDF)))
-  #index_missing <- index_all_files[!index_all_files %in% index_exist]
-  #index_repeat <- unique(sort(c(index_empty, index_missing)))
-  #if(length(index_repeat)!=0) outlist <- bplapply(index_repeat, f)
-  
-  ## Organize results in list where each component contains data.frame with query results from one cell type
-  if(waitForJobs){
-    pathDF <- data.frame(query=names(query_list), path=rep(seq_along(qlist), each=sz))
-    pathDF <- data.frame(pathDF, target=gsub("^.*?__", "", pathDF$query))
-    pathList <- split(as.character(pathDF$path), factor(pathDF$target))
-    pathList <- vapply(pathList, unique) # eliminates unnecessary/duplicated imports of files
-    taurefList <- rep(NA, length(pathList)); names(taurefList) <- names(pathList)
-    taurefList <- as.list(taurefList) 
-    for(celltype in names(pathList)) {
-      for(i in seq_along(pathList[[celltype]])) {
-        tmpDF <- loadResult(as.numeric(pathList[[celltype]][i]))
-        tmpDF <- round(tmpDF, 2) # Reduces data size
-        colindex <- gsub("^.*?__", "", colnames(tmpDF)) %in% celltype
-        tmpDF <- tmpDF[, colindex, drop=FALSE] 
-        if(i==1) { 
-          rowindex <- gsub("^.*?__", "", rownames(tmpDF)) %in% celltype
-          containerDF <- tmpDF[rowindex, , drop=FALSE]
-        } else {
-          containerDF <- cbind(containerDF, tmpDF[rownames(containerDF),])
-        }
-        print(paste("Finished", i, "of", length(pathList[[celltype]]), "results collected in", ncol(containerDF), "columns."))
-      }
-      taurefList[[celltype]] <- containerDF
-      rm(containerDF); gc()
-    }
-    saveRDS(taurefList, file=dest_path)
-  } else {
-    print("Not all the submitted jobs are successfully completed, please check!")
-  }
-}
-## Create query list, here all signatures in 
-lincsvolumes <- list.files("data/cmapdbprofiles", pattern="*GSE92742*", full.names=TRUE) # Uses only TouchstoneV1 = CMap-L1000v1 = GSE92742
-query_list <- queryList(volumes=lincsvolumes, Nup=150, Ndown=150) 
-saveRDS(query_list, "data/tau_queries/query_list.rds")
-## Define submission function
-f <- function(x) {
-  source("/rhome/tgirke/Projects/longevity/cmapEnrichmentFct/cmapVolSearch_Fct.R")
+se = loadHDF5SummarizedExperiment("./data/lincs")
+score_mat = assay(se)
+### Create query list for all signatures in se
+query_list <- lapply(colnames(score_mat), function(x) {
+  vec <- as.matrix(score_mat[,x])
+  names(vec) <- rownames(score_mat)
+  sigvec = sort(vec, decreasing = TRUE)
+  list(upset=utils::head(names(sigvec), 150), 
+       downset=utils::tail(names(sigvec), 150))
+})
+names(query_list) = colData(se)$pert_cell_factor
+###  Query signatures in the query_list against lincs database
+###  To save time, the processing is parallelized with BiocParallel to run on 
+###  CPU cores of a computer cluster with a scheduler (e.g. Slurm). 
+#### Define submission function
+f <- function(x, se, query_list, dest_dir) {
+  require(signatureSearch)
   chunkno <- x 
-  lincsvolumes <- list.files("data/cmapdbprofiles", pattern="*GSE92742*", full.names=TRUE) # Uses only TouchstoneV1 = CMap-L1000v1 = GSE92742
-  query_list <- readRDS("data/tau_queries/query_list.rds") 
   sz <- 10 # small enough to use short queue 
-  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
-  myMA <- matrix(, length(query_list), sz, dimnames=list(names(query_list), 1:sz))
+  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
+  myMA <- matrix(NA, length(query_list), sz, 
+                 dimnames=list(names(query_list), seq_len(sz)))
   qlistone <- qlist[[chunkno]] 
-  for(i in seq_along(qlistone)) {
-    resultDF <- lincsEnrichByVolume(lincsvolumes, upset=qlistone[[i]]$up, downset=qlistone[[i]]$down, sortby=NA)
+  for(i in seq_along(qlistone)){
+    qsig <- suppressMessages(qSig(qsig=list(upset=qlistone[[i]]$up, 
+                                            downset=qlistone[[i]]$down), 
+                 gess_method = "LINCS", refdb = se))
+    lincs <- signatureSearch::gess_lincs(qsig, sortby=NA)
+    resultDF <- result(lincs)
     ncs <- resultDF$NCS
-    mynames <- paste(resultDF$Pert, resultDF$Type, sep="__")
-    mynames <- gsub("__up|__down", "", mynames)
+    mynames <- paste(resultDF$pert, resultDF$cell, resultDF$type, sep="__")
     names(ncs) <- mynames
     myMA[,i] <- ncs[rownames(myMA)]
     colnames(myMA)[i] <- names(qlistone[i])
   }
-  myMA <- myMA[, seq_along(qlistone)] # Only relevant for last entry that may not have as many colums as sz
-  write.table(as.data.frame(myMA), file=paste0("data/tau_queries/result_", sprintf("%03d", chunkno)), col.names = NA, quote=FALSE, sep="\t")
+  myMA <- myMA[, seq_along(qlistone)] 
+  ## Only relevant for last entry that may not have as many colums as sz
+  if(! dir.exists(dest_dir)) dir.create(dest_dir)
+  write.table(as.data.frame(myMA), 
+              file=paste0(dest_dir, "/result_", sprintf("%03d", chunkno)), 
+              col.names=NA, quote=FALSE, sep="\t")
 }
-## Split query into chunks, each chunk will be processed on cluster as one process
-query_list <- readRDS("data/tau_queries/query_list.rds") 
-sz <- 10 # small enough to use short queue 
-qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
-library(BiocParallel); library(BatchJobs)
-# qlist <-  qlist[1:200] # test
-# qlist <-  qlist[201:length(qlist)] # test
-funs <- makeClusterFunctionsSLURM("slurm.tmpl")
-param <- BatchJobsParam(length(qlist), resources=list(walltime="1:50:00", ntasks=1, ncpus=1, memory="10gb"), cluster.functions=funs)
-register(param)
-outlist <- bplapply(seq(along=qlist), f)
+#### Split query into small chunks, each chunk will be processed on computer 
+#### cluster as one process. Use `batchtools` to manage job submission.
+#### Please make sure that `data` directory exists under your current working
+#### directory of R session
+library(batchtools)
+sz <- 10 # small enough to finish each chunk within 2 hours
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
+if(! file.exists("slurm.tmpl")) 
+  download.file("https://goo.gl/tLMddb", "slurm.tmpl", quiet=TRUE)
+if(! file.exists(".batchtools.conf.R")) 
+  download.file("https://goo.gl/5HrYkE", ".batchtools.conf.R", quiet=TRUE)
+if(dir.exists("data/tau_queries_reg")) 
+  unlink("data/tau_queries_reg", recursive=TRUE)
+reg = makeRegistry(file.dir="data/tau_queries_reg", 
+                   conf.file=".batchtools.conf.R")
+dest_dir="data/tau_queries" 
+## directory to store the intermediate results generated by function f
+ids = batchMap(f, x = seq(along=qlist), 
+            more.args = list(se=se, query_list=query_list, dest_dir=dest_dir))
+#testJob(id = 1)
+done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, memory=10240), 
+                   partition="short", reg=reg)
+#waitForJobs()
+getStatus()
 
-## Inspect result and resubmit jobs for missing and empty files
-fileDF <- file.info(list.files("data/tau_queries/", "result_*", full.names=TRUE)) 
+#### Inspect result and resubmit jobs for missing and empty files
+fileDF <- file.info(list.files(dest_dir, pattern="result_*", full.names=TRUE))
 index_empty <- as.numeric(gsub(".*_", "", row.names(fileDF[fileDF$size==0, ])))
-qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
 index_all_files <- seq_along(qlist)
 index_exist <- as.numeric(gsub(".*_", "", row.names(fileDF)))
 index_missing <- index_all_files[!index_all_files %in% index_exist]
 index_repeat <- unique(sort(c(index_empty, index_missing)))
-if(length(index_repeat)!=0) outlist <- bplapply(index_repeat, f)
+if(length(index_repeat)!=0){
+  if(dir.exists("data/tau_queries_reg")) 
+    unlink("data/tau_queries_reg", recursive=TRUE)
+  reg = makeRegistry(file.dir="data/tau_queries_reg", 
+                     conf.file=".batchtools.conf.R")
+  ids = batchMap(f, x = index_repeat, more.args = 
+                   list(se=se, query_list=query_list, dest_dir=dest_dir))
+  done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, 
+                                    memory=10240, partition="short"), reg=reg)
+}
+## Repeat the above steps until all jobs are successfully completed 
+## (index_repeat is empty)
 
-## Organize results in list where each component contains data.frame with query results from one cell type
-pathDF <- data.frame(query=names(query_list), path=rep(paste0("data/tau_queries/result_", sprintf("%03d", seq_along(qlist))), sapply(qlist, length)))
+#### Organize results in list where each component contains data.frame with 
+#### query results from one cell type
+pathDF <- data.frame(query=names(query_list), 
+                     path=rep(paste0("data/tau_queries/result_", 
+                                     sprintf("%03d", seq_along(qlist))), 
+                              sapply(qlist, length)))
 pathDF <- data.frame(pathDF, target=gsub("^.*?__", "", pathDF$query))
 pathList <- split(as.character(pathDF$path), factor(pathDF$target))
-pathList <- sapply(pathList, unique) # eliminates unnecessary/duplicated imports of files
+pathList <- sapply(pathList, unique) # eliminates duplicated imports of files
 taurefList <- rep(NA, length(pathList)); names(taurefList) <- names(pathList)
 taurefList <- as.list(taurefList) 
 for(celltype in names(pathList)) {
@@ -649,18 +605,107 @@ for(celltype in names(pathList)) {
     } else {
       containerDF <- cbind(containerDF, tmpDF[rownames(containerDF),])
     }
-    print(paste("Finished", i, "of", length(pathList[[celltype]]), "files collected in", ncol(containerDF), "columns."))
+    print(paste("Finished", i, "of", length(pathList[[celltype]]), 
+                "results collected in", ncol(containerDF), "columns."))
   }
   taurefList[[celltype]] <- containerDF
-  saveRDS(taurefList, file="data/tau_queries/taurefList.rds")
   rm(containerDF); gc()
 }
-#' @param se `SummarizedExperiment` object represents refernce database
-#' @param Nup number of up-regulated genes subsetted for each signature in reference database `se` as query signature
-#' @param Ndown number of down-regulated genes subsetted for each signature in reference database `se` as query signature
-#' @param ES_NULL path to the ES_NULL file. ES_null distribution is generated with random queryies for computing nominal P-values for ES by 
-#' `randQueryES_slurm` or `randQueryES_local` function. If `ES_NULL` is set as `Default`, it uses the ES_null distribution that we generated.
-#' @param dest_path path to the destination file, including the file name "taurefList.rds"
-#' @param partition partition node used to submit jobs on cluster
-#' @return creat "taurefList.rds" file
-#' @export
+saveRDS(taurefList, file="data/tau_queries/taurefList.rds")
+
+######################
+## make ES_NULL.txt ##
+######################
+
+#  ES null distribution is generated with random queries for computing nominal 
+#  P-values for Enrichment Score in gess_lincs result. 
+#  To save time, the codes below parallelize the process
+#  with BiocParallel to run on CPU cores of a computer cluster with Slurm 
+#  scheduler. It uses 1000 random queries searching against the lincs database
+#  to generate the null distribion of ES.
+
+## Create list of random queries
+se = loadHDF5SummarizedExperiment("./data/lincs")
+idnames <- rownames(se)
+query_list <- signatureSearch:::randQuerySets(
+  id_names=idnames, N_queries=1000, set_length=150)
+## Define submission function
+f <- function(x, query_list, se, dest_dir) {
+  require(signatureSearch)
+  chunkno <- x 
+  sz <- 10 # small enough to run within 2 hours 
+  qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+  qlistone <- qlist[[chunkno]] 
+  for(i in seq_along(qlistone)){
+    esout <- signatureSearch:::lincsEnrich(
+      se, upset=qlistone[[i]]$up, downset=qlistone[[i]]$down, 
+      sortby=NA, output="esonly", type=1)
+    names(esout) <- colnames(se)
+    wtcs = esout
+    if(i==1) 
+      myMA <- matrix(NA, length(esout), length(qlistone), 
+                     dimnames=list(names(wtcs), seq_along(qlistone)))
+    myMA[,i] <- wtcs[rownames(myMA)]
+    colnames(myMA)[i] <- names(qlistone[i])
+  }
+  write.table(as.data.frame(myMA), 
+              file=paste0(dest_dir, "/result_", sprintf("%03d", chunkno)), 
+              col.names = NA, quote=FALSE, sep="\t")
+}
+## Split query into chunks, each chunk will be processed on cluster as 
+## one process
+sz <- 10 # small enough to finish each chunk within 2 hours
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz)) 
+dest_dir="data/es_queries" 
+if(! file.exists("slurm.tmpl")) 
+  download.file("https://goo.gl/tLMddb", "slurm.tmpl", quiet=TRUE)
+if(! file.exists(".batchtools.conf.R")) 
+  download.file("https://goo.gl/5HrYkE", ".batchtools.conf.R", quiet=TRUE)
+if(dir.exists("data/es_queries_reg")) 
+  unlink("data/es_queries_reg", recursive=TRUE)
+reg = makeRegistry(file.dir="data/es_queries_reg", 
+                   conf.file=".batchtools.conf.R")
+ids = batchMap(f, x = seq(along=qlist), more.args = 
+                 list(query_list=query_list, se=se, dest_dir=dest_dir))
+#testJob(id = 1)
+done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, memory=10240, 
+                                       partition="short"), reg=reg)
+getStatus()
+
+## Inspect result and resubmit jobs for missing and empty files
+fileDF <- file.info(list.files(dest_dir, pattern="result_*", full.names=TRUE))
+index_empty <- as.numeric(gsub(".*_", "", row.names(fileDF[fileDF$size==0, ])))
+qlist <- split(query_list, ceiling(seq_along(names(query_list))/sz))
+index_all_files <- seq_along(qlist)
+index_exist <- as.numeric(gsub(".*_", "", row.names(fileDF)))
+index_missing <- index_all_files[!index_all_files %in% index_exist]
+index_repeat <- unique(sort(c(index_empty, index_missing)))
+if(length(index_repeat)!=0){
+  if(dir.exists("data/es_queries_reg")) 
+    unlink("data/es_queries_reg", recursive=TRUE)
+  reg = makeRegistry(file.dir="data/es_queries_reg", 
+                     conf.file=".batchtools.conf.R")
+  ids = batchMap(f, x = index_repeat, more.args = 
+                   list(se=se, query_list=query_list, dest_dir=dest_dir))
+  done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, memory=10240, 
+                                         partition="short"), reg=reg)
+}
+## Repeat the above steps until all jobs are successfully completed 
+## (index_repeat is empty)
+## 
+## If all jobs are successfully completed, collect results in frequency table 
+## with 3 diget accuracy
+esMA <- data.frame(WTCS=as.character(round(rev(seq(-1, 1, by=0.001)), 3)), 
+                   Freq=0, stringsAsFactors=FALSE) 
+myfiles <- list.files(dest_dir, "result_\\d{3,3}", full.names=TRUE)		
+for(i in myfiles) {
+  df <- read.delim(i, row.names=1)
+  freq <- table(round(as.numeric(as.matrix(df),3),3)) 
+  # processes entire data.frame
+  freq <- freq[as.character(esMA[,1])]
+  freq[is.na(freq)] <- 0
+  esMA[,"Freq"] <- as.numeric(esMA[,"Freq"]) + as.numeric(freq)
+  print(paste("Processed", i))
+}
+write.table(esMA, file=paste0(dest_dir,"/ES_NULL.txt"), quote=FALSE, 
+            row.names=FALSE, sep="\t")
