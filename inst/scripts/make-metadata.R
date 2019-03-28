@@ -15,7 +15,7 @@ meta <- data.frame(
                   "Reference list for computing tau scores of gess_lincs method",
                   "Null distribution of Enrichment Score for computing nominal P-values"
                   ),
-  BiocVersion = rep("3.8", 11),
+  BiocVersion = rep("3.9", 11),
   Genome = rep("GRCh38", 11),
   SourceType = c("CEL","CEL","HDF5","HDF5","CSV","MySQL","MySQL","MySQL",
                  "MySQL", "RData", "RData"),
