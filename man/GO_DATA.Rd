@@ -16,5 +16,12 @@ environment every time running the tsea functions
   }
 }
 
+\examples{
+library(AnnotationHub)
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "GO_DATA"))
+GO_DATA <- qr[["AH69086"]]
+}
+
 \keyword{datasets}
 

@@ -29,5 +29,13 @@ which is the `cmap` database.
   \code{\link[SummarizedExperiment]{SummarizedExperiment-class}}
 }
 
+\examples{
+library(AnnotationHub)
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "cmap"))
+qr
+cmap <- load_sigdb("AH69075","AH69076","cmap")
+}
+
 \keyword{datasets}
 

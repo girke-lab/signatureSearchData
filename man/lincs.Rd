@@ -21,5 +21,13 @@ The downloaded database in `gctx` format was processed and saved as HDF5 backed
   \code{\link[SummarizedExperiment]{SummarizedExperiment-class}}
 }
 
+\examples{
+library(AnnotationHub)
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "lincs"))
+qr
+# se <- load_sigdb("AH69079","AH69080","lincs")
+}
+
 \keyword{datasets}
 

@@ -8,7 +8,7 @@ It stores the CMAP/LINCS reference databases used for GESS methods in the
 functionalities in the \code{signatureSearch} package, 
 such as getting targets of query drugs in DrugBank, CLUE and STITCH databases, 
 conducting GO enrichment analysis or computing p-values or Tau scores 
-in the results from `gess_lincs` method.
+in the results of `gess_lincs` method.
 }
 \details{
 The datasets in this package are:
@@ -33,6 +33,16 @@ For codes and details of generating the datasets, please refer to the
 
 \seealso{
    \code{\link{signatureSearch}}
+}
+
+\examples{
+# Load cmap database
+# se <- load_sigdb("AH69075","AH69076","cmap")
+# Load dtlink SQLite database
+conn <- load_sqlite("AH69083")
+# Load RDS files
+ah <- AnnotationHub()
+goAnno <- ah[["AH69084"]]
 }
 
 \keyword{package}

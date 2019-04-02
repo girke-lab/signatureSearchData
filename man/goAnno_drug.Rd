@@ -18,5 +18,12 @@ drug-target links in DrugBank, CLUE and STITCH databases
   }
 }
 
+\examples{
+library(AnnotationHub)
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "goAnno"))
+# goAnno_drug <- qr[["AH69085"]]
+}
+
 \keyword{datasets}
 

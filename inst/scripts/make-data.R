@@ -483,10 +483,10 @@ saveRDS(GO_DATA_drug, "./data/GO_DATA_drug.rds")
 # It uses all signatures in the reference database (such as LINCS) to query 
 # against itself as Qref to compute tau score of `gess_lincs` 
 # method in `signatureSearch` package. Tau score compares observed enrichment 
-# score to all others in Qref. It represents the percentage of reference queries 
+# score to all others in Qref. It represents the percentage of reference queries
 # with a lower |NCS| than |NCSq,r|, adjusted to retain the sign of NCSq,r. 
 # NCSq,r is the normalized connectivity score for signature r relative to 
-# query q. A tau of 90 indicates that only 10 percent of reference perturbations 
+# query q. A tau of 90 indicates that only 10 percent of reference perturbations
 # showed stronger connectivity to the query. For more details, please refer to 
 # Subramanian et al., 2017, Cell, A Next Generation Connectivity Map: L1000 
 # Platform and the First 1,000,000 Profiles
@@ -687,7 +687,7 @@ if(length(index_repeat)!=0){
                      conf.file=".batchtools.conf.R")
   ids = batchMap(f, x = index_repeat, more.args = 
                    list(se=se, query_list=query_list, dest_dir=dest_dir))
-  done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, memory=10240, 
+  done <- submitJobs(ids, resources=list(walltime=36000, ncpus=1, memory=10240,
                                          partition="short"), reg=reg)
 }
 ## Repeat the above steps until all jobs are successfully completed 
