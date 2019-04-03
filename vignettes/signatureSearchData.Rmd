@@ -39,12 +39,27 @@ This is an annotation data package for `signatureSearch` softeware packge. It
 stores the CMAP/LINCS reference databases used for GESS methods in the
 `signatureSearch` package as well as other intermediate datasets.
 
+# Installation and Loading
+
+`signatureSearch` is a R/Bioconductor package and can be installed through 
+`BiocManager::install()`
+```{r install, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("signatureSearchData", version = "3.9")
+```
+
+After the package is installed, it can be loaded into \emph{R} workspace by
+```{r load, eval=TRUE}
+library(signatureSearchData)
+```
+
 # `cmap` signature database
 The `cmap` database represents the $log_2$ fold change (log2FC) of 12,437 genes 
 from 1,281 compound treatments in 4 cells (3,478 signatures in total). 
 It is stored as HDF5 backed `SummarizedExperiment` object and can be loaded 
 through the `AnnotationHub` interface
-```{r cmap, eval=FALSE}
+```{r cmap, eval=TRUE}
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "cmap"))
@@ -107,8 +122,7 @@ The panel of cell lines used by CMAP includes
 The CMAP data set is based on three different Affymetrix chip types (HG-U133A,
 HT_HG-U133A and U133AAofAv2). The following extracts the chip type information
 from the CEL files and stores the result in an `rds` file with the path 
-`./data/chiptype.rds`. Users who skipped the download of the CEL files can
-download this file [here](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/chiptype.rds).
+`./data/chiptype.rds`.
 
 ```{r get_cel_type, eval=FALSE}
 library(affxparser)
@@ -127,10 +141,6 @@ computer cluster with a scheduler (_e.g._ Torque). The number of CEL files from
 each chip type are: 807 CEL files from HG-U133A, 6029 CEL files from
 HT_HG-U133A, and 220 CEL files from U133AAofAv2. Note, these numbers are slightly
 different than those reported in the `cmap_instances_02.txt` file. 
-The MAS5 normalized data sets can be downloaded here: 
-[HG-U133A](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/HG-U133A/all_mas5exprs.rds), 
-[HT_HG-U133A](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/HT_HG-U133A/all_mas5exprs.rds), 
-[U133AAofAv2](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/U133AAofAv2/all_mas5exprs.rds).
 
 ```{r normalize_chips, eval=FALSE}
 chiptype <- readRDS("./data/chiptype.rds")
@@ -163,8 +173,7 @@ share most probe set ids (>95%), meaning it is possible to combine the data
 after normalization and use the same annotation package for all of them. The
 annotation libraries for the chip types HG-U133A and HT_HG-U133A are
 `hgu133a.db` and `hthgu133a.db`, respectively. However, there is no annotation 
-library (e.g. CDF) available for U133AAofAv2. The annotation file can be downloaded
-from here: [`myAnnot.xls`](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/results/myAnnot.xls).
+library (e.g. CDF) available for U133AAofAv2.
 
 ```{r affyid_annotations, eval=FALSE, message=FALSE}
 library(hgu133a.db)
@@ -223,7 +232,8 @@ mas5df <- t(sapply(names(idlist), function(x) colMeans(mas5df[idlist[[x]], ])))
 
 The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
 The log2 fold change (log2FC) scores of drug treatments in cells are used as 
-gene expression profiles (GEPs). The log2FC matrix (`logMA`) is stored in the generated [`degList`](http://biocluster.ucr.edu/~yduan004/signatureSearchData/degList.rds).
+gene expression profiles (GEPs). The log2FC matrix (`logMA`) is stored in the 
+generated `degList`.
 
 ```{r deg_limma, eval=FALSE}
 degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
@@ -394,26 +404,25 @@ dim(meta42) # 45956 X 14
 
 ### Extract z-scores matrix from gctx file 
 
-Extract z-scores of selected samples from gctx file.
-The following codes require large number of memory in the system, 50Gb works
+Read in z-score matrix of samples after filter from gctx file by chunks and store
+as `DelayedMatrix` that is realized by hdf5 backend.
 ```{r extract_modz, eval=FALSE}
-lincs42_mat <- parse_gctx("./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
-                          cid=meta42$sig_id, matrix_only=TRUE)
-lincs42_mat <- lincs42_mat@mat
-colnames(lincs42_mat) = meta42$pert_cell_factor 
+lincs42_dlmat <- read_gctx(gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
+                          cid=meta42$sig_id)
+colnames(lincs42_dlmat) = meta42$pert_cell_factor 
 ```
 
-### Convert the z-score matrix to HDF5 backed SummarizedExperiment object
+### Save the z-score DelayedMatrix as HDF5 backed SummarizedExperiment object
 ```{r gen_lincs, eval=FALSE}
 ## Add rowData annotation
 geneInfo <- read_tsv("./data/GSE92742_Broad_LINCS_gene_info.txt")
 geneInfo <- as(geneInfo, "DataFrame")
 geneInfo$pr_gene_id <- as.character(geneInfo$pr_gene_id)
 rownames(geneInfo) <- geneInfo$pr_gene_id
-geneInfo <- geneInfo[rownames(lincs42_mat),]
+geneInfo <- geneInfo[rownames(lincs42_dlmat),]
 meta42 <- as(meta42, "DataFrame")
 rownames(meta42) <- meta42$pert_cell_factor
-lincs42 <- SummarizedExperiment(assays = list(score = lincs42_mat), 
+lincs42 <- SummarizedExperiment(assays = list(score = lincs42_dlmat), 
                                 rowData = geneInfo, colData = meta42)
 ## Add cell type information to metadata
 cell_info_path <- system.file("extdata", "cell_info.tsv", package="signatureSearchData")
@@ -425,6 +434,7 @@ lincs42 <- saveHDF5SummarizedExperiment(lincs42, "./data/lincs")
 ```
 
 # `lincs_expr` signature database
+
 The `lincs_expr` database contains mean gene expression values 
 from 5,925 compound treatment samples in 30 cells (38,824 signatures in total). 
 It can be loaded through the `AnnotationHub` interface
@@ -467,20 +477,22 @@ dim(inst42) # 169,795 X 13
 
 ### Extract expression matrix from gctx file 
 
-Extract expression values of selected samples from gctx file.
-The following codes require large number of memory in the system, 50Gb works
+Read in expression matrix of samples after filter from gctx file by chunks and store
+as `DelayedMatrix` that is realized by hdf5 backend. 
+
+Mean expression values were calculated for samples that are treated by the same
+compound in the same cell type.
 ```{r extract_expr, eval=FALSE}
-lincs42_mat3 <-parse_gctx("./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
-                          cid=inst42$inst_id, matrix_only=TRUE)
-lincs42_mat3 <- lincs42_mat3@mat # 12328 X 169795
+lincs42_expr_dlmat <-read_gctx("./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
+                          cid=inst42$inst_id) # 12328 X 169795
 ## Get mean expression values of samples from the same drug treatment in cells
 pert_cell_list <- split(inst42$inst_id, inst42$pert_cell_factor)
 lincs_drug_cell_expr <- sapply(names(pert_cell_list), function(x) 
-  rowMeans(as.data.frame(lincs42_mat3[,pert_cell_list[[x]]]))) # 12328 X 38824
+  rowMeans(as.data.frame(lincs42_expr_dlmat[,pert_cell_list[[x]]]))) # 12328 X 38824
 saveRDS(lincs_drug_cell_expr, "./data/lincs_drug_cell_expr.rds")
 ```
 
-### Convert the expression matrix to HDF5 backed SummarizedExperiment object
+### Save the expression DelayedMatrix as HDF5 backed SummarizedExperiment object
 ```{r expr2se, eval=FALSE}
 ## Add colData annotation
 inst42_uniq <- inst42[!duplicated(inst42$pert_cell_factor),] # 38824 X 13

@@ -11,7 +11,11 @@
 #' @importFrom RSQLite dbConnect
 #' @examples
 #' library(AnnotationHub)
-#' #load_sqlite("AH69083")
+#' ah <- AnnotationHub()
+#' qr <-query(ah, c("signatureSearchData", "dtlink"))
+#' conn <- load_sqlite("AH69083")
+#' RSQLite::dbListTables(conn)
+#' RSQLite::dbDisconnect(conn)
 #' @seealso 
 #' \code{\link{dtlink_db_clue_sti}}
 #' @export
@@ -41,7 +45,9 @@ load_sqlite <- function(ah_id){
 #' @import HDF5Array
 #' @examples 
 #' library(AnnotationHub)
-#' #se <- load_sigdb("AH69075","AH69076","cmap")
+#' ah <- AnnotationHub()
+#' qr <-query(ah, c("signatureSearchData", "cmap"))
+#' cmap <- load_sigdb("AH69075","AH69076","cmap")
 #' @export
 load_sigdb <- function(ah_id_h5, ah_id_rds, db_name){
     ah <- AnnotationHub()

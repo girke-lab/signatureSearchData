@@ -26,7 +26,9 @@ in \code{\link{AnnotationHub}}
 }
 \examples{
 library(AnnotationHub)
-#se <- load_sigdb("AH69075","AH69076","cmap")
+ah <- AnnotationHub()
+qr <-query(ah, c("signatureSearchData", "cmap"))
+cmap <- load_sigdb("AH69075","AH69076","cmap")
 }
 \seealso{
 \code{\link{cmap}}, \code{\link{lincs}}

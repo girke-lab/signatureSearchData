@@ -36,8 +36,4 @@ Parse a GCTX file into the workspace as a GCT object
 \examples{
 a=1
 }
-\seealso{
-Other GCTX parsing functions: \code{\link{append.dim}},
-  \code{\link{fix.datatypes}}, \code{\link{process_ids}}
-}
 \concept{GCTX parsing functions}

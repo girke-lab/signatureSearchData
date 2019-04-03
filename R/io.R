@@ -56,7 +56,7 @@ methods::setValidity("GCT",
       return("rdesc must either have 0 rows or the same number of rows as matrix has rows")
     }
     else {
-      return(T)
+      return(TRUE)
     }
   }
 )
@@ -64,24 +64,7 @@ methods::setValidity("GCT",
 
 #### define some helper methods for parsing gctx files ###
 
-#' Adjust the data types for columns of a meta data frame
-#' 
-#' @description GCT(X) parsing initially returns data frames
-#'   of row and column descriptors where all columns are of
-#'   type character. This is inconvenient for analysis, so
-#'   the goal of this function is to try and guess the
-#'   appropriate data type for each column.
-#'   
-#' @param meta a data.frame
-#' 
-#' @details This is a low-level helper function
-#'   which most users will not need to access directly
-#' 
-#' @return meta the same data frame with (potentially) adjusted
-#'   column types.
-#'   
-#' @family GCTX parsing functions
-#' @keywords internal
+# Adjust the data types for columns of a meta data frame
 fix.datatypes <- function(meta) {
     for (field.name in names(meta)) {
         # get the field values
@@ -183,23 +166,8 @@ read.gctx.ids <- function(gctx_path, dimension="row") {
   return(ids)
 }
 
-#' Return a subset of requested GCTX row/colum ids
-#' out of the universe of all ids
-#' 
-#' @details This is a low-level helper function
-#'   which most users will not need to access directly
-#' 
-#' @param ids vector of requested ids. If \code{NULL}, no
-#'   subsetting is performed
-#' @param all_ids vector of universe of ids
-#' @param type flag indicating the type of ids being processed
-#' 
-#' @return a list with the following elements
-#'  \code{ids}: a character vector of the processed ids
-#'  \code{idx}: an integer list of their corresponding indices in \code{all_ids}
-#' 
-#' @family GCTX parsing functions
-#' @keywords internal
+# Return a subset of requested GCTX row/colum ids
+# out of the universe of all ids
 process_ids <- function(ids, all_ids, type="rid") {
   if (!is.null(ids)) {
     if (is.numeric(ids)) {
@@ -294,7 +262,8 @@ methods::setMethod("initialize",
                   nrhd <- 0
                   nchd <- 0
                 }
-                message(paste(src, nrmat, "rows,", ncmat, "cols,", nrhd, "row descriptors,", nchd, "col descriptors"))
+                message(paste(src, nrmat, "rows,", ncmat, "cols,", nrhd, 
+                              "row descriptors,", nchd, "col descriptors"))
                 # read in header line
                 header = scan(src, what = "", nlines = 1, skip = 2, sep = "\t", quote = NULL, quiet = TRUE)
                 # construct row header and column id's from the header line
@@ -451,20 +420,7 @@ parse_gctx <- function(fname, rid=NULL, cid=NULL, set_annot_rownames=FALSE, matr
     return(ds)
 }
 
-#' Append matrix dimensions to filename
-#' 
-#' @param ofile the file name
-#' @param mat the matrix
-#' @param extension the file extension
-#' 
-#' @return a character string of the filename with
-#'   matrix dimensions appended
-#' 
-#' @details This is a helper function that most users
-#'   will not use directly
-#'   
-#' @keywords internal
-#' @family GCTX parsing functions
+# Append matrix dimensions to filename
 append.dim <- function(ofile, mat, extension="gct") {
   nc <- ncol(mat)
   nr <- nrow(mat)
@@ -479,11 +435,7 @@ append.dim <- function(ofile, mat, extension="gct") {
   return(filename)
 }
 
-#' Do a robust \code{\link{data.frame}} subset to a set of ids
-#' @param df \code{\link{data.frame}} to subset
-#' @param ids the ids to subset to
-#' @return a subset version of \code{df}
-#' @keywords internal
+# Do a robust \code{\link{data.frame}} subset to a set of ids
 subset_to_ids <- function(df, ids) {
   # helper function to do a robust df subset
   check_colnames("id", df)

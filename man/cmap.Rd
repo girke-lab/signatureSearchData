@@ -28,8 +28,7 @@ which is the `cmap` database.
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "cmap"))
-qr
-#cmap <- load_sigdb("AH69075","AH69076","cmap")
+cmap <- load_sigdb("AH69075","AH69076","cmap")
 }
 
 \keyword{datasets}

@@ -22,7 +22,11 @@ The dtlink database is stored in \code{\link{AnnotationHub}}
 }
 \examples{
 library(AnnotationHub)
-#load_sqlite("AH69083")
+ah <- AnnotationHub()
+qr <-query(ah, c("signatureSearchData", "dtlink"))
+conn <- load_sqlite("AH69083")
+RSQLite::dbListTables(conn)
+RSQLite::dbDisconnect(conn)
 }
 \seealso{
 \code{\link{dtlink_db_clue_sti}}
