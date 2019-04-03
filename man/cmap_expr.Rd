@@ -2,8 +2,8 @@
 \alias{cmap_expr}
 \title{cmap expression signature database}
 \description{
-For correlation based GESS methods in \code{\link{signatureSearch}} package, 
-the signature database containing gene expression values from drug treatment 
+For correlation based GESS methods in the \code{signatureSearch} software package, 
+the signature database containing gene expression values of drug treatment 
 samples could also be used to search for similarity. 
 
 The `cmap_expr` database represents mean expression values of 1,309 drug
@@ -30,7 +30,7 @@ library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "cmap"))
 qr
-# se <- load_sigdb("AH69077","AH69078","cmap_expr")
+# cmap_expr <- load_sigdb("AH69077","AH69078","cmap_expr")
 }
 
 \keyword{datasets}

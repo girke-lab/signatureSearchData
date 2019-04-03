@@ -62,13 +62,13 @@ celfiles <- list.files("./data/CEL", pattern=".CEL$")
 ### Normalization of CEL files
 chiptype <- readRDS("./data/chiptype.rds") # download `chiptype.rds` from LT.
 chiptype_list <- split(names(chiptype), as.character(chiptype))
-normalizeCel(chiptype_list, rerun=FALSE) 
+normalizeCel_rma(chiptype_list, rerun=FALSE) 
 ## need to allocate large number of memory, 512Gb works
-df1 <- read.delim("./data/HG-U133A/rma_exprs.xls", sep="\t", header=T, 
+df1 <- read.delim("./data/HG-U133A/rma_exprs.xls", sep="\t", header=TRUE, 
                   row.names=1, check.names=FALSE)
-df2 <- read.delim("./data/HT_HG-U133A/rma_exprs.xls", sep="\t", header=T, 
+df2 <- read.delim("./data/HT_HG-U133A/rma_exprs.xls", sep="\t", header=TRUE, 
                   row.names=1, check.names=FALSE)
-df3 <- read.delim("./data/U133AAofAv2/rma_exprs.xls", sep="\t", header=T, 
+df3 <- read.delim("./data/U133AAofAv2/rma_exprs.xls", sep="\t", header=TRUE, 
                   row.names=1, check.names=FALSE)
 affyid <- rownames(df1)[rownames(df1) %in% rownames(df2)]
 affyid <- affyid[affyid %in% rownames(df3)]
@@ -697,7 +697,7 @@ if(length(index_repeat)!=0){
 ## with 3 diget accuracy
 esMA <- data.frame(WTCS=as.character(round(rev(seq(-1, 1, by=0.001)), 3)), 
                    Freq=0, stringsAsFactors=FALSE) 
-myfiles <- list.files(dest_dir, "result_\\d{3,3}", full.names=TRUE)		
+myfiles <- list.files(dest_dir, "result_\\d{3,3}", full.names=TRUE)
 for(i in myfiles) {
   df <- read.delim(i, row.names=1)
   freq <- table(round(as.numeric(as.matrix(df),3),3)) 
@@ -707,5 +707,4 @@ for(i in myfiles) {
   esMA[,"Freq"] <- as.numeric(esMA[,"Freq"]) + as.numeric(freq)
   print(paste("Processed", i))
 }
-write.table(esMA, file=paste0(dest_dir,"/ES_NULL.txt"), quote=FALSE, 
-            row.names=FALSE, sep="\t")
+write.table(esMA, file=paste0(dest_dir,"/ES_NULL.txt"), quote=FALSE, row.names=FALSE, sep="\t")

@@ -27,7 +27,7 @@ Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "ES_NULL"))
-ES_NULL <- qr[["AH69089"]]
+# ES_NULL <- qr[["AH69089"]]
 }
 
 \keyword{datasets}

@@ -21,7 +21,8 @@ connection to the SQLite file.
 The dtlink database is stored in \code{\link{AnnotationHub}}
 }
 \examples{
-load_sqlite("AH69083")
+library(AnnotationHub)
+#load_sqlite("AH69083")
 }
 \seealso{
 \code{\link{dtlink_db_clue_sti}}

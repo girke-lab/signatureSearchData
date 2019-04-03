@@ -12,9 +12,9 @@ drug-target links in DrugBank, CLUE and STITCH databases
 }
 \seealso{
   \itemize{
-    \item \code{\link{signatureSearch}}
-    \item \code{\link[signatureSearch]{dsea_hyperG}}
-    \item \code{\link[signatureSearch]{dsea_GSEA}}
+    \item \code{signatureSearch}
+    \item \code{dsea_hyperG}
+    \item \code{dsea_GSEA}
   }
 }
 

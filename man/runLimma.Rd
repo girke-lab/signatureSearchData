@@ -24,5 +24,6 @@ list containing DEGs and log2FC matrix
 DEG analysis with Limma as specified fdr and foldchange
 }
 \examples{
+a=1
 # degMA <- runLimma(df, comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
 }

@@ -26,7 +26,7 @@ library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "lincs"))
 qr
-# se <- load_sigdb("AH69079","AH69080","lincs")
+# lincs <- load_sigdb("AH69079","AH69080","lincs")
 }
 
 \keyword{datasets}

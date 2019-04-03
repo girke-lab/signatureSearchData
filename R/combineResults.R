@@ -3,9 +3,12 @@
 #' @param chiptype_dir chiptype directories
 #' @param rerun TRUE or FALSE, whether to run the function
 #' @return files storing normalization values for each chiptype
+#' @importFrom utils read.delim
+#' @importFrom utils write.table
 #' @examples 
 #' # chiptype_dir <- unique(readRDS("./data/chiptype.rds"))
 #' combineResults(chiptype_dir, rerun=FALSE)
+#' @export
 combineResults <- function(chiptype_dir, rerun=TRUE) {
     if(isTRUE(rerun)) {
         for(j in seq_along(chiptype_dir)) {

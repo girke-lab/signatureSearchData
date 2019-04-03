@@ -25,7 +25,8 @@ Load signature databases (cmap etc.), which are HDF5 backed
 in \code{\link{AnnotationHub}}
 }
 \examples{
-se <- load_sigdb("AH69075","AH69076","cmap")
+library(AnnotationHub)
+#se <- load_sigdb("AH69075","AH69076","cmap")
 }
 \seealso{
 \code{\link{cmap}}, \code{\link{lincs}}

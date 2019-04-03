@@ -5,13 +5,15 @@
 #' @examples 
 #' getCmapCEL(rerun=FALSE) # set 'rerun' to TRUE if download
 #' @importFrom R.utils bunzip2
+#' @importFrom utils download.file
+#' @importFrom utils unzip
 #' @export
 getCmapCEL <- function(rerun=TRUE) {
-    ## Check for presence of target directory
-    if(!isTRUE(dir.exists("./data/CEL"))) 
-        stop("Target directory ./data/CEL does not exist. 
-             Create it to run function.") 
     if(isTRUE(rerun)) {
+        ## Check for presence of target directory
+        if(!dir.exists("./data/CEL"))
+            stop("Target directory ./data/CEL does not exist. 
+             Create it to run function.") 
         ## Download CEL files
         download.file("ftp://ftp.broad.mit.edu/pub/cmap/cmap_build02.volume1of7.zip", 
                       "./data/CEL/cmap_build02.volume1of7.zip")

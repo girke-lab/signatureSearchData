@@ -6,18 +6,19 @@
 #' @param ah_id AnnotationHub unique identifiers, of the form "AH12345",
 #' of the hub records.
 #' @return SQLiteConnection 
-#' @importFrom BiocGenerics fileName
 #' @importFrom AnnotationHub AnnotationHub
 #' @importFrom RSQLite SQLite
 #' @importFrom RSQLite dbConnect
 #' @examples
-#' load_sqlite("AH69083")
+#' library(AnnotationHub)
+#' #load_sqlite("AH69083")
 #' @seealso 
 #' \code{\link{dtlink_db_clue_sti}}
 #' @export
 load_sqlite <- function(ah_id){
     ah <- AnnotationHub()
-    path <- fileName(ah[ah_id])
+    path <- ah[[ah_id]]
+    #path <- fileName(ah[ah_id])
     conn <- dbConnect(SQLite(), path)
     return(conn)
 }
@@ -37,15 +38,15 @@ load_sqlite <- function(ah_id){
 #' @seealso 
 #' \code{\link{cmap}}, \code{\link{lincs}}
 #' @importFrom AnnotationHub hubCache
+#' @import HDF5Array
 #' @examples 
-#' se <- load_sigdb("AH69075","AH69076","cmap")
+#' library(AnnotationHub)
+#' #se <- load_sigdb("AH69075","AH69076","cmap")
+#' @export
 load_sigdb <- function(ah_id_h5, ah_id_rds, db_name){
     ah <- AnnotationHub()
-    tmp = ah[[ah_id_h5]]
-    tmp = ah[[ah_id_rds]]
-    rm(tmp)
-    h5_path <- fileName(ah[ah_id_h5])
-    rds_path <- fileName(ah[ah_id_rds])
+    h5_path = ah[[ah_id_h5]]
+    rds_path = ah[[ah_id_rds]]
     hub_dir <- hubCache(ah)
     wd <- getwd()
     setwd(hub_dir)    

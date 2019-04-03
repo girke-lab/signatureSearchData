@@ -12,8 +12,11 @@
 #' @importFrom limma contrasts.fit
 #' @importFrom limma eBayes
 #' @importFrom limma topTable
+#' @importFrom stats model.matrix
 #' @examples 
+#' a=1
 #' # degMA <- runLimma(df, comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
+#' @export
 runLimma <- function(df, comp_list, fdr=0.05, foldchange=1, verbose=TRUE) {
     ## Generate result container
     deg <- matrix(0, nrow=nrow(df), ncol=length(comp_list), 

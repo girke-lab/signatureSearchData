@@ -11,8 +11,8 @@ environment every time running the tsea functions
 
 \seealso{
   \itemize{
-    \item \code{\link{signatureSearch}}
-    \item \code{\link[signatureSearch]{tsea}}
+    \item \code{signatureSearch}
+    \item \code{tsea}
   }
 }
 
@@ -20,7 +20,7 @@ environment every time running the tsea functions
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "GO_DATA"))
-GO_DATA <- qr[["AH69086"]]
+#GO_DATA <- qr[["AH69086"]]
 }
 
 \keyword{datasets}

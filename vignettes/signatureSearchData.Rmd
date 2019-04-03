@@ -44,7 +44,7 @@ The `cmap` database represents the $log_2$ fold change (log2FC) of 12,437 genes
 from 1,281 compound treatments in 4 cells (3,478 signatures in total). 
 It is stored as HDF5 backed `SummarizedExperiment` object and can be loaded 
 through the `AnnotationHub` interface
-```{r cmap, eval=TRUE}
+```{r cmap, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "cmap"))
@@ -111,6 +111,7 @@ from the CEL files and stores the result in an `rds` file with the path
 download this file [here](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/chiptype.rds).
 
 ```{r get_cel_type, eval=FALSE}
+library(affxparser)
 celfiles <- list.files("./data/CEL", pattern=".CEL$")
 chiptype <- sapply(celfiles, function(x) affxparser::readCelHeader(paste0("data/CEL/", x))$chiptype)
 if(FALSE) saveRDS(chiptype, "./data/chiptype.rds") # if(FALSE) protects this line from accidental execution!
@@ -132,7 +133,6 @@ The MAS5 normalized data sets can be downloaded here:
 [U133AAofAv2](http://biocluster.ucr.edu/~tgirke/projects/longevity/cmap/data/U133AAofAv2/all_mas5exprs.rds).
 
 ```{r normalize_chips, eval=FALSE}
-library(BiocParallel); library(BatchJobs); library(affy)
 chiptype <- readRDS("./data/chiptype.rds")
 chiptype_list <- split(names(chiptype), as.character(chiptype))
 normalizeCel(chiptype_list, rerun=FALSE)
@@ -239,6 +239,7 @@ library(HDF5Array)
 degList <- readRDS("./results/degList.rds")
 logMA <- degList$logFC
 pert_cell_factor = gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA))
+## Add colData annotation for SummarizedExperiment object
 colData <- DataFrame(pert_cell_factor=pert_cell_factor,
                      pert_cell = colnames(logMA))
 new <- as.data.frame(t(sapply(seq_len(nrow(colData)), function(i) 
@@ -250,15 +251,15 @@ rownames(colData) = colData$pert_cell_factor
 colnames(logMA)=colData$pert_cell_factor # Important to match the treatment format
 cmap <- SummarizedExperiment(assays = list(score=logMA), colData = colData)
 ## Save 'cmap' as an HDF5-based SummarizedExperiment object on disk. 
-## Here, it will save to the present working directory of the user’s R session.
-cmap <- saveHDF5SummarizedExperiment(cmap, "./cmap")
+## Here, it will save to the data directory of the user’s R session.
+cmap <- saveHDF5SummarizedExperiment(cmap, "./data/cmap")
 ```
 
 # `cmap_expr` signature database
-For correlation based GESS methods in `signatureSearch` package, 
-the signature database containing gene 
-expression values from drug treatment samples could also be used to search 
-for similarity. 
+For correlation based GESS methods (`gess_cor`) in the `signatureSearch` software 
+package, the signature database containing gene expression intensity values of drug 
+treatment samples could also be used to search for similarity when the query
+signature are also gene expression values. 
 
 The `cmap_expr` database represents mean expression values of 1,309 drug
 treatment samples in 4 cells (3,587 signatures in total).
@@ -266,44 +267,231 @@ It is stored as HDF5 backed `SummarizedExperiment` object and can be loaded
 through the `AnnotationHub` interface
 ```{r cmap_expr, eval=FALSE}
 library(AnnotationHub)
-hub <- AnnotationHub()
-myfiles <- query(hub, "SEARCHTERM1", "SEARCHTERM2")
-myfiles[[1]]  ## load the first resource in the list
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "cmap"))
+cmap_expr <- load_sigdb("AH69077","AH69078","cmap_expr")
 ```
 
+## Generate the `cmap_expr` database from the original resources
 The same as the `cmap` database, the resource data was downloaded from the 
 [Connectivity Map](https://portals.broadinstitute.org/cmap/) project. 
-The expression intensity data was rma normalized. Then, the mean expression 
+The gene expression intensity data was rma normalized. Then, the mean expression 
 values of drug treatment samples at different concentration, duration was used
 as expression values of that drug in a specific cell. The expression matrix
 was saved as HDF5-based SummarizedExperiment object (cmap_expr database).
 
+### Normalization of CEL files with rma method
+Use the same work environment as preparing the `cmap` database.
+```{r norm_rma, eval=FALSE}
+chiptype <- readRDS("./data/chiptype.rds") 
+chiptype_list <- split(names(chiptype), as.character(chiptype))
+## need to allocate large number of memory, 512Gb works
+normalizeCel_rma(chiptype_list, rerun=FALSE) 
+df1 <- read.delim("./data/HG-U133A/rma_exprs.xls", sep="\t", header=TRUE, 
+                  row.names=1, check.names=FALSE)
+df2 <- read.delim("./data/HT_HG-U133A/rma_exprs.xls", sep="\t", header=TRUE, 
+                  row.names=1, check.names=FALSE)
+df3 <- read.delim("./data/U133AAofAv2/rma_exprs.xls", sep="\t", header=TRUE, 
+                  row.names=1, check.names=FALSE)
+affyid <- rownames(df1)[rownames(df1) %in% rownames(df2)]
+affyid <- affyid[affyid %in% rownames(df3)]
+rmadf <- cbind(df1[affyid,], df2[affyid,], df3[affyid,])
+```
+
+### Transform probe set to gene level data
+```{r prof2gene, eval=FALSE}
+myAnnot <- readRDS("./results/myAnnot.rds") 
+myAnnot <- myAnnot[as.character(myAnnot[,"ENTREZID"]) != "NA",]
+rmadf <- rmadf[rownames(myAnnot),]
+idlist <- tapply(row.names(myAnnot), as.character(myAnnot$ENTREZID), c)
+rmadf <- t(sapply(names(idlist), function(x) colMeans(rmadf[idlist[[x]], ])))
+saveRDS(rmadf,"./data/rmadf.rds")
+```
+
+### Take mean expression values of drug treatment sample
+
+Take mean expression values of multiple drug treatment samples at different 
+concentration and duration in the same cell as expression value of that drug
+treatment in the cell.
+```{r rma2cmap_expr, eval=FALSE}
+rmadf <- readRDS("./data/rmadf.rds") # matrix: 12437 7056
+path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
+cmap_inst <- read.delim(path, check.names=FALSE) 
+cmap_inst <- data.frame(cmap_inst, drug_cell = paste(cmap_inst$cmap_name,  
+                                                     cmap_inst$cell2, sep ="_"))
+celid <- paste0(cmap_inst$perturbation_scan_id,".CEL")
+sum(celid %in% colnames(rmadf)) # 5408
+celid2 <- gsub("'", "", celid) # get rid of "'" in celid
+sum(celid2 %in% colnames(rmadf)) # 6100
+drug_celid_list <- tapply(celid2, cmap_inst$drug_cell, c) # 3587
+cmap_drug_cell_expr <- sapply(names(drug_celid_list), function(x) 
+  rowMeans(as.data.frame(rmadf[,drug_celid_list[[x]]]))) # 12437 X 3587
+saveRDS(cmap_drug_cell_expr, "./data/cmap_drug_cell_expr.rds")
+```
+
+### Generate `cmap_expr` database from the expression matrix
+```{r gen_cmap_expr, eval=FALSE}
+cmap_drug_cell_expr <- readRDS("./data/cmap_drug_cell_expr.rds")
+## match format of colnames of "cmap_drug_cell_expr" as "pert__cell__trt_cp" 
+pert_cell_factor = gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", 
+                        colnames(cmap_drug_cell_expr))
+colnames(cmap_drug_cell_expr) <- pert_cell_factor
+cmap_expr <- SummarizedExperiment(assays = list(expr=cmap_drug_cell_expr))
+## Save 'cmap_expr' as an HDF5-based SummarizedExperiment object:
+cmap_expr <- saveHDF5SummarizedExperiment(cmap_expr, "./data/cmap_expr")
+```
+
 # `lincs` signature database
 The `lincs` database represents moderated z-scores from DE analysis of 12,328 
 genes from 8,140 compound treatments in 30 cells (45,956 signatures in total). 
-The original LINCS Level 5 moderated z-score database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
-The downloaded database in `gctx` format was processed and saved as HDF5 backed
-`SummarizedExperiment` object and can be loaded through the `AnnotationHub` 
-interface
+It can be loaded through the `AnnotationHub` interface
+
 ```{r lincs, eval=FALSE}
 library(AnnotationHub)
-hub <- AnnotationHub()
-myfiles <- query(hub, "SEARCHTERM1", "SEARCHTERM2")
-myfiles[[1]]  ## load the first resource in the list
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "lincs"))
+lincs <- load_sigdb("AH69079","AH69080","lincs")
+```
+
+## Generate the `lincs` database from the original resources
+
+The original LINCS Level 5 moderated z-score database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
+The downloaded database in `gctx` format was processed and saved as HDF5 backed
+`SummarizedExperiment` object 
+
+### Download the original LINCS Level5 datasets at GEO 
+
+Download the following files from [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
+
++ GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz
++ GSE92742_Broad_LINCS_gene_info.txt.gz
++ GSE92742_Broad_LINCS_sig_info.txt.gz
++ GSE92742_Broad_LINCS_cell_info.txt.gz
+
+Unzip the downloaded files to the `data` direcotry under the present working 
+directory of the user’s R session.
+
+The LINCS Level5 signatures represent moderated z-scores of compound treatments
+at different contration and time in different cells from differential expression
+analysis, the replicates have been weighted averaged.
+
+### Filter samples at specific concentation and treatment time
+```{r filter_meta42, eval=FALSE}
+library(readr); library(dplyr); library(magrittr);
+library(SummarizedExperiment); library(HDF5Array)
+meta42 <- read_tsv("./data/GSE92742_Broad_LINCS_sig_info.txt") 
+txt <- names(table(meta42$pert_idose))
+unit <- txt[grep("10 .M", txt)][2]
+meta42 %<>% filter(pert_type=="trt_cp" & pert_idose==unit & pert_itime=="24 h") 
+# filter rows by compound, 10 uM concentration, and 24 h treatment time
+meta42 %<>% 
+  bind_cols(alt_id=paste(meta42$pert_iname, meta42$cell_id, sep="_")) %>%
+  bind_cols(pert_cell_factor=paste(meta42$pert_iname, meta42$cell_id, 
+                                   meta42$pert_type, sep="__")) %>% 
+  distinct(alt_id, .keep_all=TRUE) # eliminate technical duplicates
+dim(meta42) # 45956 X 14
+```
+
+### Extract z-scores matrix from gctx file 
+
+Extract z-scores of selected samples from gctx file.
+The following codes require large number of memory in the system, 50Gb works
+```{r extract_modz, eval=FALSE}
+lincs42_mat <- parse_gctx("./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
+                          cid=meta42$sig_id, matrix_only=TRUE)
+lincs42_mat <- lincs42_mat@mat
+colnames(lincs42_mat) = meta42$pert_cell_factor 
+```
+
+### Convert the z-score matrix to HDF5 backed SummarizedExperiment object
+```{r gen_lincs, eval=FALSE}
+## Add rowData annotation
+geneInfo <- read_tsv("./data/GSE92742_Broad_LINCS_gene_info.txt")
+geneInfo <- as(geneInfo, "DataFrame")
+geneInfo$pr_gene_id <- as.character(geneInfo$pr_gene_id)
+rownames(geneInfo) <- geneInfo$pr_gene_id
+geneInfo <- geneInfo[rownames(lincs42_mat),]
+meta42 <- as(meta42, "DataFrame")
+rownames(meta42) <- meta42$pert_cell_factor
+lincs42 <- SummarizedExperiment(assays = list(score = lincs42_mat), 
+                                rowData = geneInfo, colData = meta42)
+## Add cell type information to metadata
+cell_info_path <- system.file("extdata", "cell_info.tsv", package="signatureSearchData")
+cell_info <- read_tsv(cell_info_path)
+## The cell_info is from the "GSE92742_Broad_LINCS_cell_info.txt" with some edition
+metadata(lincs42)$cell_info = cell_info
+# Save 'lincs42' as an HDF5-based SummarizedExperiment object:
+lincs42 <- saveHDF5SummarizedExperiment(lincs42, "./data/lincs")
 ```
 
 # `lincs_expr` signature database
 The `lincs_expr` database contains mean gene expression values 
 from 5,925 compound treatment samples in 30 cells (38,824 signatures in total). 
-The original LINCS Level 3 expression database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
-The downloaded database in `gctx` format was processed and saved as HDF5 backed
-`SummarizedExperiment` object and can be loaded through the `AnnotationHub` 
-interface
+It can be loaded through the `AnnotationHub` interface
 ```{r lincs_expr, eval=FALSE}
 library(AnnotationHub)
-hub <- AnnotationHub()
-myfiles <- query(hub, "SEARCHTERM1", "SEARCHTERM2")
-myfiles[[1]]  ## load the first resource in the list
+ah <- AnnotationHub()
+qr <- query(ah, c("signatureSearchData", "lincs"))
+lincs_expr <- load_sigdb("AH69081","AH69082","lincs_expr")
+```
+
+## Generate the `lincs_expr` database from the original resources
+The original LINCS Level3 expression database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
+The downloaded database in `gctx` format was processed and saved as HDF5 backed
+`SummarizedExperiment` object
+
+### Download the original LINCS Level3 datasets at GEO 
+
+Download the following files from [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
+
++ GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx.gz
++ GSE92742_Broad_LINCS_gene_info.txt.gz
++ GSE92742_Broad_LINCS_inst_info.txt.gz
+
+Unzip the downloaded files to the `data` direcotry under the present working 
+directory of the user’s R session.
+
+The LINCS Level3 signatures represent normalized expression intensity values of 
+compound treatment samples at different contration and time in different cells, 
+including replicates.
+
+### Filter samples at specific concentation and treatment time
+```{r filter_expr, eval=FALSE}
+inst42 <- read_tsv("./data/GSE92742_Broad_LINCS_inst_info.txt") 
+inst42 %<>% filter(pert_type=="trt_cp" & pert_dose==10 & pert_dose_unit=="um" 
+                   & pert_time==24 & pert_time_unit=="h")
+inst42 %<>% bind_cols(alt_id=paste(inst42$pert_iname, inst42$cell_id, sep="_")) %>% 
+  bind_cols(pert_cell_factor=paste(inst42$pert_iname, inst42$cell_id, inst42$pert_type, sep="__"))
+dim(inst42) # 169,795 X 13
+```
+
+### Extract expression matrix from gctx file 
+
+Extract expression values of selected samples from gctx file.
+The following codes require large number of memory in the system, 50Gb works
+```{r extract_expr, eval=FALSE}
+lincs42_mat3 <-parse_gctx("./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
+                          cid=inst42$inst_id, matrix_only=TRUE)
+lincs42_mat3 <- lincs42_mat3@mat # 12328 X 169795
+## Get mean expression values of samples from the same drug treatment in cells
+pert_cell_list <- split(inst42$inst_id, inst42$pert_cell_factor)
+lincs_drug_cell_expr <- sapply(names(pert_cell_list), function(x) 
+  rowMeans(as.data.frame(lincs42_mat3[,pert_cell_list[[x]]]))) # 12328 X 38824
+saveRDS(lincs_drug_cell_expr, "./data/lincs_drug_cell_expr.rds")
+```
+
+### Convert the expression matrix to HDF5 backed SummarizedExperiment object
+```{r expr2se, eval=FALSE}
+## Add colData annotation
+inst42_uniq <- inst42[!duplicated(inst42$pert_cell_factor),] # 38824 X 13
+inst42_uniq <- as(inst42_uniq, "DataFrame")
+rownames(inst42_uniq) <- inst42_uniq$pert_cell_factor
+lincs42_expr <- SummarizedExperiment(
+  assays = list(expr = lincs_drug_cell_expr), 
+  rowData = geneInfo, 
+  colData = inst42_uniq[colnames(lincs_drug_cell_expr),])
+## Save 'lincs42_expr' as an HDF5-based SummarizedExperiment object:
+lincs42_expr <- saveHDF5SummarizedExperiment(lincs42_expr, "./data/lincs_expr")
 ```
 
 # Other datasets
@@ -311,9 +499,6 @@ This annotation package also contains other intermediate datasets used for
 functionalities in the `signatureSearch` software package, 
 such as getting targets of query drugs in [DrugBank](https://www.drugbank.ca/), 
 [CLUE](https://clue.io/) and [STITCH](http://stitch.embl.de/) databases, 
-conducting GO enrichment analysis or computing p-values or Tau scores 
-in the results from `gess_lincs` method.
-
-For codes and details of generating the above data, please refer to the [make-data.R](https://github.com/yduan004/signatureSearchData/blob/master/inst/scripts/make-data.R) 
-script at [github](https://github.com/yduan004/signatureSearchData).
+conducting GO enrichment analysis or computing p values or Tau scores of the
+`gess_lincs` method.
 

@@ -12,8 +12,8 @@ environment every time running the dsea functions
 
 \seealso{
   \itemize{
-    \item \code{\link{signatureSearch}}
-    \item \code{\link[signatureSearch]{dsea}}
+    \item \code{signatureSearch}
+    \item \code{dsea}
   }
 }
 

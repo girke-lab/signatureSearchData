@@ -8,8 +8,8 @@
 
 \seealso{
   \itemize{
-    \item \code{\link{signatureSearch}}
-    \item \code{\link[signatureSearch]{dtnetplot}}
+    \item \code{signatureSearch}
+    \item \code{dtnetplot}
   }
 }
 
@@ -17,7 +17,7 @@
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "goAnno"))
-goAnno <- qr[["AH69084"]]
+#goAnno <- qr[["AH69084"]]
 }
 \keyword{datasets}
 
