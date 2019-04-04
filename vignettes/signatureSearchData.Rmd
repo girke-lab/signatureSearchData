@@ -59,7 +59,7 @@ The `cmap` database represents the $log_2$ fold change (log2FC) of 12,437 genes
 from 1,281 compound treatments in 4 cells (3,478 signatures in total). 
 It is stored as HDF5 backed `SummarizedExperiment` object and can be loaded 
 through the `AnnotationHub` interface
-```{r cmap, eval=TRUE}
+```{r cmap, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "cmap"))
@@ -404,15 +404,18 @@ dim(meta42) # 45956 X 14
 
 ### Extract z-scores matrix from gctx file 
 
-Read in z-score matrix of samples after filter from gctx file by chunks and store
-as `DelayedMatrix` that is realized by hdf5 backend.
+Read in z-score matrix of samples after filter from gctx file. 
+Since the matrix is very large, it requires large number of memory, 50Gb works.
 ```{r extract_modz, eval=FALSE}
-lincs42_dlmat <- read_gctx(gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
-                          cid=meta42$sig_id)
-colnames(lincs42_dlmat) = meta42$pert_cell_factor 
+library(signatureSearchData)
+lincs42_mat <- parse_gctx(
+  gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
+  cid=meta42$sig_id)
+lincs42_mat <- lincs42_mat@mat
+colnames(lincs42_mat) = meta42$pert_cell_factor 
 ```
 
-### Save the z-score DelayedMatrix as HDF5 backed SummarizedExperiment object
+### Save the z-score matrix as HDF5 backed SummarizedExperiment object
 ```{r gen_lincs, eval=FALSE}
 ## Add rowData annotation
 geneInfo <- read_tsv("./data/GSE92742_Broad_LINCS_gene_info.txt")
@@ -422,7 +425,7 @@ rownames(geneInfo) <- geneInfo$pr_gene_id
 geneInfo <- geneInfo[rownames(lincs42_dlmat),]
 meta42 <- as(meta42, "DataFrame")
 rownames(meta42) <- meta42$pert_cell_factor
-lincs42 <- SummarizedExperiment(assays = list(score = lincs42_dlmat), 
+lincs42 <- SummarizedExperiment(assays = list(score = lincs42_mat), 
                                 rowData = geneInfo, colData = meta42)
 ## Add cell type information to metadata
 cell_info_path <- system.file("extdata", "cell_info.tsv", package="signatureSearchData")
@@ -477,22 +480,25 @@ dim(inst42) # 169,795 X 13
 
 ### Extract expression matrix from gctx file 
 
-Read in expression matrix of samples after filter from gctx file by chunks and store
-as `DelayedMatrix` that is realized by hdf5 backend. 
+Read in expression matrix of samples after filter from gctx file.
+Since the matrix is very large, it requires large number of memory, 50Gb works.
 
 Mean expression values were calculated for samples that are treated by the same
 compound in the same cell type.
 ```{r extract_expr, eval=FALSE}
-lincs42_expr_dlmat <-read_gctx("./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
-                          cid=inst42$inst_id) # 12328 X 169795
+library(signatureSearchData)
+lincs42_mat3 <- parse_gctx(
+  gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
+  cid=inst42$inst_id)
+lincs42_mat3 <- lincs42_mat3@mat # 12328 X 169795
 ## Get mean expression values of samples from the same drug treatment in cells
 pert_cell_list <- split(inst42$inst_id, inst42$pert_cell_factor)
 lincs_drug_cell_expr <- sapply(names(pert_cell_list), function(x) 
-  rowMeans(as.data.frame(lincs42_expr_dlmat[,pert_cell_list[[x]]]))) # 12328 X 38824
+  rowMeans(as.data.frame(lincs42_mat3[,pert_cell_list[[x]]]))) # 12328 X 38824
 saveRDS(lincs_drug_cell_expr, "./data/lincs_drug_cell_expr.rds")
 ```
 
-### Save the expression DelayedMatrix as HDF5 backed SummarizedExperiment object
+### Save the expression matrix as HDF5 backed SummarizedExperiment object
 ```{r expr2se, eval=FALSE}
 ## Add colData annotation
 inst42_uniq <- inst42[!duplicated(inst42$pert_cell_factor),] # 38824 X 13

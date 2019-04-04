@@ -1,5 +1,5 @@
-\name{signatureSearch_data}
-\alias{signatureSearch_data}
+\name{signatureSearchData}
+\alias{signatureSearchData}
 \title{Annotation data package for signatureSearch}
 \description{
 This is an annotation data package for \code{signatureSearch} softeware packge. 
