@@ -6,8 +6,8 @@ Version: 0.99.1
 Author: Yuzhu Duan <yduan004@ucr.edu>
 Maintainer: Yuzhu Duan <yduan004@ucr.edu>
 Depends: R (>= 3.6), HDF5Array
-Imports: AnnotationHub, utils, RSQLite, affy, limma, Biobase,
-         BiocParallel, BatchJobs, R.utils, stats, methods, rhdf5
+Imports: AnnotationHub, utils, RSQLite, affy, limma, Biobase, SummarizedExperiment,
+         BiocParallel, BatchJobs, R.utils, stats, methods, rhdf5, magrittr, dplyr
 Suggests:knitr, rmarkdown
 License: Artistic-2.0
 biocViews: AnnotationHub, AnnotationData, FunctionalAnnotation

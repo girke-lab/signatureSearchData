@@ -35,13 +35,13 @@ vignette of this package by running `browseVignettes("signatureSearchData")` in 
 
 \examples{
 library(AnnotationHub)
-# Load cmap database
+## Load cmap database
 # se <- load_sigdb("AH69075","AH69076","cmap")
-# Load dtlink SQLite database
-#conn <- load_sqlite("AH69083")
-# Load RDS files
+## Load dtlink SQLite database
+# conn <- load_sqlite("AH69083")
+## Load RDS files
 ah <- AnnotationHub()
-#goAnno <- ah[["AH69084"]]
+goAnno <- ah[["AH69084"]]
 }
 
 \keyword{package}

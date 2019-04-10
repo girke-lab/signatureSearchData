@@ -30,8 +30,10 @@ pre code, pre, code {
 }
 </style>
 
-```{r setup0, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, echo=FALSE, messages=FALSE, warnings=FALSE}
+suppressPackageStartupMessages({
+    library(signatureSearchData)
+})
 ```
 
 # Introduction
@@ -366,8 +368,7 @@ lincs <- load_sigdb("AH69079","AH69080","lincs")
 ## Generate the `lincs` database from the original resources
 
 The original LINCS Level 5 moderated z-score database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
-The downloaded database in `gctx` format was processed and saved as HDF5 backed
-`SummarizedExperiment` object 
+The downloaded `gctx` file was processed and saved as HDF5 file.
 
 ### Download the original LINCS Level5 datasets at GEO 
 
@@ -385,55 +386,34 @@ The LINCS Level5 signatures represent moderated z-scores of compound treatments
 at different contration and time in different cells from differential expression
 analysis, the replicates have been weighted averaged.
 
-### Filter samples at specific concentation and treatment time
+### Filter signatures 
+
+Filter lincs level5 signatures at specific concentation and treatment time 
+and eliminate technical duplicates
 ```{r filter_meta42, eval=FALSE}
-library(readr); library(dplyr); library(magrittr);
-library(SummarizedExperiment); library(HDF5Array)
-meta42 <- read_tsv("./data/GSE92742_Broad_LINCS_sig_info.txt") 
-txt <- names(table(meta42$pert_idose))
-unit <- txt[grep("10 .M", txt)][2]
-meta42 %<>% filter(pert_type=="trt_cp" & pert_idose==unit & pert_itime=="24 h") 
-# filter rows by compound, 10 uM concentration, and 24 h treatment time
-meta42 %<>% 
-  bind_cols(alt_id=paste(meta42$pert_iname, meta42$cell_id, sep="_")) %>%
-  bind_cols(pert_cell_factor=paste(meta42$pert_iname, meta42$cell_id, 
-                                   meta42$pert_type, sep="__")) %>% 
-  distinct(alt_id, .keep_all=TRUE) # eliminate technical duplicates
-dim(meta42) # 45956 X 14
+## ignore warning message
+meta42 <- readr::read_tsv("./data/GSE92742_Broad_LINCS_sig_info.txt") 
+dose <- meta42$pert_idose[7]
+## filter rows by compound, 10 uM concentration, and 24 h treatment time
+meta42_filter <- sig_filter(meta42, dose=dose, time="24 h") # 45956 X 14
 ```
 
-### Extract z-scores matrix from gctx file 
+### Save z-score matrix in gctx file to HDF5 file 
 
-Read in z-score matrix of samples after filter from gctx file. 
-Since the matrix is very large, it requires large number of memory, 50Gb works.
+Read in the large z-score matrix of signatures after filter from the gctx file by chunks
+and write the matrix to an HDF5 file, which is the `lincs` database.
+Since the size of the matrix would be tens of gigabytes, 
+it will consume all the memories of a laptop if reading the 
+full matrix at once. Reading the matrix by chunks and save to an HDF5 file will 
+be memory efficient. 
+
+We also provide the utility to read in part of the large matrix from HDF5 file as 
+`SummarizedExperiment` object by chunks/indexing.
 ```{r extract_modz, eval=FALSE}
-library(signatureSearchData)
-lincs42_mat <- parse_gctx(
-  gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx", 
-  cid=meta42$sig_id)
-lincs42_mat <- lincs42_mat@mat
-colnames(lincs42_mat) = meta42$pert_cell_factor 
-```
-
-### Save the z-score matrix as HDF5 backed SummarizedExperiment object
-```{r gen_lincs, eval=FALSE}
-## Add rowData annotation
-geneInfo <- read_tsv("./data/GSE92742_Broad_LINCS_gene_info.txt")
-geneInfo <- as(geneInfo, "DataFrame")
-geneInfo$pr_gene_id <- as.character(geneInfo$pr_gene_id)
-rownames(geneInfo) <- geneInfo$pr_gene_id
-geneInfo <- geneInfo[rownames(lincs42_dlmat),]
-meta42 <- as(meta42, "DataFrame")
-rownames(meta42) <- meta42$pert_cell_factor
-lincs42 <- SummarizedExperiment(assays = list(score = lincs42_mat), 
-                                rowData = geneInfo, colData = meta42)
-## Add cell type information to metadata
-cell_info_path <- system.file("extdata", "cell_info.tsv", package="signatureSearchData")
-cell_info <- read_tsv(cell_info_path)
-## The cell_info is from the "GSE92742_Broad_LINCS_cell_info.txt" with some edition
-metadata(lincs42)$cell_info = cell_info
-# Save 'lincs42' as an HDF5-based SummarizedExperiment object:
-lincs42 <- saveHDF5SummarizedExperiment(lincs42, "./data/lincs")
+gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
+gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
+        h5file="./data/lincs.h5", chunksize=5000, overwrite=TRUE)
+se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 ```
 
 # `lincs_expr` signature database
@@ -450,8 +430,7 @@ lincs_expr <- load_sigdb("AH69081","AH69082","lincs_expr")
 
 ## Generate the `lincs_expr` database from the original resources
 The original LINCS Level3 expression database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742). 
-The downloaded database in `gctx` format was processed and saved as HDF5 backed
-`SummarizedExperiment` object
+The downloaded `gctx` file was processed and saved as HDF5 file.
 
 ### Download the original LINCS Level3 datasets at GEO 
 
@@ -468,48 +447,24 @@ The LINCS Level3 signatures represent normalized expression intensity values of
 compound treatment samples at different contration and time in different cells, 
 including replicates.
 
-### Filter samples at specific concentation and treatment time
+### Filter signatures 
+
+Filter lincs level3 signatures at specific concentation and treatment time 
 ```{r filter_expr, eval=FALSE}
 inst42 <- read_tsv("./data/GSE92742_Broad_LINCS_inst_info.txt") 
-inst42 %<>% filter(pert_type=="trt_cp" & pert_dose==10 & pert_dose_unit=="um" 
-                   & pert_time==24 & pert_time_unit=="h")
-inst42 %<>% bind_cols(alt_id=paste(inst42$pert_iname, inst42$cell_id, sep="_")) %>% 
-  bind_cols(pert_cell_factor=paste(inst42$pert_iname, inst42$cell_id, inst42$pert_type, sep="__"))
-dim(inst42) # 169,795 X 13
+inst42_filter <- inst_filter(inst42, dose=10, dose_unit="um", 
+                             time=24, time_unit="h") # 169,795 X 13
 ```
 
-### Extract expression matrix from gctx file 
+### Calculate mean expression value and write the expression matrix to HDF5 file
 
-Read in expression matrix of samples after filter from gctx file.
-Since the matrix is very large, it requires large number of memory, 50Gb works.
-
-Mean expression values were calculated for samples that are treated by the same
-compound in the same cell type.
+Calculate mean expression values of replicated samples that are treated by the same
+compound in the same cell type with selected concentation and treatment time.
+Then write the mean expression matrix to an HDF5 file, which is the `lincs_expr`
+database
 ```{r extract_expr, eval=FALSE}
-library(signatureSearchData)
-lincs42_mat3 <- parse_gctx(
-  gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx", 
-  cid=inst42$inst_id)
-lincs42_mat3 <- lincs42_mat3@mat # 12328 X 169795
-## Get mean expression values of samples from the same drug treatment in cells
-pert_cell_list <- split(inst42$inst_id, inst42$pert_cell_factor)
-lincs_drug_cell_expr <- sapply(names(pert_cell_list), function(x) 
-  rowMeans(as.data.frame(lincs42_mat3[,pert_cell_list[[x]]]))) # 12328 X 38824
-saveRDS(lincs_drug_cell_expr, "./data/lincs_drug_cell_expr.rds")
-```
-
-### Save the expression matrix as HDF5 backed SummarizedExperiment object
-```{r expr2se, eval=FALSE}
-## Add colData annotation
-inst42_uniq <- inst42[!duplicated(inst42$pert_cell_factor),] # 38824 X 13
-inst42_uniq <- as(inst42_uniq, "DataFrame")
-rownames(inst42_uniq) <- inst42_uniq$pert_cell_factor
-lincs42_expr <- SummarizedExperiment(
-  assays = list(expr = lincs_drug_cell_expr), 
-  rowData = geneInfo, 
-  colData = inst42_uniq[colnames(lincs_drug_cell_expr),])
-## Save 'lincs42_expr' as an HDF5-based SummarizedExperiment object:
-lincs42_expr <- saveHDF5SummarizedExperiment(lincs42_expr, "./data/lincs_expr")
+meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx",
+            inst=inst42_filter, h5file="./data/lincs_expr.h5") # 12328 X 38824
 ```
 
 # Other datasets

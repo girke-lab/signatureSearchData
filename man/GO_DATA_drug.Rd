@@ -21,7 +21,7 @@ environment every time running the dsea functions
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "GO_DATA"))
-GO_DATA_drug <- qr[["AH69087"]]
+# GO_DATA_drug <- qr[["AH69087"]]
 }
 
 \keyword{datasets}
