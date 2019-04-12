@@ -18,13 +18,13 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
     nrows <- nrow(x) 
     ncols <- colstatus + ncol(x)
     h5set_extent(h5file, "assay", c(nrows, ncols))
-    h5write(x, h5file, "assay", index=list(1:nrows, (colstatus+1):ncols))
+    h5write(x, h5file, "assay", index=list(seq_len(nrows), (colstatus+1):ncols))
     h5set_extent(h5file, "colnames", c(ncols,1))
     h5write(colnames(x), h5file, "colnames", index=list((colstatus+1):ncols, 1))
     if(any(duplicated(h5read(h5file, "colnames")[,1]))) 
         warning("Column names contain duplicates!")
     h5set_extent(h5file, "rownames", c(nrows,1))
-    h5write(rownames(x), h5file, "rownames", index=list(1:nrows, 1))
+    h5write(rownames(x), h5file, "rownames", index=list(seq_len(nrows), 1))
     if(any(duplicated(h5read(h5file, "rownames")[,1]))) 
         warning("Row names contain duplicates!")
     if(printstatus==TRUE) h5ls(h5file, all=TRUE)[c("dim", "maxdim")]
@@ -48,7 +48,7 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' se <- readHDF5chunk(h5file, colindex=1:2)
 #' @export
 #' 
-readHDF5chunk <- function(h5file, colindex=1:10) {
+readHDF5chunk <- function(h5file, colindex=seq_len(10)) {
     m <- h5read(h5file, "assay", index=list(NULL, colindex))
     mycol <- h5read(h5file, "colnames", index=list(colindex, 1))
     myrow <- h5read(h5file, "rownames")

@@ -7,7 +7,7 @@
 #' @examples 
 #' path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 #' cmap_inst <- read.delim(path, check.names=FALSE) 
-#' # comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
+#' comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
 #' @export
 sampleList <- function(cmap, myby) {
     ## Reconstruct CEL file names for control samples

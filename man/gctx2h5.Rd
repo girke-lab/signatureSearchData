@@ -8,7 +8,7 @@ gctx2h5(gctx, cid, new_cid = cid, h5file, chunksize = 5000,
   overwrite = TRUE)
 }
 \arguments{
-\item{gctx}{character(1), path to the LINCS level5 gctx file}
+\item{gctx}{character(1), path to the LINCS gctx file}
 
 \item{cid}{either a character vector or integer column indices indicating
 the columns of the matrix to be parsed.}
@@ -21,10 +21,10 @@ column names for the matrix}
 \item{chunksize}{size of the matrix (number of columns) to be read in by chunks}
 
 \item{overwrite}{TRUE or FALSE, whether to overwrite or append
-matrix to the exsisting 'h5file'}
+matrix to the existing 'h5file'}
 }
 \value{
-HDF5 file, representing 'lincs' database
+HDF5 file
 }
 \description{
 Read large matrix in gctx file by chunks and write the matrix to an HDF5 file

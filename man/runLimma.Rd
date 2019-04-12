@@ -24,6 +24,10 @@ list containing DEGs and log2FC matrix
 DEG analysis with Limma as specified fdr and foldchange
 }
 \examples{
-a=1
-# degMA <- runLimma(df, comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
+path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
+cmap_inst <- read.delim(path, check.names=FALSE) 
+comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
+df <- as.data.frame(matrix(runif(70), ncol=7))
+colnames(df) <- unlist(comp_list[1])
+degList <- runLimma(df, comp_list[1])  
 }

@@ -1,16 +1,13 @@
 \name{goAnno}
 \alias{goAnno}
-\title{Annotation of GO ID to GENE SYMBOL mappings} 
+\title{Annotation of GO ID to gene SYMBOL mappings} 
 \description{
- It is an intermediate file storing the GO ID to GENE SYMBOLE mapping 
+ It is an intermediate file storing the GO ID to gene SYMBOL mapping 
  information for \code{dtnetplot} function in \code{signatureSearch} package
 }
 
 \seealso{
-  \itemize{
-    \item \code{signatureSearch}
-    \item \code{dtnetplot}
-  }
+    \code{dtnetplot}
 }
 
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineResults.R
 \name{combineResults}
 \alias{combineResults}
-\title{combine normalization results}
+\title{combine batched normalization results}
 \usage{
 combineResults(chiptype_dir, rerun = TRUE)
 }
@@ -12,10 +12,10 @@ combineResults(chiptype_dir, rerun = TRUE)
 \item{rerun}{TRUE or FALSE, whether to run the function}
 }
 \value{
-files storing normalization values for each chiptype
+file storing normalization values of CELs for each chiptype
 }
 \description{
-Combine normalization results from same chip type in single data frame
+Combine batched normalization results from same chip type into a single data frame
 }
 \examples{
 # chiptype_dir <- unique(readRDS("./data/chiptype.rds"))

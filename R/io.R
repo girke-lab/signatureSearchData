@@ -394,11 +394,11 @@ methods::setMethod("initialize",
 #' @param fname path to the GCTX file on disk
 #' @param rid either a vector of character or integer
 #'   row indices or a path to a grp file containing character
-#'   row indices. Only these indicies will be parsed from the
+#'   row indices. Only these indices will be parsed from the
 #'   file.
 #' @param cid either a vector of character or integer
 #'   column indices or a path to a grp file containing character
-#'   column indices. Only these indicies will be parsed from the
+#'   column indices. Only these indices will be parsed from the
 #'   file.
 #' @param set_annot_rownames boolean indicating whether to set the
 #'   rownames on the row/column metadata data.frames. Set this to 
@@ -408,7 +408,8 @@ methods::setMethod("initialize",
 #' @return gct object
 #' @family GCTX parsing functions
 #' @examples 
-#' a=1
+#' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
+#' gct <- parse_gctx(gctx)
 #' @export
 parse_gctx <- function(fname, rid=NULL, cid=NULL, set_annot_rownames=FALSE, matrix_only=FALSE) {
     ds <- methods::new("GCT",

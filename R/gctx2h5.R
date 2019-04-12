@@ -1,7 +1,7 @@
 #' Read large matrix in gctx file by chunks and write the matrix to an HDF5 file
 #' 
 #' @title gctx to hdf5 file
-#' @param gctx character(1), path to the LINCS level5 gctx file
+#' @param gctx character(1), path to the LINCS gctx file
 #' @param cid either a character vector or integer column indices indicating
 #' the columns of the matrix to be parsed.
 #' @param new_cid a character vector of the same length of cid, assigning new
@@ -9,8 +9,8 @@
 #' @param h5file character(1), path to the destination hdf5 file
 #' @param chunksize size of the matrix (number of columns) to be read in by chunks
 #' @param overwrite TRUE or FALSE, whether to overwrite or append
-#' matrix to the exsisting 'h5file'
-#' @return HDF5 file, representing 'lincs' database
+#' matrix to the existing 'h5file'
+#' @return HDF5 file
 #' @import rhdf5
 #' @examples 
 #' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

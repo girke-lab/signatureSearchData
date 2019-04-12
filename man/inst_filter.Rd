@@ -26,5 +26,12 @@ column of 'meta'}
 tibble
 }
 \description{
-Filter LINCS level3 instances at specific concentation and treatment time
+Filter LINCS level3 instances at specific concentration and treatment time
+}
+\examples{
+meta <- data.frame(pert_dose=c(2,4,10), pert_dose_unit="um", 
+                   pert_time=24, pert_time_unit="h",
+                   pert_type="trt_cp", pert_iname=c("p1","p2","p3"),
+                   cell_id="MCF7")
+inst_filter(meta)
 }

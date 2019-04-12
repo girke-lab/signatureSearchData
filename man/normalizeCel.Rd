@@ -4,10 +4,12 @@
 \alias{normalizeCel}
 \title{normalize CEL files}
 \usage{
-normalizeCel(chiptype_list, rerun = TRUE)
+normalizeCel(chiptype_list, partition = "girkelab", rerun = TRUE)
 }
 \arguments{
 \item{chiptype_list}{list, storing CEL files in each chiptype}
+
+\item{partition}{partition of a computer cluster}
 
 \item{rerun}{TRUE or FALSE, whether to run the function}
 }

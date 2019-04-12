@@ -21,5 +21,5 @@ Generate CEL file list for treatment vs. control comparisons
 \examples{
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 cmap_inst <- read.delim(path, check.names=FALSE) 
-# comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
+comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
 }

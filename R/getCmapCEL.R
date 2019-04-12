@@ -1,7 +1,9 @@
 #' Download CEL files from CMap project \url{http://www.broadinstitute.org/cmap}
+#' to the `data/CEL` directories within the present working directory of the 
+#' user's R session
 #' @title get CEL files
 #' @param rerun TRUE or FALSE, whether to download the data
-#' @return files
+#' @return download files
 #' @examples 
 #' getCmapCEL(rerun=FALSE) # set 'rerun' to TRUE if download
 #' @importFrom R.utils bunzip2

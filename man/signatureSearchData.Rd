@@ -2,13 +2,13 @@
 \alias{signatureSearchData}
 \title{Annotation data package for signatureSearch}
 \description{
-This is an annotation data package for \code{signatureSearch} softeware packge. 
+This is an annotation data package for \code{signatureSearch} software package. 
 It stores the CMAP/LINCS reference databases used for GESS methods in the
-\code{signatureSearch} software package as well as other intermediate datasets used for
-functionalities in the \code{signatureSearch} package, 
+\code{signatureSearch} package as well as other intermediate datasets used for
+functionality in the \code{signatureSearch} package, 
 such as getting targets of query drugs in DrugBank, CLUE and STITCH databases, 
-conducting GO enrichment analysis or computing p-values or Tau scores 
-in the results of `gess_lincs` method.
+conducting GO enrichment analysis or computing WTCS p-values or tau scores 
+of `gess_lincs` method.
 }
 \details{
 The datasets in this package are:

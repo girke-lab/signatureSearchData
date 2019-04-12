@@ -9,16 +9,11 @@ The \code{lincs} database represents moderated z-scores from DE analysis of
 \details{
 The original LINCS Level 5 moderated z-score database was downloaded at GEO
 \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742}. 
-The downloaded database in `gctx` format was processed and saved as HDF5 backed
-`SummarizedExperiment` object
+The downloaded database in `gctx` format was processed and saved as an HDF5 file
 }
 
 \references{
   \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742} 
-}
-
-\seealso{
-  \code{\link[SummarizedExperiment]{SummarizedExperiment-class}}
 }
 
 \examples{

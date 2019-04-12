@@ -7,12 +7,11 @@ for \code{dsea_*} functions in \code{signatureSearch} package.
 }
 
 \details{
-The GO ID-GENE SYMBOL mappings were converted to GO ID-drug mappings via
+The GO ID to gene SYMBOL mappings were converted to GO ID to drug mappings via
 drug-target links in DrugBank, CLUE and STITCH databases
 }
 \seealso{
   \itemize{
-    \item \code{signatureSearch}
     \item \code{dsea_hyperG}
     \item \code{dsea_GSEA}
   }

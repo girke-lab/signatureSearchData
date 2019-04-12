@@ -10,10 +10,12 @@ getCmapCEL(rerun = TRUE)
 \item{rerun}{TRUE or FALSE, whether to download the data}
 }
 \value{
-files
+download files
 }
 \description{
 Download CEL files from CMap project \url{http://www.broadinstitute.org/cmap}
+to the `data/CEL` directories within the present working directory of the 
+user's R session
 }
 \examples{
 getCmapCEL(rerun=FALSE) # set 'rerun' to TRUE if download

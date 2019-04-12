@@ -18,7 +18,7 @@ Load "dtlink_db_clue_sti" SQLite database into R by returning the
 connection to the SQLite file.
 }
 \details{
-The dtlink database is stored in \code{\link{AnnotationHub}}
+The `dtlink_db_clue_sti` database is stored in \code{\link{AnnotationHub}}
 }
 \examples{
 library(AnnotationHub)

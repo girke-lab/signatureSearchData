@@ -1,8 +1,8 @@
-#' Combine normalization results from same chip type in single data frame
-#' @title combine normalization results
+#' Combine batched normalization results from same chip type into a single data frame
+#' @title combine batched normalization results
 #' @param chiptype_dir chiptype directories
 #' @param rerun TRUE or FALSE, whether to run the function
-#' @return files storing normalization values for each chiptype
+#' @return file storing normalization values of CELs for each chiptype
 #' @importFrom utils read.delim
 #' @importFrom utils write.table
 #' @examples 

@@ -1,6 +1,6 @@
 #' LINCS signature meta data filter
 #' 
-#' Filter LINCS level5 signatures at specific concentation and treatment time
+#' Filter LINCS level5 signatures at specific concentration and treatment time
 #' 
 #' @param meta tibble, read in from LINCS signature info meta data 
 #' @param dose dose/concentration of compound treatment, need to match elements
@@ -9,12 +9,19 @@
 #' column of 'meta'
 #' @return tibble
 #' @importFrom magrittr %<>%
+#' @importFrom magrittr %>%
 #' @importFrom dplyr filter
 #' @importFrom dplyr bind_cols
 #' @importFrom dplyr distinct
+#' @examples 
+#' meta <- data.frame(pert_idose=c("2 um","4 um", "10 um"), 
+#'                    pert_itime="24 h",
+#'                    pert_type="trt_cp", pert_iname=c("p1","p2","p3"),
+#'                    cell_id="MCF7")
+#' sig_filter(meta, dose="2 um")
 #' @export
 sig_filter <- function(meta, dose, time="24 h"){
-    meta %<>% filter(pert_type=="trt_cp" & pert_idose==dose & pert_itime==time) 
+    meta %<>% dplyr::filter(pert_type=="trt_cp" & pert_idose==dose & pert_itime==time) 
     meta %<>% 
         bind_cols(alt_id=paste(meta$pert_iname, meta$cell_id, sep="_")) %>%
         bind_cols(pert_cell_factor=paste(meta$pert_iname, meta$cell_id, 
@@ -25,7 +32,7 @@ sig_filter <- function(meta, dose, time="24 h"){
 
 #' LINCS instance meta data filter
 #' 
-#' Filter LINCS level3 instances at specific concentation and treatment time
+#' Filter LINCS level3 instances at specific concentration and treatment time
 #' 
 #' @param meta tibble, read in from LINCS instance info meta data
 #' @param dose dose/concentration of compound treatment, need to match elements
@@ -37,11 +44,20 @@ sig_filter <- function(meta, dose, time="24 h"){
 #' @param time_unit unit of time, need to match elements in 'pert_time_unit' 
 #' column of 'meta'
 #' @return tibble
+#' @examples 
+#' meta <- data.frame(pert_dose=c(2,4,10), pert_dose_unit="um", 
+#'                    pert_time=24, pert_time_unit="h",
+#'                    pert_type="trt_cp", pert_iname=c("p1","p2","p3"),
+#'                    cell_id="MCF7")
+#' inst_filter(meta)
 #' @export
 inst_filter <- function(meta, dose=10, dose_unit="um", time=24, time_unit="h"){
-    inst42 %<>% filter(pert_type=="trt_cp" & pert_dose==dose & pert_dose_unit== dose_unit
+    meta %<>% dplyr::filter(pert_type=="trt_cp" & pert_dose==dose & pert_dose_unit== dose_unit
                        & pert_time==time & pert_time_unit==time_unit)
-    inst42 %<>% bind_cols(alt_id=paste(inst42$pert_iname, inst42$cell_id, sep="_")) %>% 
-        bind_cols(pert_cell_factor=paste(inst42$pert_iname, inst42$cell_id, inst42$pert_type, sep="__"))
-    return(inst42)
+    meta %<>% bind_cols(alt_id=paste(meta$pert_iname, meta$cell_id, sep="_")) %>% 
+        bind_cols(pert_cell_factor=paste(meta$pert_iname, meta$cell_id, meta$pert_type, sep="__"))
+    return(meta)
 }
+
+alt_id = pert_dose = pert_dose_unit = pert_idose = pert_itime =
+pert_time = pert_time_unit = pert_type = NULL

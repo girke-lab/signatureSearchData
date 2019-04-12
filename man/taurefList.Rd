@@ -11,27 +11,24 @@ NCSq,r is the normalized connectivity score for signature r relative to
 query q. A tau of 90 indicates that only 10 percent of reference perturbations 
 showed stronger connectivity to the query. 
 }
-\details{
-For more details, please refer to Subramanian et al., 2017, Cell, A Next 
-Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles
-}
 
 \references{
-  \url{https://www.sciencedirect.com/science/article/pii/S0092867417313090}
+For detailed description of the \code{gess_lincs} method and scores, 
+please refer to: Subramanian, A., Narayan, R., Corsello, S. M., Peck, D. D., 
+Natoli, T. E., Lu, X., … Golub, T. R. (2017). A Next Generation 
+Connectivity Map: L1000 Platform and the First 1,000,000 Profiles. Cell, 
+171(6), 1437–1452.e17. \url{https://doi.org/10.1016/j.cell.2017.10.049}
 }
 
 \seealso{
-  \itemize{
-    \item \code{signatureSearch}
-    \item \code{gess_lincs}
-  }
+    \code{gess_lincs}
 }
 
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "taurefList"))
-# taurefList <- qr[["AH69088"]]
+# taurefList <- ah[["AH69088"]]
 }
 
 \keyword{datasets}

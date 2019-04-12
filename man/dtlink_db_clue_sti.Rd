@@ -6,10 +6,9 @@ It is a SQLite database containing drug-target links in DrugBank, CLUE,
 and STITCH databases. 
 }
 \details{
-It is an intermediate database used for functionalities in the 
-\code{signatureSearch}
-software package to get targets of query drugs in DrugBank 
-\url{https://www.drugbank.ca/}, CLUE \url{https://clue.io/} and STITCH
+It is an intermediate database used for functionality in the 
+\code{signatureSearch} software package to get targets of query drugs in 
+DrugBank \url{https://www.drugbank.ca/}, CLUE \url{https://clue.io/} and STITCH
 \url{http://stitch.embl.de/} databases.
 
 The STITCH database provides confidence scores for each drug-target interaction.
@@ -20,10 +19,7 @@ drugs were excluded.
 }
 
 \seealso{
-  \itemize{
-    \item \code{signatureSearch}
-    \item \code{get_targets}
-  }
+    get_targets
 }
 
 \examples{

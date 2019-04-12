@@ -16,21 +16,23 @@ meanExpr2h5(gctx, inst, h5file, chunksize = 2000, overwrite = TRUE)
 \item{chunksize}{size of the matrix (number of columns) to be saved in HDF5 file by chunks}
 
 \item{overwrite}{TRUE or FALSE, whether to overwrite or append the
-matrix to the exsisting 'h5file'}
+matrix to the existing 'h5file'}
 }
 \value{
 HDF5 file, representing the 'lincs_expr' database
 }
 \description{
 Calculate mean expression values of replicated samples that are treated by the same
-compound in the same cell type with selected concentation and treatment time after 
+compound in the same cell type with selected concentration and treatment time after 
 filtering the LINCS level3 instances/samples. 
 Then write the mean expression matrix to an HDF5 file, which is the `lincs_expr`
 database.
 }
 \examples{
-\dontrun{
-meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx",
-inst=inst42_filter, h5file="./data/lincs_expr.h5")
-}
+gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
+h5file <- tempfile(fileext=".h5")
+inst <- data.frame(inst_id=c("ASG001_MCF7_24H:BRD-A79768653-001-01-3:10",
+                             "CPC012_SKB_24H:BRD-K81418486:10"), 
+    pert_cell_factor=c('sirolimus__MCF7__trt_cp', 'vorinostat__SKB__trt_cp'))
+meanExpr2h5(gctx, inst, h5file, overwrite=TRUE)
 }

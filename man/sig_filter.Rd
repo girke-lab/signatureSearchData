@@ -19,5 +19,12 @@ column of 'meta'}
 tibble
 }
 \description{
-Filter LINCS level5 signatures at specific concentation and treatment time
+Filter LINCS level5 signatures at specific concentration and treatment time
+}
+\examples{
+meta <- data.frame(pert_idose=c("2 um","4 um", "10 um"), 
+                   pert_itime="24 h",
+                   pert_type="trt_cp", pert_iname=c("p1","p2","p3"),
+                   cell_id="MCF7")
+sig_filter(meta, dose="2 um")
 }
