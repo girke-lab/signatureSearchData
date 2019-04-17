@@ -40,6 +40,8 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' @param colindex index of columns of the matrix to be read in
 #' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 #' @importFrom SummarizedExperiment SummarizedExperiment
+#' @seealso 
+#' \code{\link[SummarizedExperiment]{SummarizedExperiment}}
 #' @examples
 #' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
 #' h5file <- tempfile(fileext=".h5")

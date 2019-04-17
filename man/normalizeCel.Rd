@@ -4,12 +4,12 @@
 \alias{normalizeCel}
 \title{normalize CEL files}
 \usage{
-normalizeCel(chiptype_list, partition = "girkelab", rerun = TRUE)
+normalizeCel(chiptype_list, batchsize = 300, rerun = TRUE)
 }
 \arguments{
 \item{chiptype_list}{list, storing CEL files in each chiptype}
 
-\item{partition}{partition of a computer cluster}
+\item{batchsize}{number of CEL files read in and normalizaed at once}
 
 \item{rerun}{TRUE or FALSE, whether to run the function}
 }
@@ -17,7 +17,7 @@ normalizeCel(chiptype_list, partition = "girkelab", rerun = TRUE)
 files storing normalized matrix in each chip type
 }
 \description{
-Process each chip type separately running MAS5 with BiocParallel on cluster
+Process each chip type separately running MAS5 normalization in batch
 }
 \examples{
 # chiptype_list <- split(names(chiptype), as.character(chiptype))

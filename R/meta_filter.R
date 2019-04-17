@@ -3,6 +3,9 @@
 #' Filter LINCS level5 signatures at specific concentration and treatment time
 #' 
 #' @param meta tibble, read in from LINCS signature info meta data 
+#' @param pert_type perturbation type, 'trt_cp' represents compound. Description
+#' of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
+#' \url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
 #' @param dose dose/concentration of compound treatment, need to match elements
 #' in 'pert_idose' column of 'meta'
 #' @param time compound treatment time, need to match elements in 'pert_itime' 
@@ -20,8 +23,8 @@
 #'                    cell_id="MCF7")
 #' sig_filter(meta, dose="2 um")
 #' @export
-sig_filter <- function(meta, dose, time="24 h"){
-    meta %<>% dplyr::filter(pert_type=="trt_cp" & pert_idose==dose & pert_itime==time) 
+sig_filter <- function(meta, pert_type="trt_cp", dose, time="24 h"){
+    meta %<>% dplyr::filter(pert_type==pert_type & pert_idose==dose & pert_itime==time) 
     meta %<>% 
         bind_cols(alt_id=paste(meta$pert_iname, meta$cell_id, sep="_")) %>%
         bind_cols(pert_cell_factor=paste(meta$pert_iname, meta$cell_id, 
@@ -35,6 +38,9 @@ sig_filter <- function(meta, dose, time="24 h"){
 #' Filter LINCS level3 instances at specific concentration and treatment time
 #' 
 #' @param meta tibble, read in from LINCS instance info meta data
+#' @param pert_type perturbation type, 'trt_cp' represents compound. Description
+#' of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
+#' \url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
 #' @param dose dose/concentration of compound treatment, need to match elements
 #' in 'pert_dose' column of 'meta'
 #' @param dose_unit unit of dose of compound treatment, need to match elements
@@ -51,8 +57,8 @@ sig_filter <- function(meta, dose, time="24 h"){
 #'                    cell_id="MCF7")
 #' inst_filter(meta)
 #' @export
-inst_filter <- function(meta, dose=10, dose_unit="um", time=24, time_unit="h"){
-    meta %<>% dplyr::filter(pert_type=="trt_cp" & pert_dose==dose & pert_dose_unit== dose_unit
+inst_filter <- function(meta, pert_type="trt_cp", dose=10, dose_unit="um", time=24, time_unit="h"){
+    meta %<>% dplyr::filter(pert_type==pert_type & pert_dose==dose & pert_dose_unit== dose_unit
                        & pert_time==time & pert_time_unit==time_unit)
     meta %<>% bind_cols(alt_id=paste(meta$pert_iname, meta$cell_id, sep="_")) %>% 
         bind_cols(pert_cell_factor=paste(meta$pert_iname, meta$cell_id, meta$pert_type, sep="__"))

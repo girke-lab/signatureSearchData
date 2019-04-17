@@ -7,7 +7,7 @@ Author: Yuzhu Duan <yduan004@ucr.edu>
 Maintainer: Yuzhu Duan <yduan004@ucr.edu>
 Depends: R (>= 3.6)
 Imports: AnnotationHub, utils, RSQLite, affy, limma, Biobase, magrittr, dplyr,
-         batchtools, R.utils, stats, methods, rhdf5, SummarizedExperiment
+         R.utils, stats, methods, rhdf5, SummarizedExperiment
 Suggests:knitr, rmarkdown
 License: Artistic-2.0
 biocViews: AnnotationHub, AnnotationData, FunctionalAnnotation

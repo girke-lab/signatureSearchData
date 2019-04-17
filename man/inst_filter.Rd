@@ -4,11 +4,15 @@
 \alias{inst_filter}
 \title{LINCS instance meta data filter}
 \usage{
-inst_filter(meta, dose = 10, dose_unit = "um", time = 24,
-  time_unit = "h")
+inst_filter(meta, pert_type = "trt_cp", dose = 10, dose_unit = "um",
+  time = 24, time_unit = "h")
 }
 \arguments{
 \item{meta}{tibble, read in from LINCS instance info meta data}
+
+\item{pert_type}{perturbation type, 'trt_cp' represents compound. Description
+of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
+\url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}}
 
 \item{dose}{dose/concentration of compound treatment, need to match elements
 in 'pert_dose' column of 'meta'}

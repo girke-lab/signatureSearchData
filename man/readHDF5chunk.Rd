@@ -4,7 +4,7 @@
 \alias{readHDF5chunk}
 \title{Read HDF5 file as SummarizedExperiment object}
 \usage{
-readHDF5chunk(h5file, colindex = 1:10)
+readHDF5chunk(h5file, colindex = seq_len(10))
 }
 \arguments{
 \item{h5file}{character(1), path to the HDF5 file}
@@ -24,4 +24,7 @@ h5file <- tempfile(fileext=".h5")
 gctx2h5(gctx, cid=1:2, new_cid=c('sirolimus__MCF7__trt_cp', 'vorinostat__SKB__trt_cp'), 
         h5file=h5file, chunksize=5000, overwrite=TRUE)
 se <- readHDF5chunk(h5file, colindex=1:2)
+}
+\seealso{
+\code{\link[SummarizedExperiment]{SummarizedExperiment}}
 }
