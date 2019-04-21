@@ -1,7 +1,6 @@
 ---
-title: _signatureSearchData_ - Annotation data package for _signatureSearch_
-      software package
-author: "Author: Yuzhu Duan (yduan004@ucr.edu)"
+title: _signatureSearchData_ - Reference Data for Large-Scale Gene Expression Signature Searching
+author: "Authors: Yuzhu Duan and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
   html_document:
@@ -36,37 +35,55 @@ pre code, pre, code {
 suppressPackageStartupMessages({
     library(signatureSearchData)
 })
-knitr::opts_knit$set(root.dir = "~/insync/project/longevityTools_eDRUG/")
 ```
 
 # Introduction
-This is an annotation data package for `signatureSearch` software package. It
-stores the CMAP/LINCS reference databases used for gene expression signature 
-search (GESS) methods in the [signatureSearch]() package as well as other 
-intermediate datasets.
 
-The CMap build 02 database was generated from the [Connectivity Map](https://portals.broadinstitute.org/cmap/) 
-project. It is a collection of more than 7,000 genome-wide transcriptional 
-expression profiles (signatures) representing 1,309 compound treatments in 
-eight human cancer cell lines by Affymetrix Gene Chips [@Lamb2006-du]. 
+The `signatureSearchData` package provides access to the reference data used by
+the associated `signatureSearch` software package. The latter allows to search 
+with a query gene expression signature a database of treatment signatures to 
+identify cellular states with similar expression responses (connections). This 
+way one can identify knockouts, diseases or drugs that induce expression phenotypes 
+similar to a sample of interest. Currently, `signatureSearchData` includes
+gene expression data from the CMap (Connectivity Map) and LINCS (Library of
+Network-Based Cellular Signatures) projects that are largely based on drug and
+genetic perturbation experiments performed on variable numbers of human cell
+lines [@Lamb2006-du; @Subramanian2017-fu]. Here these data sets have been
+preprocessed as required for the gene expression signature search (GESS)
+algorithms implemented and used by `signatureSearch`. The preprocessed data
+types include normalized gene expression values (_e.g._ intensity values), log
+fold changes (LFC), P or FDR values for DEG calls, rankings based on some of
+these preprocessing outcomes or sets of top up/down-regulated DEGs. 
 
-In 2017, the Library of Network-Based Cellular Signatures (LINCS) Consortium
-increased the drugs to 19,811, cell types to over 70, which also includes normal cells,
-and also included genetic perturbagens. The number of compound dosages and time 
-points considered in the assays has also been increased by 10-20 fold [@Subramanian2017-fu].
-In order to generate over one million profiles, the LINCS Consortium uses the 
-much more economic L1000 assay. It measures the expression of 978 
-landmark genes and 80 control genes by detecting fluorescent intensity of beads 
-after capturing the ligation-mediated amplification products of mRNAs 
-[@Peck2006-rf]. The expression of 11,350 additional genes is imputed from the 
-landmark genes by using as training data a collection of 12,063 Affymetrix gene 
-chips [@Edgar2002-di]. The substantial scale-up of the LINCS project provides 
-now many new opportunities to explore MOAs for a vast number of small molecules.
-The LINCS databases in this package is a subset of the profiles from LINCS 
-consortium by selecting only compounds treatment and not considering dosages 
-and time points.
+The CMap data were downloaded from the [CMap project
+site](https://portals.broadinstitute.org/cmap/) (Version CMAP2). The latter is
+a collection of over 7,000 gene expression profiles (signatures) obtained
+from perturbation experiments with 1,309 drug-like small molecules on eight
+human cancer cell lines. The Affymetrix Gene Chip technology was used to
+generate the CMAP2 data set. 
 
-# Installation and Loading
+In 2017, the LINCS Consortium generated a similar but much larger data set where
+the total number of gene expression signatures was scaled up to over one
+million. This was achieved by switching to a much more cost effective gene
+expression profiling technology called L1000 assay [@Peck2006-rf;
+@Edgar2002-di]. The current set of perturbations covered by the LINCS data set
+includes 19,811 drug-like small molecules applied at varialbe concentrations
+and treatment times to 70 human non-cancer (normal) and cancer cell lines.
+Additionally, it includes several thousand genetic perturbagens composed of
+gene knockdown and over-expression experiments. 
+
+The data structures and search algorithms used by `signatureSearch` and
+`signatureSearchData` are designed to work with most genome-wide expression
+data including hybridization-based methods, such as Affymetrix or L1000, as
+well as sequencing-based methods, such as RNA-Seq. Currently,
+`signatureSearchData` does not include RNA-Seq data mainly because of the lack
+of large-scale perturbation studies (_e.g._ drug-based) available in the public
+domain that are based on RNA-Seq. This situation may change in the near future
+once the cost of RNA-Seq becomes more cost effective for this purpose. 
+
+
+
+# Install and load `signatureSearchData`
 
 `signatureSearch` is a R/Bioconductor package and can be installed through 
 `BiocManager::install()`
@@ -77,15 +94,21 @@ BiocManager::install("signatureSearchData", version = "3.9")
 ```
 
 After the package is installed, it can be loaded into \emph{R} workspace by
-```{r load, eval=TRUE}
+```{r load, eval=FALSE}
 library(signatureSearchData)
 ```
 
 # `lincs` signature database
+<font color="blue">[Comment: start here with a brief and general description how 
+the LINCS data is provided, e.g. the different levels of preprocessing available
+for download. Since the next paragraph addresses this, it could be moved here to 
+address this. </font>
 The `lincs` database represents moderated z-scores from DE analysis of 12,328 
 genes from 8,140 compound treatments in 30 cells. Since one compound has treatments
 in multiple cells, the database contains 45,956 signatures (drug treatments in cells)
 in total. It can be used for all the GESS methods in the `signatureSearch` package.
+<font color="blue">[Comment: neither I or others will be able to understand this paragraph.
+You need to be more precise so that the numbers you mention here make sense.]</font>
 
 ## Load from `AnnotationHub`
 The preprocessed `lincs` database can be loaded through the `AnnotationHub` interface
