@@ -1,6 +1,6 @@
 Changes in version 0.99.1 (2019-04-04)
 + Save LINCS gctx database to hdf5 file
-+ Save cmap database to hdf5 file
++ Save cmap databases (cmap, cmap_rank, cmap_expr) to hdf5 file
 + Load hdf5 file into R as SummarizedExperiment object
   o hdf5 file includes matrix, rownames and colnames
 

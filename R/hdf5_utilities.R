@@ -37,7 +37,9 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 #' 
 #' @param h5file character(1), path to the HDF5 file
-#' @param colindex index of columns of the matrix to be read in
+#' @param colindex index of the columns of the matrix to be read in
+#' @param colnames character vector, names of the columns of the matrix to be 
+#' read in
 #' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @seealso 
@@ -50,13 +52,21 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' se <- readHDF5chunk(h5file, colindex=1:2)
 #' @export
 #' 
-readHDF5chunk <- function(h5file, colindex=seq_len(10)) {
-    m <- h5read(h5file, "assay", index=list(NULL, colindex))
+readHDF5chunk <- function(h5file, colindex=seq_len(10), colnames=NULL) {
+    if(! is.null(colnames)){
+        all_trts <- h5read(h5file, "colnames", drop=TRUE)
+        colindex2 <- which(all_trts %in% colnames)
+        m <- h5read(h5file, "assay", index=list(NULL, colindex2))
+        colindex <- colindex2
+    } else {
+        m <- h5read(h5file, "assay", index=list(NULL, colindex))
+    }
     mycol <- h5read(h5file, "colnames", index=list(colindex, 1))
     myrow <- h5read(h5file, "rownames")
     rownames(m) <- as.character(myrow[,1])
     colnames(m) <- as.character(mycol[,1])
     se <- SummarizedExperiment(assays=list(score=m))
+    h5closeAll()
     return(se)
 }
 

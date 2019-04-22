@@ -4,12 +4,15 @@
 \alias{readHDF5chunk}
 \title{Read HDF5 file as SummarizedExperiment object}
 \usage{
-readHDF5chunk(h5file, colindex = seq_len(10))
+readHDF5chunk(h5file, colindex = seq_len(10), colnames = NULL)
 }
 \arguments{
 \item{h5file}{character(1), path to the HDF5 file}
 
-\item{colindex}{index of columns of the matrix to be read in}
+\item{colindex}{index of the columns of the matrix to be read in}
+
+\item{colnames}{character vector, names of the columns of the matrix to be 
+read in}
 }
 \value{
 \code{\link[SummarizedExperiment]{SummarizedExperiment}} object

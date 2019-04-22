@@ -36,7 +36,7 @@ pre code, pre, code {
 suppressPackageStartupMessages({
     library(signatureSearchData)
 })
-knitr::opts_knit$set(root.dir = "~/insync/project/longevityTools_eDRUG/")
+# knitr::opts_knit$set(root.dir = "~/insync/project/longevityTools_eDRUG/")
 ```
 
 # Introduction
@@ -383,7 +383,7 @@ The following processes the CEL files from each chip type separately using the
 MAS5 normalization algorithm. The results will be written to 3 subdirectores
 under `data` that are named after the chip type names. Since thousands of CEL 
 files could not be read into memory at once, they are normalized in batch
-by processing 200 files at once. The normalization process takes hours, 
+by processing 200 files at once. The normalization process takes about 10 hours, 
 to save time, it can be easily paralleled to run multiple jobs at the same time
 on a computer cluster with a scheduler (e.g. Slurm).
 
@@ -395,7 +395,7 @@ Note, these numbers are slightly different than those reported in the
 ```{r normalize_chips, eval=FALSE}
 chiptype <- readRDS("./data/chiptype.rds")
 chiptype_list <- split(names(chiptype), as.character(chiptype))
-normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) # it takes 
+normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) # it takes about 10 hours
 ```
 
 Combine results from same chip type in single data frame, then combine the data
@@ -411,7 +411,7 @@ Copy the `myAnnot.rds` generated from the above "cmap_rank signature database"
 session to the `result` directory under your current R session
 ```{r prof2gene, eval=FALSE}
 myAnnot <- readRDS("./results/myAnnot.rds") 
-mas5df <- probe2gene(mas5df, myAnnot) # It takes some time
+mas5df <- probe2gene(mas5df, myAnnot) # It takes about 15 minutes
 saveRDS(mas5df,"./data/mas5df.rds")
 ```
 
