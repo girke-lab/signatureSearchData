@@ -12,7 +12,7 @@ readHDF5chunk(h5file, colindex = seq_len(10), colnames = NULL)
 \item{colindex}{index of the columns of the matrix to be read in}
 
 \item{colnames}{character vector, names of the columns of the matrix to be 
-read in}
+read in. If 'colnames' is set, 'colindex' will be ignored.}
 }
 \value{
 \code{\link[SummarizedExperiment]{SummarizedExperiment}} object

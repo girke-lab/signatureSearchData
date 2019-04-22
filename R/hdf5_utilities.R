@@ -39,7 +39,7 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' @param h5file character(1), path to the HDF5 file
 #' @param colindex index of the columns of the matrix to be read in
 #' @param colnames character vector, names of the columns of the matrix to be 
-#' read in
+#' read in. If 'colnames' is set, 'colindex' will be ignored.
 #' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @seealso 
