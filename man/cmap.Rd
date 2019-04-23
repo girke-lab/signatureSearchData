@@ -19,8 +19,8 @@ The \code{logMA} matrix was written to an HDF5 file, which is the `cmap` databas
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "cmap"))
-# cmap <- load_sigdb("AH69075","AH69076","cmap")
+query(ah, c("signatureSearchData", "cmap"))
+# cmap <- ah[["AH69090"]]
 }
 
 \keyword{datasets}

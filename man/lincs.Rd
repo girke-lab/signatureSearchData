@@ -19,9 +19,8 @@ The downloaded database in `gctx` format was processed and saved as an HDF5 file
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "lincs"))
-qr
-# lincs <- load_sigdb("AH69079","AH69080","lincs")
+query(ah, c("signatureSearchData", "lincs"))
+# lincs <- ah[["AH69092"]]
 }
 
 \keyword{datasets}

@@ -15,6 +15,7 @@ The datasets in this package are:
   \itemize{
     \item \code{\link{cmap}} 
     \item \code{\link{cmap_expr}} 
+    \item \code{\link{cmap_rank}} 
     \item \code{\link{lincs}} 
     \item \code{\link{lincs_expr}} 
     \item \code{\link{dtlink_db_clue_sti}} 
@@ -35,13 +36,13 @@ vignette of this package by running `browseVignettes("signatureSearchData")` in 
 
 \examples{
 library(AnnotationHub)
+ah <- AnnotationHub()
 ## Load cmap database
-# se <- load_sigdb("AH69075","AH69076","cmap")
+# cmap <- ah[["AH69090"]]
 ## Load dtlink SQLite database
 # conn <- load_sqlite("AH69083")
 ## Load RDS files
-ah <- AnnotationHub()
-goAnno <- ah[["AH69084"]]
+# goAnno <- ah[["AH69084"]]
 }
 
 \keyword{package}

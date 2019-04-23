@@ -14,7 +14,7 @@ It is stored in an HDF5 file.
 The same as the \code{\link{cmap}} database, the resource data was downloaded 
 from the Connectivity Map project 
 \url{https://portals.broadinstitute.org/cmap/}.
-The expression intensity data was rma normalized. Then, the mean expression 
+The expression intensity data was normalized by MAS5 method. Then, the mean expression 
 values of drug treatment samples at different concentration, duration was used
 as expression values of that drug treatment in a cell. The expression matrix
 was written in an HDF5 file (cmap_expr database).
@@ -23,9 +23,8 @@ was written in an HDF5 file (cmap_expr database).
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "cmap_expr"))
-qr
-# cmap_expr <- load_sigdb("AH69077","AH69078","cmap_expr")
+query(ah, c("signatureSearchData", "cmap_expr"))
+# cmap_expr <- ah[["AH69091"]]
 }
 
 \keyword{datasets}

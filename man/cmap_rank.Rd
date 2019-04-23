@@ -22,8 +22,8 @@ and stored in an HDF5 file (`cmap_rank` database).
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "cmap_rank"))
-# cmap_rank <- ah[[""]]
+query(ah, c("signatureSearchData", "cmap_rank"))
+# cmap_rank <- ah[["AH69763"]]
 }
 
 \keyword{datasets}
