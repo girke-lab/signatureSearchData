@@ -522,7 +522,6 @@ comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
 ```
 
 #### DEG analysis with `limma`
-
 The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
 ```{r deg_limma, eval=FALSE}
 mas5df <- readRDS("./data/mas5df.rds")
