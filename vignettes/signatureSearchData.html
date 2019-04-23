@@ -304,7 +304,7 @@ h5ls(lincs_db_path)</code></pre>
 <li>GSE92742_Broad_LINCS_sig_info.txt.gz</li>
 </ul>
 <p>Unzip the downloaded files to the <code>data</code> directory under the present working directory of the user’s R session. <font color="blue">User will not understand the purpose of the data directory and its specific name. You need to explain this.</font></p>
-<p><strike> The LINCS Level5 signatures represent moderated z-scores of compound treatments at different concentration and time in different cells from differential expression analysis, the replicates have been weighted averaged.</strike> <font color="blue">Duplicates above. Stay things once and clearly. Don’t keep duplicating since it will be confusing. If you want to refernce then give things a short name! </font></p>
+<p><strike> The LINCS Level5 signatures represent moderated z-scores of compound treatments at different concentration and time in different cells from differential expression analysis, the replicates have been weighted averaged.</strike> <font color="blue">Duplicates above. Say things once and clearly. Don’t keep duplicating since it will be confusing. If you want to refernce then give things a short name! </font></p>
 </div>
 <div id="filter-signatures" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Filter signatures</h3>
@@ -420,7 +420,7 @@ saveRDS(myAnnot, &quot;./results/myAnnot.rds&quot;)</code></pre>
 <p>Write the the processed CMap rank matrix to an HDF5 file, which is the <code>cmap_rank</code> database</p>
 <pre class="r"><code>matrix2h5(rankM_sub_gene, &quot;./data/cmap_rank.h5&quot;, overwrite=TRUE) # 12403 X 3587
 rhdf5::h5ls(&quot;./data/cmap_rank.h5&quot;)
-## Read in cmap_rank.h5 by chunks
+## Read in cmap_rank.h5 as SummarizedExperiment object by chunks
 cmap_rank_se &lt;- readHDF5chunk(&quot;./data/cmap_rank.h5&quot;, colindex=1:5)</code></pre>
 </div>
 </div>
@@ -464,11 +464,11 @@ saveRDS(chiptype, &quot;./data/chiptype.rds&quot;)</code></pre>
 </div>
 <div id="normalization-of-cel-files" class="section level3">
 <h3><span class="header-section-number">6.2.4</span> Normalization of CEL files</h3>
-<p>The following processes the CEL files from each chip type separately using the MAS5 normalization algorithm. The results will be written to 3 subdirectores under <code>data</code> that are named after the chip type names. Since thousands of CEL files could not be read into memory at once, they are normalized in batch by processing 200 files at once. The normalization process takes hours, to save time, it can be easily paralleled to run multiple jobs at the same time on a computer cluster with a scheduler (e.g. Slurm).</p>
+<p>The following processes the CEL files from each chip type separately using the MAS5 normalization algorithm. The results will be written to 3 subdirectores under <code>data</code> that are named after the chip type names. Since thousands of CEL files could not be read into memory at once, they are normalized in batch by processing 200 files at once. The normalization process takes about 10 hours, to save time, it can be easily paralleled to run multiple jobs at the same time on a computer cluster with a scheduler (e.g. Slurm).</p>
 <p>The number of CEL files from each chip type are: 807 CEL files from HG-U133A, 6029 CEL files from HT_HG-U133A, and 220 CEL files from U133AAofAv2. Note, these numbers are slightly different than those reported in the <code>cmap_instances_02.txt</code> file.</p>
 <pre class="r"><code>chiptype &lt;- readRDS(&quot;./data/chiptype.rds&quot;)
 chiptype_list &lt;- split(names(chiptype), as.character(chiptype))
-normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) # it takes </code></pre>
+normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) # it takes about 10 hours</code></pre>
 <p>Combine results from same chip type in single data frame, then combine the data frame from different chip types into <code>mas5df</code></p>
 <pre class="r"><code>chiptype_dir &lt;- unique(chiptype)
 combineResults(chiptype_dir, rerun=FALSE)
@@ -478,7 +478,7 @@ mas5df &lt;- combineNormRes(chiptype_dir, norm_method=&quot;MAS5&quot;)</code></
 <h3><span class="header-section-number">6.2.5</span> Transform probe set to gene level data</h3>
 <p>Copy the <code>myAnnot.rds</code> generated from the above “cmap_rank signature database” session to the <code>result</code> directory under your current R session</p>
 <pre class="r"><code>myAnnot &lt;- readRDS(&quot;./results/myAnnot.rds&quot;) 
-mas5df &lt;- probe2gene(mas5df, myAnnot) # It takes some time
+mas5df &lt;- probe2gene(mas5df, myAnnot) # It takes about 15 minutes
 saveRDS(mas5df,&quot;./data/mas5df.rds&quot;)</code></pre>
 </div>
 <div id="take-mean-expression-values-of-drug-treatment-samples" class="section level3">

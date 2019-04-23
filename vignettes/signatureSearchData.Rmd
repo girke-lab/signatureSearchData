@@ -35,10 +35,6 @@ pre code, pre, code {
 suppressPackageStartupMessages({
     library(signatureSearchData)
 })
-<<<<<<< HEAD
-=======
-# knitr::opts_knit$set(root.dir = "~/insync/project/longevityTools_eDRUG/")
->>>>>>> 21f15724563265e913ad353fe7fb7be317e6ce50
 ```
 
 # Introduction
@@ -157,7 +153,7 @@ data directory and its specific name. You need to explain this.</font>
 <strike> The LINCS Level5 signatures represent moderated z-scores of compound treatments
 at different concentration and time in different cells from differential expression
 analysis, the replicates have been weighted averaged.</strike> <font color="blue">Duplicates
-above. Stay things once and clearly. Don't keep duplicating since it will be confusing. If
+above. Say things once and clearly. Don't keep duplicating since it will be confusing. If
 you want to refernce then give things a short name! </font> 
 
 ### Filter signatures 
