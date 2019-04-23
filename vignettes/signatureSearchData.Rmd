@@ -132,7 +132,7 @@ used to impute the expression of an additional 11,350 genes, forming Level 3 dat
 A robust z-scoring procedure was used to generate differential expression values from 
 the normalized profiles (Level 4). Finally, a moderated z-scoring procedure was 
 applied to the replicated samples of each experiment (generally 3 replicates) to compute a 
-weighted average signature (Level 5). For a more detailed description of the preprocessing methods used by
+weighted average signature (Level 5).  <font color="blue">Difference between Level 4 and 5 unclear. Please improve.</font> For a more detailed description of the preprocessing methods used by
 the LINCS, readers want to refer to the [LINCS user guide](https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#).
 
 The steps in subsections <font color="blue">??? to ???</font> download LINCS' Level 5 data in `gctx` format, process and save 
