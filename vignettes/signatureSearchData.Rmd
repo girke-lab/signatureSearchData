@@ -43,17 +43,19 @@ The `signatureSearchData` package provides access to the reference data used by
 the associated `signatureSearch` software package. The latter allows to search 
 with a query gene expression signature a database of treatment signatures to 
 identify cellular states with similar expression responses (connections). This 
-way one can identify knockouts, diseases or drugs that induce expression phenotypes 
-similar to a sample of interest. Currently, `signatureSearchData` includes
+way one can identify drugs or gene knockouts that induce expression phenotypes 
+similar to a sample of interest. The resulting associations may lead to novel functional insights how
+perturbagens of interest interact with biological systems. Currently, `signatureSearchData` includes
 gene expression data from the CMap (Connectivity Map) and LINCS (Library of
 Network-Based Cellular Signatures) projects that are largely based on drug and
 genetic perturbation experiments performed on variable numbers of human cell
-lines [@Lamb2006-du; @Subramanian2017-fu]. Here these data sets have been
-preprocessed as required for the gene expression signature search (GESS)
+lines [@Lamb2006-du; @Subramanian2017-fu]. In `signatureSearchData` these data sets 
+are preprocessed as required for the gene expression signature search (GESS)
 algorithms implemented and used by `signatureSearch`. The preprocessed data
-types include normalized gene expression values (_e.g._ intensity values), log
-fold changes (LFC), P or FDR values for DEG calls, rankings based on some of
-these preprocessing outcomes or sets of top up/down-regulated DEGs. 
+types include but are not limited to normalized gene expression values 
+(_e.g._ intensity values), log fold changes (LFC) and Z-scores, P or FDR values 
+for DEG calls, rankings based on selected preprocessing routines or sets of 
+top up/down-regulated DEGs. 
 
 The CMap data were downloaded from the [CMap project
 site](https://portals.broadinstitute.org/cmap/) (Version CMAP2). The latter is
@@ -76,24 +78,23 @@ The data structures and search algorithms used by `signatureSearch` and
 `signatureSearchData` are designed to work with most genome-wide expression
 data including hybridization-based methods, such as Affymetrix or L1000, as
 well as sequencing-based methods, such as RNA-Seq. Currently,
-`signatureSearchData` does not include RNA-Seq data mainly because of the lack
+`signatureSearchData` does not include RNA-Seq data mainly due to the lack
 of large-scale perturbation studies (_e.g._ drug-based) available in the public
 domain that are based on RNA-Seq. This situation may change in the near future
 once the cost of RNA-Seq becomes more cost effective for this purpose. 
 
 
-
 # Install and load `signatureSearchData`
 
-`signatureSearch` is a R/Bioconductor package and can be installed through 
-`BiocManager::install()`
+`signatureSearch` is a R/Bioconductor package and can be installed using 
+`BiocManager::install()`.
 ```{r install, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("signatureSearchData", version = "3.9")
 ```
 
-After the package is installed, it can be loaded into \emph{R} workspace by
+After the package is installed, it can be loaded in an R session as follows.
 ```{r load, eval=FALSE}
 library(signatureSearchData)
 ```
@@ -101,7 +102,7 @@ library(signatureSearchData)
 # `lincs` signature database
 <font color="blue">[Comment: start here with a brief and general description how 
 the LINCS data is provided, e.g. the different levels of preprocessing available
-for download. Since the next paragraph addresses this, it could be moved here to 
+for download. The next paragraph addresses this. So you may want to moved it here to 
 address this. </font>
 The `lincs` database represents moderated z-scores from DE analysis of 12,328 
 genes from 8,140 compound treatments in 30 cells. Since one compound has treatments
@@ -123,34 +124,37 @@ h5ls(lincs_db_path)
 
 ## Generate from the original resources
 
-The LINCS L1000 datasets are deposited into GEO. The data are processed at 5 levels.
+The LINCS data are available for download from GEO at 5 different pre-processing levels. 
 Level 1 data are the raw mean fluorescent intensity (MFI) values that come 
-directly from the Luminex scanner. Level 2 data measures the expression intensity
-of 978 landmark genes. It was then normalized and used to infer expression of 
-an additional 11,350 genes, forming Level 3 data. A robust z-scoring procedure 
-is used to generate differential expression values from the normalized profiles 
-(Level 4 data). Finally, a moderated z-scoring procedure was applied to replicate 
-samples of each experiment (generally 3 replicates are made) to compute a 
-weighted average signature. For detailed description of the LINCS project and
-datasets, please refer to their [user guide](https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#).
+directly from the Luminex scanner. Level 2 data are the expression intensities
+of 978 landmark genes directly measured by the L1000 assay. They have been normalized and 
+used to impute the expression of an additional 11,350 genes, forming Level 3 data. 
+A robust z-scoring procedure was used to generate differential expression values from 
+the normalized profiles (Level 4). Finally, a moderated z-scoring procedure was 
+applied to the replicated samples of each experiment (generally 3 replicates) to compute a 
+weighted average signature (Level 5). For a more detailed description of the preprocessing methods used by
+the LINCS, readers want to refer to the [LINCS user guide](https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#).
 
-The following steps download the original LINCS Level 5 moderated z-score dataset
-in `gctx` file, process it and save into an HDF5 file (`lincs` database).  
+The steps in subsections <font color="blue">??? to ???</font> download LINCS' Level 5 data in `gctx` format, process and save 
+them to an HDF5 file (here `lincs` database).  
 
 ### Download the original LINCS Level5 datasets at GEO 
 
-Download the following files from [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
+Download the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
 + GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz
 + GSE92742_Broad_LINCS_gene_info.txt.gz
 + GSE92742_Broad_LINCS_sig_info.txt.gz
 
 Unzip the downloaded files to the `data` directory under the present working 
-directory of the user’s R session.
+directory of the user’s R session. <font color="blue">User will not understand the purpose of the
+data directory and its specific name. You need to explain this.</font>
 
-The LINCS Level5 signatures represent moderated z-scores of compound treatments
+<strike> The LINCS Level5 signatures represent moderated z-scores of compound treatments
 at different concentration and time in different cells from differential expression
-analysis, the replicates have been weighted averaged.
+analysis, the replicates have been weighted averaged.</strike> <font color="blue">Duplicates
+above. Stay things once and clearly. Don't keep duplicating since it will be confusing. If
+you want to refernce then give things a short name! </font> 
 
 ### Filter signatures 
 
