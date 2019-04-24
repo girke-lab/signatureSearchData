@@ -162,6 +162,11 @@ of 30 cell lines. This data set can be used by all GESS methods provided by the
 
 ## Generate from the original resources
 
+The following steps explain how to generate the above data set from scratch. This also
+illustrates how to filter the LINCS data in other ways.
+
+<font color="blue">[Is this correct?]</font>
+
 ### Download the LINCS Level5 datasets at GEO 
 
 Download the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
