@@ -141,14 +141,9 @@ in this data set is 30.
 
 ## Load from `AnnotationHub`
 
-In summary, the LINCS data set considered by the following steps includes moderated
-z-scores from a DE analysis outcomes of 12,328 genes of 8,140 compound treatments across a total
-of 30 cell lines. This data set can be used by all GESS methods provided by the `signatureSearch`
-package.
+The sub-dataset from LINCS that was filtered and assembled according to the above steps can be loaded 
+through the `AnnotationHub` interface as follows. 
 
-The preprocessed LINCS database can be loaded through the `AnnotationHub` interface. <font color="blue">[Unclear what you mean by
-preprocessed in this context, e.g. which type of preprocessing. You are also not mentioning what the code you show
-actually does.]</font>
 
 ```{r lincs, eval=FALSE}
 library(AnnotationHub); library(rhdf5)
@@ -157,6 +152,13 @@ query(ah, c("signatureSearchData", "lincs"))
 lincs_db_path <- ah[['AH69092']]
 h5ls(lincs_db_path)
 ```
+
+In summary, the loaded data instance includes moderated z-scores from a DE
+analysis outcomes of 12,328 genes of 8,140 compound treatments across a total
+of 30 cell lines. This data set can be used by all GESS methods provided by the
+`signatureSearch` package.
+
+<font color="blue">[Is the above rewrite correct?]</font>
 
 ## Generate from the original resources
 
