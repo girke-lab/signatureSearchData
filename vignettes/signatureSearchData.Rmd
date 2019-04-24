@@ -176,13 +176,14 @@ Download and unzip the following files from GEO entry [GSE92742](https://www.ncb
 + GSE92742_Broad_LINCS_sig_info.txt.gz
 
 The following code examples assume that the downloaded datasets are stored in a
-sub-directory called `data`.  All paths in this vignette are given relative to
-the present working directory of the user’s R session.
+sub-directory called `data`. All paths in this vignette are given relative to
+the present working directory of a user’s R session.
 
 ### Filter signatures 
 
-Selecting LINCS level5 signatures of compound treatments at 10 uM concentration 
-and 24 h duration.
+The following selects LINCS Level 5 signatures of compound treatments at a concentration of 10 uM 
+and a treatment time of 24 hours.
+
 ```{r filter_meta42, eval=FALSE}
 ## ignore warning message
 meta42 <- readr::read_tsv("./data/GSE92742_Broad_LINCS_sig_info.txt") 
@@ -193,17 +194,16 @@ meta42_filter <- sig_filter(meta42, pert_type="trt_cp", dose=dose, time="24 h") 
 
 ### Save z-score matrix from gctx file to HDF5 file 
 
-Read in the large z-score matrix of signatures after filter from the gctx file by chunks
-and write the matrix to an HDF5 file, which is the LINCS database.
-Since the size of the matrix would be tens of gigabytes, 
-it will consume all the memories of a laptop if reading the 
-full matrix at once. Reading the matrix by chunks and append to an HDF5 file will 
-be memory efficient. 
+Next the large z-score matrix of expression signatures is imported step-wise in subsets of
+manageable size and then appended to an HDF5 file. In the following, the latter is referred to as the
+LINCS database. Since the size of the full matrix is tens of GBs in size, it
+would consume too much memory to be read into R at once. Reading the matrix in
+smaller batches and appending them to an HDF5 file is much more memory efficient. 
 
-We also provide the utility to read in subset of a large matrix in HDF5 file as 
-`SummarizedExperiment` object by chunks/indexing.
+We also provide the utility to import the data stored in the HDF5 file as a `SummarizedExperiment` object.
+
 ```{r extract_modz, eval=FALSE}
-gctx="./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
+gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
         h5file="./data/lincs.h5", chunksize=5000, overwrite=TRUE)
 se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
