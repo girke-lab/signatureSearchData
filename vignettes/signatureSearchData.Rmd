@@ -169,16 +169,15 @@ illustrates how to filter the LINCS data in other ways.
 
 ### Download the LINCS Level5 datasets at GEO 
 
-Download the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
+Download and unzip the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
 + GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz
 + GSE92742_Broad_LINCS_gene_info.txt.gz
 + GSE92742_Broad_LINCS_sig_info.txt.gz
 
-Unzip the downloaded files to the `data` directory under the present working 
-directory of the user’s R session. The `data` direcotry is used to store the 
-input data as convention. All paths in this vignette are given relative to the present working 
-directory of the user’s R session.
+The following code examples assume that the downloaded datasets are stored in a
+sub-directory called `data`.  All paths in this vignette are given relative to
+the present working directory of the user’s R session.
 
 ### Filter signatures 
 
