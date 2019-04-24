@@ -216,10 +216,10 @@ se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 The LINCS Level 3 data can be downloaded from
 [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742) the same way
 as described above for the Level 5 data. The Level 3 data contain normalized
-gene expression values across for all treatmens and cell lines used by LINCS.
-The Level 3 signatures were filtered the same way as the Level 5 data. Since
-Level 3 data contains the results from biological replicates, they were
-collapsed to mean values. Subsequently, the resulting matrix of mean expression
+gene expression values across all treatmens and cell lines used by LINCS.
+The Level 3 signatures were filtered the same way as the Level 5 data. The biological 
+replicate information included in the Level 3 data were collapsed to mean values. 
+Subsequently, the resulting matrix of mean expression
 values was written to an HDF5 file.  The latter is referred to as `lincs_expr`
 database containing 38,824 signatures for a total of 5,925 small molecule
 treatments and 30 cell lines. <font color="blue">[Need to explain why the
