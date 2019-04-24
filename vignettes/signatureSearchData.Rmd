@@ -52,7 +52,7 @@ gene expression data from the CMap (Connectivity Map) and LINCS (Library of
 Network-Based Cellular Signatures) projects that are largely based on drug and
 genetic perturbation experiments performed on variable numbers of human cell
 lines [@Lamb2006-du; @Subramanian2017-fu]. In `signatureSearchData` these data sets 
-are preprocessed as required for the gene expression signature search (GESS)
+are preprocessed as needed by the gene expression signature search (GESS)
 algorithms implemented and used by `signatureSearch`. The preprocessed data
 types include but are not limited to normalized gene expression values 
 (_e.g._ intensity values), log fold changes (LFC) and Z-scores, P or FDR values 
@@ -101,40 +101,55 @@ After the package is installed, it can be loaded in an R session as follows.
 library(signatureSearchData)
 ```
 
-# `lincs` signature database
-The LINCS data is generated from L1000 assay. It directly measures the expression 
-of 978 landmark genes and 80 control genes by detecting fluorescent intensity of beads 
-after capturing the amplification products of mRNAs [@Peck2006-rf]. The expression 
-of 11,350 additional genes is imputed from the landmark genes by using as training 
-data a collection of 12,063 Affymetrix gene chips [@Edgar2002-di].
+# LINCS signature database
+The L1000 assay, used for generating the LINCS data, measures the expression 
+of 978 landmark genes and 80 control genes by loading amplified mRNA populations 
+onto beads and then detecting their abundance with a fluorescent-based method [@Peck2006-rf]. 
+The expression of 11,350 additional genes is imputed from the landmark genes by using 
+as training data a large collection of Affymetrix gene chips [@Edgar2002-di].
 
-The LINCS data are pre-processed at 5 different levels and deposit at GEO. 
-Level 1 data are the raw mean fluorescent intensity values that come 
-directly from the Luminex scanner. Level 2 data are the expression intensities
-of 978 landmark genes directly measured by the L1000 assay. They have been normalized and 
-used to impute the expression of an additional 11,350 genes, forming Level 3 data. 
-A robust z-scoring procedure was used to generate differential expression values from 
-the normalized profiles (Level 4). Finally, a moderated z-scoring procedure was 
-applied to the replicated samples of each experiment (generally 3 replicates) to 
-compute a weighted average signature (Level 5). For more detailed description of 
-the preprocessing methods used by the LINCS, readers want to refer to the 
-[LINCS user guide](https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#).
+The LINCS data are pre-processed by the Broad Institute to 5 different levels
+and are available for download from GEO. Level 1 data are the raw mean
+fluorescent intensity values that come directly from the Luminex scanner. Level
+2 data are the expression intensities of the 978 landmark genes. They have been
+normalized and used to impute the expression of the additional 11,350 genes,
+forming Level 3 data. A robust z-scoring procedure was used to generate
+differential expression values from the normalized profiles (Level 4).
+Finally, a moderated z-scoring procedure was applied to the replicated samples
+of each experiment (mostly 3 replicates) to compute a weighted average
+signature (Level 5). For a more detailed description of the preprocessing
+methods used by the LINCS project, readers want to refer to the [LINCS user
+guide](https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#).
 
-LINCS level5 dataset contains 473,647 signatures from 19,811 compound treatment in different 
-cells at multiple concentration and duration as well as genetic perturbations. 
-Since we only focus on signatures of compound/drug treatment in different cells, 
-the concentration and duration information was ignored by only selecting those 
-signatures at specific concentration (10 um) and duration (24 h) since most drugs 
-have this dosage and time point. Since not all compounds have the selected concentation
-and duration, 8,104 compounds were selected in 30 cells. Since one compound has treatments
-in multiple cells, the total number of selected signature is 45,956. 
-
-So, the `lincs` database represents moderated z-scores from DE analysis of 12,328 
-genes from 8,140 compound treatments in 30 cells. It can be used for all the GESS 
-methods in the `signatureSearch` package.
+Disregarding replicates, the LINCS data set contains 473,647 signatures with
+unique cell type and treatment combinations. This includes 19,811 drug-like
+small molecules tested on different cell lines at multiple concentrations and
+treatment times. In additon to compounds, several thousand genetic
+perturbations (gene knock-downs and over expressions) have been tested.
+Currently, the data described in this vignette are restricted to signatures of
+small molecule treatments across different cells lines. For consistency, only
+signatures at one specific concentration (10um) and one time point (24h) have
+been selected for each small molecule. These choices are similar to the
+conditions used in primary high-throughput compound screens of cell lines.
+Since the selected compound concentations and treatment durations have not been
+tested by LINCS across all cell types yet, a subset of compounds had to be
+selected that best met the chosen treatment requirements. This left us with 8,104
+compounds that were uniformly tested at the chosen concentration and treatment time, but
+across variable numbers of cell lines. The total number of expression signatures
+meeing this requirement is 45,956, while the total number of cell lines included 
+in this data set is 30. 
 
 ## Load from `AnnotationHub`
-The preprocessed `lincs` database can be loaded through the `AnnotationHub` interface
+
+In summary, the LINCS data set considered by the following steps includes moderated
+z-scores from a DE analysis outcomes of 12,328 genes of 8,140 compound treatments across a total
+of 30 cell lines. This data set can be used by all GESS methods provided by the `signatureSearch`
+package.
+
+The preprocessed LINCS database can be loaded through the `AnnotationHub` interface. <font color="blue">[Unclear what you mean by
+preprocessed in this context, e.g. which type of preprocessing. You are also not mentioning what the code you show
+actually does.]</font>
+
 ```{r lincs, eval=FALSE}
 library(AnnotationHub); library(rhdf5)
 ah <- AnnotationHub()
@@ -173,7 +188,7 @@ meta42_filter <- sig_filter(meta42, pert_type="trt_cp", dose=dose, time="24 h") 
 ### Save z-score matrix from gctx file to HDF5 file 
 
 Read in the large z-score matrix of signatures after filter from the gctx file by chunks
-and write the matrix to an HDF5 file, which is the `lincs` database.
+and write the matrix to an HDF5 file, which is the LINCS database.
 Since the size of the matrix would be tens of gigabytes, 
 it will consume all the memories of a laptop if reading the 
 full matrix at once. Reading the matrix by chunks and append to an HDF5 file will 
@@ -194,7 +209,7 @@ The LINCS Level3 expression database was downloaded at [GEO](https://www.ncbi.nl
 It contains normalized expression values of 12328 genes from 1.3 million
 treatment and control samples (compound treatments in different cells at various
 concentration and duration, including replicates as well as genetic perturbations). 
-The same as the `lincs` database, the level3 signatures were filtered by selecting
+The same as the LINCS database, the level3 signatures were filtered by selecting
 compound treatments at specific concentration and duration. 
 The mean expression values was calculated for replicated samples that are treated by the same
 compound in the same cell type with selected concentration and treatment time.
