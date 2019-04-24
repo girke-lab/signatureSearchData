@@ -167,7 +167,7 @@ illustrates how to filter the LINCS data in other ways.
 
 <font color="blue">[Is this correct?]</font>
 
-### Download the LINCS Level5 datasets at GEO 
+### Download LINCS Level 5 data from GEO 
 
 Download and unzip the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
@@ -194,13 +194,15 @@ meta42_filter <- sig_filter(meta42, pert_type="trt_cp", dose=dose, time="24 h") 
 
 ### Save z-score matrix from gctx file to HDF5 file 
 
-Next the large z-score matrix of expression signatures is imported step-wise in subsets of
-manageable size and then appended to an HDF5 file. In the following, the latter is referred to as the
-LINCS database. Since the size of the full matrix is tens of GBs in size, it
-would consume too much memory to be read into R at once. Reading the matrix in
-smaller batches and appending them to an HDF5 file is much more memory efficient. 
+Next the large z-score matrix of expression signatures is imported step-wise in
+subsets of manageable size and then appended to an HDF5 file. In the following,
+the latter is referred to as the LINCS database. Since the size of the full
+matrix is tens of GBs in size, it would consume too much memory to be read into
+R at once. Reading the matrix in smaller batches and appending them to an HDF5
+file is much more memory efficient. 
 
-We also provide the utility to import the data stored in the HDF5 file as a `SummarizedExperiment` object.
+We also provide the utility to import the data stored in the HDF5 file as a
+`SummarizedExperiment` object.
 
 ```{r extract_modz, eval=FALSE}
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
@@ -211,17 +213,18 @@ se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 
 # `lincs_expr` signature database
 
-The LINCS Level3 expression database was downloaded at [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742).
-It contains normalized expression values of 12328 genes from 1.3 million
-treatment and control samples (compound treatments in different cells at various
-concentration and duration, including replicates as well as genetic perturbations). 
-The same as the LINCS database, the level3 signatures were filtered by selecting
-compound treatments at specific concentration and duration. 
-The mean expression values was calculated for replicated samples that are treated by the same
-compound in the same cell type with selected concentration and treatment time.
-Then the mean expression matrix was written to an HDF5 file, which is the `lincs_expr`
-database. It contains mean gene expression values from 5,925 compound treatment samples 
-in 30 cells (38,824 signatures in total). 
+The LINCS Level 3 data can be downloaded from
+[GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742) the same way
+as described above for the Level 5 data. The Level 3 data contain normalized
+gene expression values across for all treatmens and cell lines used by LINCS.
+The Level 3 signatures were filtered the same way as the Level 5 data. Since
+Level 3 data contains the results from biological replicates, they were
+collapsed to mean values. Subsequently, the resulting matrix of mean expression
+values was written to an HDF5 file.  The latter is referred to as `lincs_expr`
+database containing 38,824 signatures for a total of 5,925 small molecule
+treatments and 30 cell lines. <font color="blue">[Need to explain why the
+number of signatures and compounds is lower for Level 3 than Level 5. Otherwise
+this is very confusing.]</font> 
 
 ## Load from `AnnotationHub`
 The preprocessed `lincs_expr` database can be loaded through the `AnnotationHub` interface
