@@ -47,9 +47,10 @@ identify cellular states with similar expression responses (connections). This
 way one can identify drugs or gene knockouts that induce expression phenotypes 
 similar to a sample of interest. The resulting associations may lead to novel 
 functional insights how perturbagens of interest interact with biological systems. 
-Currently, `signatureSearchData` includes
-gene expression data from the CMap (Connectivity Map) and LINCS (Library of
-Network-Based Cellular Signatures) projects that are largely based on drug and
+
+Currently, `signatureSearchData` includes gene expression data from the CMap 
+(Connectivity Map) and LINCS (Library of Network-Based Cellular Signatures) 
+projects that are largely based on drug and
 genetic perturbation experiments performed on variable numbers of human cell
 lines [@Lamb2006-du; @Subramanian2017-fu]. In `signatureSearchData` these data sets 
 are preprocessed as needed by the gene expression signature search (GESS)

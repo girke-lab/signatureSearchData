@@ -65,6 +65,9 @@ readHDF5chunk <- function(h5file, colindex=seq_len(10), colnames=NULL) {
     myrow <- h5read(h5file, "rownames")
     rownames(m) <- as.character(myrow[,1])
     colnames(m) <- as.character(mycol[,1])
+    if(! is.null(colnames)){
+        m = m[,colnames, drop=FALSE]
+    }
     se <- SummarizedExperiment(assays=list(score=m))
     h5closeAll()
     return(se)
