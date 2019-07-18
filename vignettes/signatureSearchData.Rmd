@@ -53,7 +53,7 @@ Currently, `signatureSearchData` includes gene expression data from the CMap
 projects that are largely based on drug and
 genetic perturbation experiments performed on variable numbers of human cell
 lines [@Lamb2006-du; @Subramanian2017-fu]. In `signatureSearchData` these data sets 
-are preprocessed as needed by the gene expression signature search (GESS)
+are preprocessed as required by the gene expression signature search (GESS)
 algorithms implemented and used by `signatureSearch`. The preprocessed data
 types include but are not limited to normalized gene expression values 
 (_e.g._ intensity values), log fold changes (LFC) and Z-scores, P or FDR values 
@@ -87,10 +87,11 @@ domain that are based on RNA-Seq. This situation may change in the near future
 once the cost of RNA-Seq becomes more cost effective for this purpose. 
 
 
-# Install and load `signatureSearchData`
+# Install and Load Package
 
 `signatureSearch` is a R/Bioconductor package and can be installed using 
 `BiocManager::install()`.
+
 ```{r install, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -102,7 +103,7 @@ After the package is installed, it can be loaded in an R session as follows.
 library(signatureSearchData)
 ```
 
-# LINCS signature database
+# LINCS Signature Database
 The L1000 assay, used for generating the LINCS data, measures the expression 
 of 978 landmark genes and 80 control genes by loading amplified mRNA populations 
 onto beads and then detecting their abundance with a fluorescent-based method [@Peck2006-rf]. 
@@ -156,30 +157,30 @@ h5ls(lincs_db_path)
 
 In summary, the loaded data instance includes moderated z-scores from a DE
 analysis outcomes of 12,328 genes of 8,140 compound treatments across a total
-of 30 cell lines. This data set can be used by all GESS methods provided by the
-`signatureSearch` package.
+of 30 cell lines corresponding to 45,956 expression signatures. This data set
+can be used by all GESS methods provided by the `signatureSearch` package.
 
 ## Generate from the original resources
 
-The following steps explain how to generate the above data set from scratch. This also
+The following explains how to generate the above LINCS data object from scratch. This also
 illustrates how to filter the LINCS level 5 data in other ways.
 
 ### Download LINCS Level 5 data from GEO 
 
 Download and unzip the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
-+ GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz
-+ GSE92742_Broad_LINCS_gene_info.txt.gz
-+ GSE92742_Broad_LINCS_sig_info.txt.gz
++ <tt>GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz</tt>
++ <tt>GSE92742_Broad_LINCS_gene_info.txt.gz</tt>
++ <tt>GSE92742_Broad_LINCS_sig_info.txt.gz</tt>
 
 The following code examples assume that the downloaded datasets are stored in a
 sub-directory called `data`. All paths in this vignette are given relative to
-the present working directory of a user’s R session.
+the present working directory of a user's R session.
 
 ### Filter signatures 
 
 The following selects LINCS Level 5 signatures of compound treatments at a 
-concentration of 10uM and a treatment time of 24 hours.
+concentration of 10$\mu$M and a treatment time of 24 hours.
 
 ```{r filter_meta42, eval=FALSE}
 ## ignore warning message
@@ -191,15 +192,14 @@ meta42_filter <- sig_filter(meta42, pert_type="trt_cp", dose=dose, time="24 h") 
 
 ### Save z-score matrix from gctx file to HDF5 file 
 
-Next the large z-score matrix of expression signatures is imported step-wise in
-subsets of manageable size and then appended to an HDF5 file. In the following,
-the latter is referred to as the LINCS database. Since the size of the full
-matrix is tens of GBs in size, it would consume too much memory to be read into
+Next, the large z-score matrix of expression signatures is imported step-wise in
+subsets of manageable size and then appended to an HDF5 file (here `lincs.h5`). 
+In this vignette, the latter is referred to as the LINCS database. Since the size 
+of the full matrix is several GBs in size, it would consume too much memory to be read into
 R at once. Reading the matrix in smaller batches and appending them to an HDF5
-file is much more memory efficient. 
-
-We also provide the utility to import the data stored in the HDF5 file as a
-`SummarizedExperiment` object.
+file is much more memory efficient. Subsequently, the `readHDF5chunk` function, defined by 
+the `signatureSearchData` package, imports the data from the HDF5 file into a 
+`SummarizedExperiment` object, here assigned to `se`.
 
 ```{r extract_modz, eval=FALSE}
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
@@ -543,7 +543,7 @@ such as getting targets of query drugs in [DrugBank](https://www.drugbank.ca/),
 conducting GO enrichment analysis or computing WTCS p-values or tau scores of the
 `gess_lincs` method in the `signatureSearch` package. 
 
-# Supplement
+# Supplemental Material
 
 ## `cmap` signature database
 The MAS5 normalized CEL files from the "cmap_expr signature database" section
@@ -607,5 +607,22 @@ matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
 ## Read in cmap.h5 by chunks
 cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 ```
+
+# Session Info
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+# Funding
+
+This project is funded by NIH grants
+[U19AG02312](https://www.longevityconsortium.org/) and
+[U24AG051129](https://www.longevitygenomics.org/) awarded by the National
+Institute on Aging (NIA). Subcomponents of the environment are based on methods
+developed by projects funded by NSF awards ABI-1661152 and PGRP-1810468. The
+High-Performance Computing (HPC) resources used for optimizing and applying the the code of
+this project were funded by NIH and NSF grants 1S10OD016290-01A1 and MRI-1429826,
+respectively. 
 
 # References
