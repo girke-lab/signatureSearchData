@@ -103,6 +103,26 @@ After the package is installed, it can be loaded in an R session as follows.
 library(signatureSearchData)
 ```
 
+# Explore Data Sets
+
+A summary of the data sets provided by the `signatureSearchData` package can be
+obtained with the `query` function of the `AnnotationHub` package. The information
+is stored in an object of class `AnnotationHub`, here assigned to `ssd`.
+
+```{r ah_explore_ssd1, eval=TRUE, warning=FALSE, message=FALSE }
+library(AnnotationHub)
+ah <- AnnotationHub()
+ssd <- query(ah, c("signatureSearchData"))
+ssd
+```
+
+More detailed information about each data set can be returned as a `list`, here 
+subsetted to 10th entry with `[10]`.
+
+```{r ah_explore_ssd2, eval=TRUE}
+as.list(ssd)[10]
+```
+
 # LINCS Signature Database
 
 The L1000 assay, used for generating the LINCS data, measures the expression 
@@ -143,27 +163,6 @@ the chosen concentration and treatment time, but across variable numbers of
 cell lines. The total number of expression signatures meeting this requirement
 is 45,956, while the total number of cell lines included in this data set is
 30. 
-
-## Explore Data Sets
-
-A summary of the data sets provided by the `signatureSearchData` package can be
-obtained with the `query` function of the `AnnotationHub` package. The information
-is stored in an object of class `AnnotationHub`, here assigned to `ssd`.
-
-```{r ah_explore_ssd1, eval=TRUE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-ssd <- query(ah, c("signatureSearchData"))
-ssd
-```
-
-More detailed information about each data set can be returned as a `list`, here 
-subsetted to first entry with `[1]`.
-
-```{r ah_explore_ssd2, eval=TRUE}
-as.list(ssd)[1]
-```
-
 
 ## Z-scores from `AnnotationHub`
 

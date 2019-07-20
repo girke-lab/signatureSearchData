@@ -1649,13 +1649,62 @@ BiocManager::install(&quot;signatureSearchData&quot;, version = &quot;3.9&quot;)
 <p>After the package is installed, it can be loaded in an R session as follows.</p>
 <pre class="r"><code>library(signatureSearchData)</code></pre>
 </div>
+<div id="explore-data-sets" class="section level1">
+<h1><span class="header-section-number">3</span> Explore Data Sets</h1>
+<p>A summary of the data sets provided by the <code>signatureSearchData</code> package can be obtained with the <code>query</code> function of the <code>AnnotationHub</code> package. The information is stored in an object of class <code>AnnotationHub</code>, here assigned to <code>ssd</code>.</p>
+<pre class="r"><code>library(AnnotationHub)
+ah &lt;- AnnotationHub()
+ssd &lt;- query(ah, c(&quot;signatureSearchData&quot;))
+ssd</code></pre>
+<pre><code>## AnnotationHub with 12 records
+## # snapshotDate(): 2019-05-02 
+## # $dataprovider: Broad Institute, GO, DrugBank, Broad Institute, STITCH
+## # $species: Homo sapiens
+## # $rdataclass: character, data.frame, environment, list
+## # additional mcols(): taxonomyid, genome, description,
+## #   coordinate_1_based, maintainer, rdatadateadded, preparerclass,
+## #   tags, rdatapath, sourceurl, sourcetype 
+## # retrieve records with, e.g., 'object[[&quot;AH69083&quot;]]' 
+## 
+##             title             
+##   AH69083 | dtlink_db_clue_sti
+##   AH69084 | goAnno            
+##   AH69085 | goAnno_drug       
+##   AH69086 | GO_DATA           
+##   AH69087 | GO_DATA_drug      
+##   ...       ...               
+##   AH69090 | cmap              
+##   AH69091 | cmap_expr         
+##   AH69092 | lincs             
+##   AH69093 | lincs_expr        
+##   AH69763 | cmap_rank</code></pre>
+<p>More detailed information about each data set can be returned as a <code>list</code>, here subsetted to 10th entry with <code>[10]</code>.</p>
+<pre class="r"><code>as.list(ssd)[10]</code></pre>
+<pre><code>## $AH69092
+## AnnotationHub with 1 record
+## # snapshotDate(): 2019-05-02 
+## # names(): AH69092
+## # $dataprovider: Broad Institute
+## # $species: Homo sapiens
+## # $rdataclass: character
+## # $rdatadateadded: 2019-04-15
+## # $title: lincs
+## # $description: LINCS mod-z scores matrix stored in h5 file
+## # $taxonomyid: 9606
+## # $genome: GRCh38
+## # $sourcetype: HDF5
+## # $sourceurl: https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE92742&amp;f...
+## # $sourcesize: NA
+## # $tags: c(&quot;LINCS&quot;, &quot;signatureSearchData&quot;) 
+## # retrieve record with 'object[[&quot;AH69092&quot;]]'</code></pre>
+</div>
 <div id="lincs-signature-database" class="section level1">
-<h1><span class="header-section-number">3</span> LINCS Signature Database</h1>
+<h1><span class="header-section-number">4</span> LINCS Signature Database</h1>
 <p>The L1000 assay, used for generating the LINCS data, measures the expression of 978 landmark genes and 80 control genes by loading amplified mRNA populations onto beads and then detecting their abundance with a fluorescent-based method <span class="citation">(Peck et al. 2006)</span>. The expression of 11,350 additional genes is imputed from the landmark genes by using as training data a large collection of Affymetrix gene chips <span class="citation">(Edgar, Domrachev, and Lash 2002)</span>.</p>
 <p>The LINCS data have been pre-processed by the Broad Institute to 5 different levels and are available for download from GEO. Level 1 data are the raw mean fluorescent intensity values that come directly from the Luminex scanner. Level 2 data are the expression intensities of the 978 landmark genes. They have been normalized and used to impute the expression of the additional 11,350 genes, forming Level 3 data. A robust z-scoring procedure was used to generate differential expression values from the normalized profiles (Level 4). Finally, a moderated z-scoring procedure was applied to the replicated samples of each experiment (mostly 3 replicates) to compute a weighted average signature (Level 5). For a more detailed description of the preprocessing methods used by the LINCS project, readers want to refer to the <a href="https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#">LINCS user guide</a>.</p>
 <p>Disregarding replicates, the LINCS data set contains 473,647 signatures with unique cell type and treatment combinations. This includes 19,811 drug-like small molecules tested on different cell lines at multiple concentrations and treatment times. In addition to compounds, several thousand genetic perturbations (gene knock-downs and over expressions) have been tested. Currently, the data described in this vignette are restricted to signatures of small molecule treatments across different cells lines. However, users have the option to assemble any custom collection of the LINCS data. For consistency, only signatures at one specific concentration (10<span class="math inline">\(\mu\)</span>M) and one time point (24h) have been selected for each small molecule in the default collection. These choices are similar to the conditions used in primary high-throughput compound screens of cell lines. Since the selected compound concentrations and treatment duration have not been tested by LINCS across all cell types yet, a subset of compounds had to be selected that best met the chosen treatment requirements. This left us with 8,104 compounds that were uniformly tested at the chosen concentration and treatment time, but across variable numbers of cell lines. The total number of expression signatures meeting this requirement is 45,956, while the total number of cell lines included in this data set is 30.</p>
 <div id="z-scores-from-annotationhub" class="section level2">
-<h2><span class="header-section-number">3.1</span> Z-scores from <code>AnnotationHub</code></h2>
+<h2><span class="header-section-number">4.1</span> Z-scores from <code>AnnotationHub</code></h2>
 <p>The LINCS sub-dataset, filtered and assembled according to the above criteria, can be downloaded from Bioconductor’s <code>AnnotationHub</code> as HDF5 file. In the example below, the path to this file is assigned to a character vector called <code>lincs_db_path</code>. A summary of the content of the HDF5 file can be returned with the <code>h5ls</code> function. Note, due to the large size of the LINCS data set, its download takes too much time to evaluate the following code section during the build time of this vignette.</p>
 <pre class="r"><code>library(AnnotationHub); library(rhdf5)
 ah &lt;- AnnotationHub()
@@ -1665,10 +1714,10 @@ h5ls(lincs_db_path) </code></pre>
 <p>In this case the loaded data instance includes moderated Z-scores from DE analyses of 12,328 genes for 8,140 compound treatments across a total of 30 cell lines corresponding to 45,956 expression signatures. This data set can be used by all set-based GESS methods provided by the <code>signatureSearch</code> package.</p>
 </div>
 <div id="z-scores-from-geo" class="section level2">
-<h2><span class="header-section-number">3.2</span> Z-scores from GEO</h2>
+<h2><span class="header-section-number">4.2</span> Z-scores from GEO</h2>
 <p>The following explains how to generate the above LINCS data object from scratch. This also illustrates how to filter the LINCS level 5 data in other ways.</p>
 <div id="download-level-5-data" class="section level3">
-<h3><span class="header-section-number">3.2.1</span> Download Level 5 Data</h3>
+<h3><span class="header-section-number">4.2.1</span> Download Level 5 Data</h3>
 <p>Download and unzip the following files from GEO entry <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742">GSE92742</a>:</p>
 <ul>
 <li><tt>GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz</tt></li>
@@ -1678,7 +1727,7 @@ h5ls(lincs_db_path) </code></pre>
 <p>The following code examples assume that the downloaded datasets are stored in a sub-directory called <code>data</code>. All paths in this vignette are given relative to the present working directory of a user’s R session.</p>
 </div>
 <div id="filter-signatures" class="section level3">
-<h3><span class="header-section-number">3.2.2</span> Filter Signatures</h3>
+<h3><span class="header-section-number">4.2.2</span> Filter Signatures</h3>
 <p>The following selects LINCS Level 5 signatures of compound treatments at a concentration of 10<span class="math inline">\(\mu\)</span>M and a treatment time of 24 hours. Note, the import command below may issue a warning message that can be ignored.</p>
 <pre class="r"><code>meta42 &lt;- readr::read_tsv(&quot;./data/GSE92742_Broad_LINCS_sig_info.txt&quot;) 
 dose &lt;- meta42$pert_idose[7]
@@ -1686,7 +1735,7 @@ dose &lt;- meta42$pert_idose[7]
 meta42_filter &lt;- sig_filter(meta42, pert_type=&quot;trt_cp&quot;, dose=dose, time=&quot;24 h&quot;) # 45956 X 14</code></pre>
 </div>
 <div id="z-score-data-in-hdf5" class="section level3">
-<h3><span class="header-section-number">3.2.3</span> Z-score Data in HDF5</h3>
+<h3><span class="header-section-number">4.2.3</span> Z-score Data in HDF5</h3>
 <p>Next, the large Z-score matrix of expression signatures is imported step-wise in subsets of manageable sizes and then appended to an HDF5 file (here <code>lincs.h5</code>). In this vignette, the latter is referred to as the LINCS Z-score database. Since the size of the full matrix is several GBs in size, it would consume too much memory to be read it into R at once. Reading the matrix in smaller batches and appending them to an HDF5 file is much more memory efficient. Subsequently, the <code>readHDF5chunk</code> function, defined by the <code>signatureSearchData</code> package, imports user-definable subsets of the data from the HDF5 file into a <code>SummarizedExperiment</code> object, here assigned to <code>se</code>.</p>
 <pre class="r"><code>gctx &lt;- &quot;./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx&quot;
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
@@ -1695,7 +1744,7 @@ se &lt;- readHDF5chunk(h5file=&quot;./data/lincs.h5&quot;, colindex=1:5000)</cod
 </div>
 </div>
 <div id="intensities-from-annotationhub" class="section level2">
-<h2><span class="header-section-number">3.3</span> Intensities from <code>AnnotationHub</code></h2>
+<h2><span class="header-section-number">4.3</span> Intensities from <code>AnnotationHub</code></h2>
 <p>The LINCS Level 3 data can be downloaded from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742">GEO</a> the same way as described above for the Level 5 data. The Level 3 data contain normalized gene expression values across all treatments and cell lines used by LINCS. The Level 3 signatures were filtered using the same dosage and duration criteria as the Level 5 data. The biological replicate information included in the Level 3 data were collapsed to mean values. Subsequently, the resulting matrix of mean expression values was written to an HDF5 file. The latter is referred to as <code>lincs_expr</code> database containing 38,824 signatures for a total of 5,925 small molecule treatments and 30 cell lines. Although the LINCS Level 3 and 5 data are filtered here the same way, the number of small molecules represented in the Level 3 data (5,925) is smaller than in the Level 5 data (8,140). The reason for this inconsistency is most likely that the Level 3 dataset, downloadable from GEO, is incomplete.</p>
 <p>The filtered and processed LINCS Level3 data (<code>lincs_expr</code>) can be loaded from Bioconductor’s <code>AnnotationHub</code> interface as follows.</p>
 <pre class="r"><code>library(AnnotationHub)
@@ -1705,10 +1754,10 @@ lincs_expr_path &lt;- ah[['AH69093']]</code></pre>
 <p>In this case the loaded <code>lincs_expr</code> instance includes mean expression values of 12,328 genes for 5,925 compound treatments across a total of 30 cell lines. This data set can be used by all correlation-based GESS methods provided by the <code>signatureSearch</code> package.</p>
 </div>
 <div id="intensities-from-geo" class="section level2">
-<h2><span class="header-section-number">3.4</span> Intensities from GEO</h2>
+<h2><span class="header-section-number">4.4</span> Intensities from GEO</h2>
 <p>The following steps explain how to generate the above data set from scratch. This also illustrates how to filter the LINCS Level 3 data in other ways.</p>
 <div id="download-level-3-data" class="section level3">
-<h3><span class="header-section-number">3.4.1</span> Download Level 3 Data</h3>
+<h3><span class="header-section-number">4.4.1</span> Download Level 3 Data</h3>
 <p>Download and unzip the following files from GEO entry <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742">GSE92742</a>:</p>
 <ul>
 <li><tt>GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx.gz</tt></li>
@@ -1718,14 +1767,14 @@ lincs_expr_path &lt;- ah[['AH69093']]</code></pre>
 <p>As above, the following code examples assume that the downloaded datasets are stored in a sub-directory called <code>data</code>. All paths in this vignette are given relative to the present working directory of a user’s R session.</p>
 </div>
 <div id="filter-signatures-1" class="section level3">
-<h3><span class="header-section-number">3.4.2</span> Filter Signatures</h3>
+<h3><span class="header-section-number">4.4.2</span> Filter Signatures</h3>
 <p>The following selects LINCS Level 3 signatures of compound treatments at a concentration of 10<span class="math inline">\(\mu\)</span>M and a treatment time of 24 hours.</p>
 <pre class="r"><code>inst42 &lt;- readr::read_tsv(&quot;./data/GSE92742_Broad_LINCS_inst_info.txt&quot;) 
 inst42_filter &lt;- inst_filter(inst42, pert_type=&quot;trt_cp&quot;, dose=10, dose_unit=&quot;um&quot;, 
                              time=24, time_unit=&quot;h&quot;) # 169,795 X 13</code></pre>
 </div>
 <div id="mean-intensities-in-hdf5" class="section level3">
-<h3><span class="header-section-number">3.4.3</span> Mean Intensities in HDF5</h3>
+<h3><span class="header-section-number">4.4.3</span> Mean Intensities in HDF5</h3>
 <p>Next, mean expression values are calculated among biological replicates and then appended in batches to the corresponding HDF5 file.</p>
 <pre class="r"><code># It takes some time
 meanExpr2h5(gctx=&quot;./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx&quot;,
@@ -1734,10 +1783,10 @@ meanExpr2h5(gctx=&quot;./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12
 </div>
 </div>
 <div id="cmap2-signature-database" class="section level1">
-<h1><span class="header-section-number">4</span> CMap2 Signature Database</h1>
+<h1><span class="header-section-number">5</span> CMap2 Signature Database</h1>
 <p>CMap2 (Version build02) contains GESs for 1,309 drugs and eight cell lines that were generated with Affymetrix Gene Chips as expression platform. In some cases this includes drug treatments at different concentrations and time points. For consistency, the CMap2 data was reduced to drug treatments with concentrations and time points that are comparable to those used for the above LINCS data. CMap2 data can be downloaded from GEO or its project site either in raw format or as rank transformed matrix. The ranks are based on DEG analyses of drug treatments (drug vs. no-drug) where the resulting Z-scores were used to generate the rank matrix. The latter was used here and is referred to as <code>rankMatrix</code>. The Affymetrix probe set identifiers stored in the row name slot of this matrix were translated into gene identifies. To obtain a matrix with unique gene identifiers, the ranks for genes represented by more than one probe set were averaged and then re-ranked accordingly. This final gene level rank matrix, referred to as <code>cmap_rank</code>, contains rank profiles for 12,403 genes from 1,309 compound treatments in up to 5 cells corresponding to a total of 3,587 treatment signatures. This matrix can be used for all GESS methods in the <code>signatureSearch</code> package that are compatible with rank data, such as the <code>gess_cmap</code> method.</p>
 <div id="rank-matrix-from-annotationhub" class="section level2">
-<h2><span class="header-section-number">4.1</span> Rank Matrix from <code>AnnotationHub</code></h2>
+<h2><span class="header-section-number">5.1</span> Rank Matrix from <code>AnnotationHub</code></h2>
 <p>The <code>cmap_rank</code> data can be downloaded from Bioconductor’s <code>AnnotationHub</code> as HDF5 file. Since CMap2 is much smaller than LINCS, it can be imported in its entirety into a <code>SummarizedExperiment</code> object (here assigned to <code>se</code>) without excessive memory requirements.</p>
 <pre class="r"><code>library(AnnotationHub)
 ah &lt;- AnnotationHub()
@@ -1746,14 +1795,14 @@ cmap_rank_path &lt;- ah[[&quot;AH69763&quot;]]
 se &lt;- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)</code></pre>
 </div>
 <div id="rank-matrix-from-sources" class="section level2">
-<h2><span class="header-section-number">4.2</span> Rank Matrix from Sources</h2>
+<h2><span class="header-section-number">5.2</span> Rank Matrix from Sources</h2>
 <p>The following steps explain how to generate the above CMap2 rank data set from scratch.</p>
 <div id="download-rank-data" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Download Rank Data</h3>
+<h3><span class="header-section-number">5.2.1</span> Download Rank Data</h3>
 <p>The <code>rankMatrix</code> can be downloaded from the CMap project site <a href="https://portals.broadinstitute.org/cmap">here</a>. The specific file to download from this site is <a href="ftp://ftp.broad.mit.edu/pub/cmap/rankMatrix.txt.zip">rankMatrix.txt.zip</a>. As before, it should be saved and unzipped in the <code>data</code> directory of a user’s R session.</p>
 </div>
 <div id="filter-instances" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Filter instances</h3>
+<h3><span class="header-section-number">5.2.2</span> Filter instances</h3>
 <p>The following selects from <code>rankMatrix</code> for each compound the chosen treatment concentration and time point. This is achieved with help of the experiment annotation file <code>cmap_instances_02.txt</code>, also available from the CMap project site. Since this file is relatively small it has been included in the <code>signatureSearchData</code> package from where it can be loaded into R as shown below.</p>
 <pre class="r"><code>path &lt;- system.file(&quot;extdata&quot;, &quot;cmap_instances_02.txt&quot;, package=&quot;signatureSearchData&quot;)
 cmap_inst &lt;- read.delim(path, check.names=FALSE) 
@@ -1763,9 +1812,9 @@ rankM_sub &lt;- rankM[, as.character(inst_id)]
 colnames(rankM_sub) &lt;- unique(paste(cmap_inst$cmap_name, cmap_inst$cell2, &quot;trt_cp&quot;, sep=&quot;__&quot;))</code></pre>
 </div>
 <div id="annotated-gene-level-data" class="section level3">
-<h3><span class="header-section-number">4.2.3</span> Annotated Gene Level Data</h3>
+<h3><span class="header-section-number">5.2.3</span> Annotated Gene Level Data</h3>
 <div id="annotation-information" class="section level4">
-<h4><span class="header-section-number">4.2.3.1</span> Annotation Information</h4>
+<h4><span class="header-section-number">5.2.3.1</span> Annotation Information</h4>
 <p>The following generates annotation information for Affymetirx probe set identifiers. Note, the three different Affymetrix chip types (HG-U133A, HT_HG-U133A, U133AAofAv2) used by CMap2 share nearly all probe set identifiers, meaning it is possible to use the same annotation package (here <code>hgu133a.db</code>) for all three.</p>
 <pre class="r"><code>library(hgu133a.db)
 myAnnot &lt;- data.frame(ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=&quot;, &quot;), 
@@ -1777,13 +1826,13 @@ myAnnot &lt;- data.frame(ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=
 saveRDS(myAnnot, &quot;./data/myAnnot.rds&quot;)</code></pre>
 </div>
 <div id="gene-level-data" class="section level4">
-<h4><span class="header-section-number">4.2.3.2</span> Gene Level Data</h4>
+<h4><span class="header-section-number">5.2.3.2</span> Gene Level Data</h4>
 <p>The <code>probe2gene</code> function transforms probe set to gene level data. If genes are represented by several probe sets then their mean intensities are used.</p>
 <pre class="r"><code>rankM_sub_gene &lt;- probe2gene(rankM_sub, myAnnot) </code></pre>
 </div>
 </div>
 <div id="store-rank-matrix-in-hdf5-file" class="section level3">
-<h3><span class="header-section-number">4.2.4</span> Store Rank Matrix in HDF5 file</h3>
+<h3><span class="header-section-number">5.2.4</span> Store Rank Matrix in HDF5 file</h3>
 <p>The sub-setted <code>rankMatrix</code> is written to an HDF5 file, referred to as <code>cmap_rank</code> database.</p>
 <pre class="r"><code>matrix2h5(rankM_sub_gene, &quot;./data/cmap_rank.h5&quot;, overwrite=TRUE) # 12403 X 3587
 rhdf5::h5ls(&quot;./data/cmap_rank.h5&quot;)
@@ -1793,7 +1842,7 @@ cmap_rank_se &lt;- readHDF5chunk(&quot;./data/cmap_rank.h5&quot;, colindex=1:5)<
 </div>
 </div>
 <div id="intensities-from-annotationhub-1" class="section level2">
-<h2><span class="header-section-number">4.3</span> Intensities from <code>AnnotationHub</code></h2>
+<h2><span class="header-section-number">5.3</span> Intensities from <code>AnnotationHub</code></h2>
 <p>To search CMap2 with <code>signatureSearch's</code> correlation based GESS methods (<code>gess_cor</code>), normalized gene expression values (here intensities) are required where the biological replicate information has been collapsed to mean values. For this, the <code>cmap_expr</code> database has been created from CEL files, which are the raw data of the Affymetrix technology. To obtain normalized expression data, the CEL files were downloaded from the CMap project site, and then processed with the MAS5 algorithm. Gene level expression data was generated the same way as described above. Next, the gene expression values for different concentrations and treatment times of each compound and cell were averaged. Subsequently, the expression matrix was saved to an HDF5 file, referred to as the <code>cmap_expr</code> database. It represents mean expression values of 12,403 genes for 1,309 compound treatments in up to 5 cells (3,587 signatures in total).</p>
 <p>The <code>cmap_expr</code> database can be downloaded as HDF5 file from Bioconductor’s <code>AnnotationHub</code> as follows.</p>
 <pre class="r"><code>library(AnnotationHub)
@@ -1803,20 +1852,20 @@ cmap_expr_path &lt;- ah[[&quot;AH69091&quot;]]</code></pre>
 <p>This data set can be used by all correlation-based GESS methods provided by the <code>signatureSearch</code> package.</p>
 </div>
 <div id="intensities-from-sources" class="section level2">
-<h2><span class="header-section-number">4.4</span> Intensities from Sources</h2>
+<h2><span class="header-section-number">5.4</span> Intensities from Sources</h2>
 <p>The following steps explain how to generate the above <code>cmap_expr</code> database from scratch.</p>
 <div id="directory-structure" class="section level3">
-<h3><span class="header-section-number">4.4.1</span> Directory Structure</h3>
+<h3><span class="header-section-number">5.4.1</span> Directory Structure</h3>
 <p>The large number of files processed in the next steps are organized in two sub-directories of a user’s R session. Input files will be stored in a <code>data</code> directory, while all output files will be written to a <code>results</code> directory.</p>
 <pre class="r"><code>dir.create(&quot;data&quot;); dir.create(&quot;data/CEL&quot;); dir.create(&quot;results&quot;) </code></pre>
 </div>
 <div id="download-of-cel-files" class="section level3">
-<h3><span class="header-section-number">4.4.2</span> Download of CEL Files</h3>
+<h3><span class="header-section-number">5.4.2</span> Download of CEL Files</h3>
 <p>The <code>getCmapCEL</code> function will download the 7,056 CEL files from the <a href="http://www.broadinstitute.org/cmap">CMap project site</a>, and save each of them to a subdirectory named <code>CEL</code> under <code>data</code>. Since this download step will take some time, the argument <code>rerun</code> has been assigned <code>FALSE</code> in the below function call to avoid running it accidentally. To execute the download, the argument <code>rerun</code> needs to be assigned <code>TRUE</code>. If the raw data are not needed, users can skip this time consuming step and work with the preprocessed <code>cmap_expr</code> database downloaded from the <code>AnnotationHub</code> instead.</p>
 <pre class="r"><code>getCmapCEL(rerun=FALSE) </code></pre>
 </div>
 <div id="determine-chip-type" class="section level3">
-<h3><span class="header-section-number">4.4.3</span> Determine Chip Type</h3>
+<h3><span class="header-section-number">5.4.3</span> Determine Chip Type</h3>
 <p>The CMAP data set is based on three different Affymetrix chip types (HG-U133A, HT_HG-U133A and U133AAofAv2). The following extracts the chip type information from the downloaded CEL files and stores the information in an <code>rds</code> file with the path <code>./data/chiptype.rds</code>.</p>
 <pre class="r"><code>library(affxparser)
 celfiles &lt;- list.files(&quot;./data/CEL&quot;, pattern=&quot;.CEL$&quot;)
@@ -1824,7 +1873,7 @@ chiptype &lt;- sapply(celfiles, function(x) affxparser::readCelHeader(paste0(&qu
 saveRDS(chiptype, &quot;./data/chiptype.rds&quot;)</code></pre>
 </div>
 <div id="normalization-of-cel-files" class="section level3">
-<h3><span class="header-section-number">4.4.4</span> Normalization of CEL Files</h3>
+<h3><span class="header-section-number">5.4.4</span> Normalization of CEL Files</h3>
 <p>The following processes the CEL files from each chip type separately using the MAS5 normalization algorithm. The results will be written to 3 subdirectores under <code>data</code> that are named after the chip type names. To reduce the memory consumption of this step, the CEL files are normalized in batches of 200. The normalization takes about 10 hours without parallelization. To save time, this process can be easily accelerated on a computer cluster.</p>
 <pre class="r"><code>chiptype &lt;- readRDS(&quot;./data/chiptype.rds&quot;)
 chiptype_list &lt;- split(names(chiptype), as.character(chiptype))
@@ -1835,14 +1884,14 @@ combineResults(chiptype_dir, rerun=FALSE)
 mas5df &lt;- combineNormRes(chiptype_dir, norm_method=&quot;MAS5&quot;)</code></pre>
 </div>
 <div id="gene-level-data-1" class="section level3">
-<h3><span class="header-section-number">4.4.5</span> Gene Level Data</h3>
+<h3><span class="header-section-number">5.4.5</span> Gene Level Data</h3>
 <p>After moving the <code>myAnnot.rds</code> file from above into the ‘data’ directory, the <code>probe2gene</code> function is used to transforms probe set to gene level data. If genes are represented by several probe sets then their mean intensities are used.</p>
 <pre class="r"><code>myAnnot &lt;- readRDS(&quot;./data/myAnnot.rds&quot;) 
 mas5df &lt;- probe2gene(mas5df, myAnnot) 
 saveRDS(mas5df,&quot;./data/mas5df.rds&quot;)</code></pre>
 </div>
 <div id="average-intensities-across-replicates" class="section level3">
-<h3><span class="header-section-number">4.4.6</span> Average Intensities Across Replicates</h3>
+<h3><span class="header-section-number">5.4.6</span> Average Intensities Across Replicates</h3>
 <p>The following averages the normalized gene expression values for different concentrations, treatment times and replicates of compounds and cell types.</p>
 <pre class="r"><code>mas5df &lt;- readRDS(&quot;./data/mas5df.rds&quot;) # dim: 12403 x 7056
 path &lt;- system.file(&quot;extdata&quot;, &quot;cmap_instances_02.txt&quot;, package=&quot;signatureSearchData&quot;)
@@ -1851,7 +1900,7 @@ cmap_drug_cell_expr &lt;- meanExpr(mas5df, cmap_inst) # dim: 12403 X 3587
 saveRDS(cmap_drug_cell_expr, &quot;./data/cmap_drug_cell_expr.rds&quot;)</code></pre>
 </div>
 <div id="mean-intensities-in-hdf5-1" class="section level3">
-<h3><span class="header-section-number">4.4.7</span> Mean Intensities in HDF5</h3>
+<h3><span class="header-section-number">5.4.7</span> Mean Intensities in HDF5</h3>
 <p>The normalized and averaged expression values are saved to an HDF5 file, referred to as <code>cmap_expr</code> database.</p>
 <pre class="r"><code>cmap_drug_cell_expr &lt;- readRDS(&quot;./data/cmap_drug_cell_expr.rds&quot;)
 ## match colnames to '(drug)__(cell)__(factor)' format
@@ -1864,11 +1913,11 @@ cmap_expr_se &lt;- readHDF5chunk(&quot;./data/cmap_expr.h5&quot;, colindex=1:5)<
 </div>
 </div>
 <div id="custom-signature-databases" class="section level1">
-<h1><span class="header-section-number">5</span> Custom Signature Databases</h1>
+<h1><span class="header-section-number">6</span> Custom Signature Databases</h1>
 <p>Custom databases of GESs can be built with the <code>build_custom_db</code> function provided by the <code>signatureSearch</code> package. For this the user provides custom genome-wide gene expression data (e.g. for drug, disease or genetic perturbations) in a <code>data.frame</code> or <code>matrix</code>. The gene expression data can be most types of the pre-processed gene expression values described under section 1.4 of the <code>signatureSearch</code> vignette.</p>
 </div>
 <div id="additional-datasets" class="section level1">
-<h1><span class="header-section-number">6</span> Additional Datasets</h1>
+<h1><span class="header-section-number">7</span> Additional Datasets</h1>
 <p>The <code>signatureSearchData</code> package also contains several annotation datasets, such as drug-target and mode of action (MOA) information of small molecules. They are required for <code>signatureSearch's</code> functional enrichment analysis (FEA) routines. Currently, most of these annotation data were downloaded from the following databases:</p>
 <ul>
 <li><a href="https://www.drugbank.ca/">DrugBank</a></li>
@@ -1951,7 +2000,7 @@ cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 <p><font color="blue">[ThG-Comment: I have commented out the Supplement section with the DEG analysis. Do we really need this section for anything in the signatureSearch package, or the paper?]</font></p>
 </div>
 <div id="session-info" class="section level1">
-<h1><span class="header-section-number">7</span> Session Info</h1>
+<h1><span class="header-section-number">8</span> Session Info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -1964,52 +2013,53 @@ cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 ## [1] C
 ## 
 ## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## [1] parallel  stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
-## [1] signatureSearchData_0.99.1
+## [1] AnnotationHub_2.15.15      BiocFileCache_1.7.10      
+## [3] dbplyr_1.4.0               BiocGenerics_0.29.2       
+## [5] signatureSearchData_0.99.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.1                    lattice_0.20-38              
 ##  [3] assertthat_0.2.1              digest_0.6.18                
-##  [5] mime_0.6                      BiocFileCache_1.7.10         
-##  [7] R6_2.4.0                      GenomeInfoDb_1.19.3          
-##  [9] stats4_3.6.0                  RSQLite_2.1.1                
-## [11] evaluate_0.13                 httr_1.4.0                   
-## [13] pillar_1.3.1                  zlibbioc_1.29.0              
-## [15] rlang_0.4.0                   curl_3.3                     
-## [17] blob_1.1.1                    S4Vectors_0.21.24            
-## [19] R.utils_2.8.0                 R.oo_1.22.0                  
-## [21] Matrix_1.2-17                 preprocessCore_1.45.0        
-## [23] rmarkdown_1.12                BiocParallel_1.17.19         
-## [25] AnnotationHub_2.15.15         stringr_1.4.0                
-## [27] RCurl_1.95-4.12               bit_1.1-14                   
-## [29] shiny_1.3.2                   DelayedArray_0.9.9           
-## [31] compiler_3.6.0                httpuv_1.5.1                 
-## [33] xfun_0.6                      pkgconfig_2.0.2              
-## [35] BiocGenerics_0.29.2           htmltools_0.3.6              
-## [37] tidyselect_0.2.5              SummarizedExperiment_1.13.0  
-## [39] tibble_2.1.1                  GenomeInfoDbData_1.2.1       
-## [41] interactiveDisplayBase_1.21.0 IRanges_2.17.6               
-## [43] matrixStats_0.54.0            crayon_1.3.4                 
-## [45] dplyr_0.8.0.1                 dbplyr_1.4.0                 
-## [47] later_0.8.0                   bitops_1.0-6                 
-## [49] R.methodsS3_1.7.1             rappdirs_0.3.1               
-## [51] grid_3.6.0                    xtable_1.8-4                 
-## [53] affy_1.61.0                   DBI_1.0.0                    
-## [55] magrittr_1.5                  stringi_1.4.3                
-## [57] XVector_0.23.2                promises_1.0.1               
-## [59] affyio_1.53.0                 limma_3.39.19                
-## [61] Rhdf5lib_1.5.4                tools_3.6.0                  
-## [63] bit64_0.9-7                   Biobase_2.43.1               
-## [65] glue_1.3.1                    purrr_0.3.2                  
-## [67] parallel_3.6.0                yaml_2.2.0                   
-## [69] AnnotationDbi_1.45.1          rhdf5_2.27.19                
-## [71] BiocManager_1.30.4            GenomicRanges_1.35.2         
-## [73] memoise_1.1.0                 knitr_1.22</code></pre>
+##  [5] mime_0.6                      R6_2.4.0                     
+##  [7] GenomeInfoDb_1.19.3           stats4_3.6.0                 
+##  [9] RSQLite_2.1.1                 evaluate_0.13                
+## [11] httr_1.4.0                    pillar_1.3.1                 
+## [13] zlibbioc_1.29.0               rlang_0.4.0                  
+## [15] curl_3.3                      blob_1.1.1                   
+## [17] S4Vectors_0.21.24             R.utils_2.8.0                
+## [19] R.oo_1.22.0                   Matrix_1.2-17                
+## [21] preprocessCore_1.45.0         rmarkdown_1.12               
+## [23] BiocParallel_1.17.19          stringr_1.4.0                
+## [25] RCurl_1.95-4.12               bit_1.1-14                   
+## [27] shiny_1.3.2                   DelayedArray_0.9.9           
+## [29] compiler_3.6.0                httpuv_1.5.1                 
+## [31] xfun_0.6                      pkgconfig_2.0.2              
+## [33] htmltools_0.3.6               tidyselect_0.2.5             
+## [35] SummarizedExperiment_1.13.0   tibble_2.1.1                 
+## [37] GenomeInfoDbData_1.2.1        interactiveDisplayBase_1.21.0
+## [39] IRanges_2.17.6                matrixStats_0.54.0           
+## [41] crayon_1.3.4                  dplyr_0.8.0.1                
+## [43] later_0.8.0                   bitops_1.0-6                 
+## [45] R.methodsS3_1.7.1             rappdirs_0.3.1               
+## [47] grid_3.6.0                    xtable_1.8-4                 
+## [49] affy_1.61.0                   DBI_1.0.0                    
+## [51] magrittr_1.5                  stringi_1.4.3                
+## [53] XVector_0.23.2                promises_1.0.1               
+## [55] affyio_1.53.0                 limma_3.39.19                
+## [57] Rhdf5lib_1.5.4                tools_3.6.0                  
+## [59] bit64_0.9-7                   Biobase_2.43.1               
+## [61] glue_1.3.1                    purrr_0.3.2                  
+## [63] yaml_2.2.0                    AnnotationDbi_1.45.1         
+## [65] rhdf5_2.27.19                 BiocManager_1.30.4           
+## [67] GenomicRanges_1.35.2          memoise_1.1.0                
+## [69] knitr_1.22</code></pre>
 </div>
 <div id="funding" class="section level1">
-<h1><span class="header-section-number">8</span> Funding</h1>
+<h1><span class="header-section-number">9</span> Funding</h1>
 <p>This project is funded by NIH grants <a href="https://www.longevityconsortium.org/">U19AG02312</a> and <a href="https://www.longevitygenomics.org/">U24AG051129</a> awarded by the National Institute on Aging (NIA). Subcomponents of the environment are based on methods developed by projects funded by NSF awards ABI-1661152 and PGRP-1810468. The High-Performance Computing (HPC) resources used for optimizing and applying the the code of this project were funded by NIH and NSF grants 1S10OD016290-01A1 and MRI-1429826, respectively.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
