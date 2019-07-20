@@ -122,7 +122,7 @@ The titles of the data sets can be returned with `ssd$title`.
 ssd$title
 ```
 
-More detailed information about each data set can be returned as a `list`, here 
+More detailed information about each data set can be returned as a `list`, below 
 subsetted to 10th entry with `[10]`.
 
 ```{r ah_explore_ssd3, eval=TRUE}
