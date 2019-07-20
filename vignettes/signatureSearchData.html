@@ -1678,6 +1678,12 @@ ssd</code></pre>
 ##   AH69092 | lincs             
 ##   AH69093 | lincs_expr        
 ##   AH69763 | cmap_rank</code></pre>
+<p>The titles of the data sets can be returned with <code>ssd$title</code>.</p>
+<pre class="r"><code>ssd$title</code></pre>
+<pre><code>##  [1] &quot;dtlink_db_clue_sti&quot; &quot;goAnno&quot;             &quot;goAnno_drug&quot;       
+##  [4] &quot;GO_DATA&quot;            &quot;GO_DATA_drug&quot;       &quot;taurefList&quot;        
+##  [7] &quot;ES_NULL&quot;            &quot;cmap&quot;               &quot;cmap_expr&quot;         
+## [10] &quot;lincs&quot;              &quot;lincs_expr&quot;         &quot;cmap_rank&quot;</code></pre>
 <p>More detailed information about each data set can be returned as a <code>list</code>, here subsetted to 10th entry with <code>[10]</code>.</p>
 <pre class="r"><code>as.list(ssd)[10]</code></pre>
 <pre><code>## $AH69092
@@ -1697,6 +1703,7 @@ ssd</code></pre>
 ## # $sourcesize: NA
 ## # $tags: c(&quot;LINCS&quot;, &quot;signatureSearchData&quot;) 
 ## # retrieve record with 'object[[&quot;AH69092&quot;]]'</code></pre>
+<p>Details about the usage of <code>AnnotationHub</code> can be found in its vignettes <a href="http://bioconductor.org/packages/AnnotationHub/">here</a>.</p>
 </div>
 <div id="lincs-signature-database" class="section level1">
 <h1><span class="header-section-number">4</span> LINCS Signature Database</h1>
