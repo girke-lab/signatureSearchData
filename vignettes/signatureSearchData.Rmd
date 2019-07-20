@@ -1,6 +1,6 @@
 ---
 title: _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
-author: "Authors: Yuzhu Duan and Thomas Girke"
+author: "Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
   html_document:
