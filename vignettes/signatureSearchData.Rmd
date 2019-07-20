@@ -1,5 +1,5 @@
 ---
-title: _signatureSearchData_ - Reference Data for Large-Scale Gene Expression Signature Searching
+title: _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
 author: "Authors: Yuzhu Duan and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
