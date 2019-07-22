@@ -3,6 +3,8 @@ title: _signatureSearchData_ - Reference Data for Large-Scale Gene Expression Si
 author: "Authors: Yuzhu Duan and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
+  pdf_document:
+    toc: true
   html_document:
     toc: true
     toc_float:
@@ -12,14 +14,12 @@ output:
     fig_caption: yes
     code_folding: show
     number_sections: true
-  pdf_document:
-    toc: true
 fontsize: 15pt
 bibliography: bibtex.bib
 vignette: >
   %\VignetteIndexEntry{signatureSearchData}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 <style>

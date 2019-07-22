@@ -5,7 +5,7 @@ Description: CMAP/LINCS hdf5 databases and other annotations used for
 Version: 0.99.1
 Author: Yuzhu Duan <yduan004@ucr.edu>
 Maintainer: Yuzhu Duan <yduan004@ucr.edu>
-Depends: R (>= 3.5)
+Depends: R (>= 3.6)
 Imports: AnnotationHub, utils, RSQLite, affy, limma, Biobase, magrittr, dplyr,
          R.utils, stats, methods, rhdf5, SummarizedExperiment
 Suggests:knitr, rmarkdown
