@@ -1,6 +1,6 @@
 ---
-title: _signatureSearchData_ - Reference Data for Large-Scale Gene Expression Signature Searching
-author: "Authors: Yuzhu Duan and Thomas Girke"
+title: _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
+author: "Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
   pdf_document:
@@ -42,23 +42,23 @@ suppressPackageStartupMessages({
 
 The `signatureSearchData` package provides access to the reference data used by
 the associated `signatureSearch` software package. The latter allows to search 
-with a query gene expression signature a database of treatment signatures to 
+with a query gene expression signature (GES) a database of treatment GESs to 
 identify cellular states with similar expression responses (connections). This 
 way one can identify drugs or gene knockouts that induce expression phenotypes 
 similar to a sample of interest. The resulting associations may lead to novel 
 functional insights how perturbagens of interest interact with biological systems. 
 
-Currently, `signatureSearchData` includes gene expression data from the CMap 
-(Connectivity Map) and LINCS (Library of Network-Based Cellular Signatures) 
-projects that are largely based on drug and
-genetic perturbation experiments performed on variable numbers of human cell
-lines [@Lamb2006-du; @Subramanian2017-fu]. In `signatureSearchData` these data sets 
-are preprocessed as needed by the gene expression signature search (GESS)
-algorithms implemented and used by `signatureSearch`. The preprocessed data
-types include but are not limited to normalized gene expression values 
-(_e.g._ intensity values), log fold changes (LFC) and Z-scores, P or FDR values 
-for DEG calls, rankings based on selected preprocessing routines or sets of 
-top up/down-regulated DEGs. 
+Currently, `signatureSearchData` includes gene expression data from the CMap
+(Connectivity Map) and LINCS (Library of Network-Based Cellular Signatures)
+projects that are largely based on drug and genetic perturbation experiments
+performed on variable numbers of human cell lines [@Lamb2006-du;
+@Subramanian2017-fu]. In `signatureSearchData` these data sets have been
+preprocessed for the gene expression signature search (GESS) algorithms
+implemented in `signatureSearch`. The preprocessed data types include but are
+not limited to normalized gene expression values (_e.g._ intensity values), log
+fold changes (LFC) and Z-scores, p-values or FDRs of differentially expressed 
+genes (DEGs), rankings based on selected preprocessing routines or sets of top 
+up/down-regulated DEGs. 
 
 The CMap data were downloaded from the [CMap project
 site](https://portals.broadinstitute.org/cmap/) (Version build02). The latter is
@@ -73,7 +73,7 @@ million. This was achieved by switching to a much more cost effective gene
 expression profiling technology called L1000 assay [@Peck2006-rf;
 @Edgar2002-di]. The current set of perturbations covered by the LINCS data set
 includes 19,811 drug-like small molecules applied at variable concentrations
-and treatment times to 70 human non-cancer (normal) and cancer cell lines.
+and treatment times to ~70 human non-cancer (normal) and cancer cell lines.
 Additionally, it includes several thousand genetic perturbagens composed of
 gene knockdown and over-expression experiments. 
 
@@ -84,13 +84,14 @@ well as sequencing-based methods, such as RNA-Seq. Currently,
 `signatureSearchData` does not include RNA-Seq data mainly due to the lack
 of large-scale perturbation studies (_e.g._ drug-based) available in the public
 domain that are based on RNA-Seq. This situation may change in the near future
-once the cost of RNA-Seq becomes more cost effective for this purpose. 
+once the technology has become more affordable. 
 
 
-# Install and load `signatureSearchData`
+# Install and Load Package
 
 `signatureSearch` is a R/Bioconductor package and can be installed using 
 `BiocManager::install()`.
+
 ```{r install, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -102,14 +103,43 @@ After the package is installed, it can be loaded in an R session as follows.
 library(signatureSearchData)
 ```
 
-# LINCS signature database
+# Explore Data Sets
+
+A summary of the data sets provided by the `signatureSearchData` package can be
+obtained with the `query` function of the `AnnotationHub` package. The information
+is stored in an object of class `AnnotationHub`, here assigned to `ssd`.
+
+```{r ah_explore_ssd1, eval=TRUE, warning=FALSE, message=FALSE }
+library(AnnotationHub)
+ah <- AnnotationHub()
+ssd <- query(ah, c("signatureSearchData"))
+ssd
+```
+
+The titles of the data sets can be returned with `ssd$title`.
+
+```{r ah_explore_ssd2, eval=TRUE, warning=FALSE, message=FALSE }
+ssd$title
+```
+
+More detailed information about each data set can be returned as a `list`, below 
+subsetted to 10th entry with `[10]`.
+
+```{r ah_explore_ssd3, eval=TRUE}
+as.list(ssd)[10]
+```
+
+Details about the usage of `AnnotationHub` can be found in its vignettes [here](http://bioconductor.org/packages/AnnotationHub/).
+
+# LINCS Signature Database
+
 The L1000 assay, used for generating the LINCS data, measures the expression 
 of 978 landmark genes and 80 control genes by loading amplified mRNA populations 
 onto beads and then detecting their abundance with a fluorescent-based method [@Peck2006-rf]. 
 The expression of 11,350 additional genes is imputed from the landmark genes by using 
 as training data a large collection of Affymetrix gene chips [@Edgar2002-di].
 
-The LINCS data are pre-processed by the Broad Institute to 5 different levels
+The LINCS data have been pre-processed by the Broad Institute to 5 different levels
 and are available for download from GEO. Level 1 data are the raw mean
 fluorescent intensity values that come directly from the Luminex scanner. Level
 2 data are the expression intensities of the 978 landmark genes. They have been
@@ -128,78 +158,85 @@ small molecules tested on different cell lines at multiple concentrations and
 treatment times. In addition to compounds, several thousand genetic
 perturbations (gene knock-downs and over expressions) have been tested.
 Currently, the data described in this vignette are restricted to signatures of
-small molecule treatments across different cells lines. For consistency, only
-signatures at one specific concentration (10uM) and one time point (24h) have
-been selected for each small molecule. These choices are similar to the
-conditions used in primary high-throughput compound screens of cell lines.
-Since the selected compound concentrations and treatment duration have not been
-tested by LINCS across all cell types yet, a subset of compounds had to be
-selected that best met the chosen treatment requirements. This left us with 8,104
-compounds that were uniformly tested at the chosen concentration and treatment time, but
-across variable numbers of cell lines. The total number of expression signatures
-meeting this requirement is 45,956, while the total number of cell lines included 
-in this data set is 30. 
+small molecule treatments across different cells lines. However, users have the
+option to assemble any custom collection of the LINCS data. For consistency,
+only signatures at one specific concentration (10$\mu$M) and one time point
+(24h) have been selected for each small molecule in the default collection.
+These choices are similar to the conditions used in primary high-throughput
+compound screens of cell lines.  Since the selected compound concentrations and
+treatment duration have not been tested by LINCS across all cell types yet, a
+subset of compounds had to be selected that best met the chosen treatment
+requirements. This left us with 8,104 compounds that were uniformly tested at
+the chosen concentration and treatment time, but across variable numbers of
+cell lines. The total number of expression signatures meeting this requirement
+is 45,956, while the total number of cell lines included in this data set is
+30. 
 
-## Load from `AnnotationHub`
+## Z-scores from `AnnotationHub`
 
-The sub-dataset from LINCS that was filtered and assembled according to the 
-above steps can be loaded through the `AnnotationHub` interface as follows. 
-
+The LINCS sub-dataset, filtered and assembled according to the above criteria,
+can be downloaded from Bioconductor's `AnnotationHub` as HDF5 file. In the
+example below, the path to this file is assigned to a character vector called
+`lincs_db_path`. A summary of the content of the HDF5 file can be returned with
+the `h5ls` function. Note, due to the large size of the LINCS data set, its download 
+takes too much time to evaluate the following code section during the build time of 
+this vignette. 
 
 ```{r lincs, eval=FALSE}
 library(AnnotationHub); library(rhdf5)
 ah <- AnnotationHub()
 query(ah, c("signatureSearchData", "lincs"))
 lincs_db_path <- ah[['AH69092']]
-h5ls(lincs_db_path)
+h5ls(lincs_db_path) 
 ```
 
-In summary, the loaded data instance includes moderated z-scores from a DE
-analysis outcomes of 12,328 genes of 8,140 compound treatments across a total
-of 30 cell lines. This data set can be used by all GESS methods provided by the
-`signatureSearch` package.
+In this case the loaded data instance includes moderated Z-scores from DE
+analyses of 12,328 genes for 8,140 compound treatments across a total of 30
+cell lines corresponding to 45,956 expression signatures. This data set can be
+used by all set-based GESS methods provided by the `signatureSearch` package.
 
-## Generate from the original resources
+## Z-scores from GEO 
 
-The following steps explain how to generate the above data set from scratch. This also
-illustrates how to filter the LINCS level 5 data in other ways.
+The following explains how to generate the above LINCS data object from
+scratch. This also illustrates how to filter the LINCS level 5 data in other
+ways.
 
-### Download LINCS Level 5 data from GEO 
+### Download Level 5 Data 
 
 Download and unzip the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
-+ GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz
-+ GSE92742_Broad_LINCS_gene_info.txt.gz
-+ GSE92742_Broad_LINCS_sig_info.txt.gz
++ <tt>GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz</tt>
++ <tt>GSE92742_Broad_LINCS_gene_info.txt.gz</tt>
++ <tt>GSE92742_Broad_LINCS_sig_info.txt.gz</tt>
 
 The following code examples assume that the downloaded datasets are stored in a
 sub-directory called `data`. All paths in this vignette are given relative to
-the present working directory of a user’s R session.
+the present working directory of a user's R session.
 
-### Filter signatures 
+### Filter Signatures 
 
 The following selects LINCS Level 5 signatures of compound treatments at a 
-concentration of 10uM and a treatment time of 24 hours.
+concentration of 10$\mu$M and a treatment time of 24 hours. Note, the import command
+below may issue a warning message that can be ignored. 
 
 ```{r filter_meta42, eval=FALSE}
-## ignore warning message
 meta42 <- readr::read_tsv("./data/GSE92742_Broad_LINCS_sig_info.txt") 
 dose <- meta42$pert_idose[7]
 ## filter rows by 'pert_type' as compound, 10uM concentration, and 24h treatment time
 meta42_filter <- sig_filter(meta42, pert_type="trt_cp", dose=dose, time="24 h") # 45956 X 14
 ```
 
-### Save z-score matrix from gctx file to HDF5 file 
+### Z-score Data in HDF5
 
-Next the large z-score matrix of expression signatures is imported step-wise in
-subsets of manageable size and then appended to an HDF5 file. In the following,
-the latter is referred to as the LINCS database. Since the size of the full
-matrix is tens of GBs in size, it would consume too much memory to be read into
-R at once. Reading the matrix in smaller batches and appending them to an HDF5
-file is much more memory efficient. 
-
-We also provide the utility to import the data stored in the HDF5 file as a
-`SummarizedExperiment` object.
+Next, the large Z-score matrix of expression signatures is imported step-wise
+in subsets of manageable sizes and then appended to an HDF5 file (here
+`lincs.h5`).  In this vignette, the latter is referred to as the LINCS
+Z-score database. Since the size of the full matrix is several GBs in size, it would
+consume too much memory to be read it into R at once. Reading the matrix in
+smaller batches and appending them to an HDF5 file is much more memory
+efficient. Subsequently, the `readHDF5chunk` function, defined by the
+`signatureSearchData` package, imports user-definable subsets of the data from
+the HDF5 file into a `SummarizedExperiment` object, here assigned to `se`.
 
 ```{r extract_modz, eval=FALSE}
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
@@ -208,27 +245,26 @@ gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
 se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 ```
 
-# `lincs_expr` signature database
+## Intensities from `AnnotationHub`
 
 The LINCS Level 3 data can be downloaded from
 [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742) the same way
 as described above for the Level 5 data. The Level 3 data contain normalized
-gene expression values across all treatments and cell lines used by LINCS.
-The Level 3 signatures were filtered the same way as the Level 5 data. The biological 
-replicate information included in the Level 3 data were collapsed to mean values. 
-Subsequently, the resulting matrix of mean expression
-values was written to an HDF5 file. The latter is referred to as `lincs_expr`
-database containing 38,824 signatures for a total of 5,925 small molecule
-treatments and 30 cell lines. Even though the LINCS Level 3 and Level 5 data are
-filtered at the same condition, the number of small molecules in Level 3 data (5,925)
-is less than Level 5 (8,140). This is abnormal since the differential expression
-signature of a small molecule treatment condition must have the corresponding expression values.
-The possible reason is that the LINCS Level 3 dataset or the instance metadata
-provided at GEO is not complete.
+gene expression values across all treatments and cell lines used by LINCS.  The
+Level 3 signatures were filtered using the same dosage and duration criteria as
+the Level 5 data. The biological replicate information included in the Level 3
+data were collapsed to mean values.  Subsequently, the resulting matrix of mean
+expression values was written to an HDF5 file. The latter is referred to as
+`lincs_expr` database containing 38,824 signatures for a total of 5,925 small
+molecule treatments and 30 cell lines. Although the LINCS Level 3 and 5 data
+are filtered here the same way, the number of small molecules represented in
+the Level 3 data (5,925) is smaller than in the Level 5 data (8,140). The reason for
+this inconsistency is most likely that the Level 3 dataset, downloadable from GEO,
+is incomplete.
 
-## Load from `AnnotationHub`
-The filtered and processed LINCS Level3 data can be loaded through the 
-`AnnotationHub` interface as follows.
+The filtered and processed LINCS Level3 data (`lincs_expr`) can be loaded from 
+Bioconductor's `AnnotationHub` interface as follows.
+
 ```{r lincs_expr, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
@@ -236,106 +272,123 @@ query(ah, c("signatureSearchData", "lincs_expr"))
 lincs_expr_path <- ah[['AH69093']]
 ```
 
-In summary, the loaded `lincs_expr` instances includes mean expression values of 
-12,328 genes of 5,925 compound treatments across a total of 30 cell lines. 
-This data set can be used by correlation based methods (e.g. Spearman correlation 
-coefficient) provided by the signatureSearch package.
+In this case the loaded `lincs_expr` instance includes mean expression values of 
+12,328 genes for 5,925 compound treatments across a total of 30 cell lines. 
+This data set can be used by all correlation-based GESS methods provided by the 
+`signatureSearch` package.
 
-## Generate from the original resources
+## Intensities from GEO
 
 The following steps explain how to generate the above data set from scratch. 
 This also illustrates how to filter the LINCS Level 3 data in other ways.
 
-### Download LINCS Level 3 data from GEO 
+### Download Level 3 Data 
 
 Download and unzip the following files from GEO entry [GSE92742](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742):
 
-+ GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx.gz
-+ GSE92742_Broad_LINCS_gene_info.txt.gz
-+ GSE92742_Broad_LINCS_inst_info.txt.gz
++ <tt>GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx.gz</tt>
++ <tt>GSE92742_Broad_LINCS_gene_info.txt.gz</tt>
++ <tt>GSE92742_Broad_LINCS_inst_info.txt.gz</tt>
 
-The same as LINCS Level 5 data, the following code examples assume that the 
-uncompressed datasets are stored in a sub-directory called `data`.
+As above, the following code examples assume that the downloaded datasets are
+stored in a sub-directory called `data`. All paths in this vignette are given
+relative to the present working directory of a user's R session.
 
-### Filter signatures 
+### Filter Signatures 
 
 The following selects LINCS Level 3 signatures of compound treatments at a 
-concentration of 10 uM and a treatment time of 24 hours.
+concentration of 10$\mu$M and a treatment time of 24 hours. 
+
 ```{r filter_expr, eval=FALSE}
 inst42 <- readr::read_tsv("./data/GSE92742_Broad_LINCS_inst_info.txt") 
 inst42_filter <- inst_filter(inst42, pert_type="trt_cp", dose=10, dose_unit="um", 
                              time=24, time_unit="h") # 169,795 X 13
 ```
 
-### Calculate mean expression value and write the expression matrix to HDF5 file
+### Mean Intensities in HDF5
 
-The following function calculates the mean expression values of the biological replicates 
-of the same small molecule treatment condition and writes the mean expression matrix 
-to an HDF5 file in batches.
+Next, mean expression values are calculated among biological replicates and then appended
+in batches to the corresponding HDF5 file.
+
 ```{r extract_expr, eval=FALSE}
 # It takes some time
 meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx",
             inst=inst42_filter, h5file="./data/lincs_expr.h5") # 12328 X 38824
 ```
 
-# `cmap_rank` signature database
+# CMap2 Signature Database
 
-The CMap group has pre-processed the Affymetrix Chip data and got a `rankMatrix` 
-storing the ranks of probe sets for each instance (a treatment and control pair 
-and the probe sets were ordered by their extent of differential expression 
-between this treatment and control pair). In total, the `rankMatrix` is a collection
-of 6100 gene rank signature of 1309 compounds in 5 cells tested at multiple 
-concentrations and treatment times. Since not all CMap compounds are tested across
-all 5 cell lines, the number of signature is not the multiplication of the number 
-of compounds and cell lines. For consistency with the LINCS data, the 
-concentration and treatment time information is dropped by selecting only one condition of a 
-compound treatment in a cell. The probe sets were transformed to gene levels 
-by taking mean value of ranks of probe sets representing the same gene. 
-The resulting sub-dataset of the `rankMatrix`, referred to as `cmap_rank`, contains 
-rank profiles of 12,403 genes from 1,309 compound treatments in 5 cells 
-(3,587 signatures in total). It can be used to calculate the connectivity scores 
-to the query gene sets by `gess_cmap` method in the `signatureSearch` package.
+CMap2 (Version build02) contains GESs for 1,309 drugs and eight cell lines that
+were generated with Affymetrix Gene Chips as expression platform. In some cases
+this includes drug treatments at different concentrations and time points.  For
+consistency, the CMap2 data was reduced to drug treatments with concentrations
+and time points that are comparable to those used for the above LINCS data.
+CMap2 data can be downloaded from GEO or its project site either in raw format or
+as rank transformed matrix.  The ranks are based on DEG analyses of drug
+treatments (drug vs. no-drug) where the resulting Z-scores were used to
+generate the rank matrix. The latter was used here and is referred to as
+`rankMatrix`. The Affymetrix probe set identifiers stored in the row name slot 
+of this matrix were translated into gene identifies.  To obtain a matrix with unique gene
+identifiers, the ranks for genes represented by more than one probe set were
+averaged and then re-ranked accordingly. This final gene level rank matrix, referred to as `cmap_rank`,
+contains rank profiles for 12,403 genes from 1,309 compound treatments in up to 5
+cells corresponding to a total of 3,587 treatment signatures. This matrix can
+be used for all GESS methods in the `signatureSearch` package that are
+compatible with rank data, such as the `gess_cmap` method.
 
-## Load from `AnnotationHub`
-The `cmap_rank` database that was filtered and assembled according to the above steps 
-can be loaded through the `AnnotationHub` interface as follows.
+## Rank Matrix from `AnnotationHub`
+
+The `cmap_rank` data can be downloaded from Bioconductor's `AnnotationHub` as HDF5
+file. Since CMap2 is much smaller than LINCS, it can be imported in its
+entirety into a `SummarizedExperiment` object (here assigned to `se`) without
+excessive memory requirements. 
+
 ```{r cmap_rank, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
 query(ah, c("signatureSearchData", "cmap_rank"))
 cmap_rank_path <- ah[["AH69763"]]
+se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
 ```
-In summary, the loaded data instance includes gene ranks from a DE analysis outcomes 
-of 12,403 genes of 1,309 compound treatments across a total of 5 cell lines. 
-This data set can be used by the `gess_cmap` method provided by the `signatureSearch` package.
 
-## Generate from the original resources
+## Rank Matrix from Sources
 
-The following steps explain how to generate the above data set from scratch. 
+The following steps explain how to generate the above CMap2 rank data set from scratch. 
 
-### Download the `rankMatrix` from [CMap](https://portals.broadinstitute.org/cmap)
+### Download Rank Data 
 
-Download and unzip the [rankMatrix.txt.zip](ftp://ftp.broad.mit.edu/pub/cmap/rankMatrix.txt.zip)
-to the `data` directory under the present working directory of the user’s R session.
+The `rankMatrix` can be downloaded from the CMap project site [here](https://portals.broadinstitute.org/cmap).
+The specific file to download from this site is [rankMatrix.txt.zip](ftp://ftp.broad.mit.edu/pub/cmap/rankMatrix.txt.zip).
+As before, it should be saved and unzipped in the `data` directory of a user's R session.
 
 ### Filter instances
-The following selects `rankMatrix` only one condition of a compound treatment in a cell .
+
+The following selects from `rankMatrix` for each compound the chosen treatment
+concentration and time point. This is achieved with help of the experiment
+annotation file `cmap_instances_02.txt`, also available from the CMap project
+site. Since this file is relatively small it has been included in the
+`signatureSearchData` package from where it can be loaded into R as shown
+below.
+
 ```{r filter_rankm, eval=FALSE}
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 cmap_inst <- read.delim(path, check.names=FALSE) 
 inst_id <- cmap_inst$instance_id[!duplicated(paste(cmap_inst$cmap_name, cmap_inst$cell2, sep="_"))]
 rankM <- read.delim("./data/rankMatrix.txt", check.names=FALSE, row.names=1) # 22283 X 6100
-rankM_sub <- rankM[,as.character(inst_id)]
+rankM_sub <- rankM[, as.character(inst_id)]
 colnames(rankM_sub) <- unique(paste(cmap_inst$cmap_name, cmap_inst$cell2, "trt_cp", sep="__"))
 ```
 
-###  Transform probe set to gene level data
+### Annotated Gene Level Data
 
-#### Obtain annotation information
-The following generates annotation information for the Affymetirx probe set
-identifiers. Note, the three different Affymetrix chip types used by CMap
-share most probe set ids (>95%), meaning it is possible to use the same 
-annotation package.
+#### Annotation Information
+
+The following generates annotation information for Affymetirx probe set
+identifiers. Note, the three different Affymetrix chip types (HG-U133A,
+HT_HG-U133A, U133AAofAv2) used by CMap2 share nearly all probe set identifiers,
+meaning it is possible to use the same annotation package (here `hgu133a.db`)
+for all three.
+
 ```{r affyid_annot, eval=FALSE, message=FALSE}
 library(hgu133a.db)
 myAnnot <- data.frame(ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=", "), 
@@ -347,17 +400,20 @@ myAnnot <- data.frame(ACCNUM=sapply(contents(hgu133aACCNUM), paste, collapse=", 
 saveRDS(myAnnot, "./data/myAnnot.rds")
 ```
 
-#### Transform probe sets to genes
-The probe sets were transformed to gene levels by taking mean value of ranks of
-probe sets representing the same gene.
+#### Gene Level Data
+
+The `probe2gene` function transforms probe set to gene level data. If genes are
+represented by several probe sets then their mean intensities are used.
+
 ```{r mr_prob, eval=FALSE}
-rankM_sub_gene <- probe2gene(rankM_sub, myAnnot) # It takes some time
+rankM_sub_gene <- probe2gene(rankM_sub, myAnnot) 
 ```
 
-### Write the processed rank matrix to an HDF5 file
+### Store Rank Matrix in HDF5 file
 
-The sub-dataset of the `rankMatrix` was assembled and written to an HDF5 file, 
-which is the `cmap_rank` database
+The sub-setted `rankMatrix` is written to an HDF5 file, referred to as
+`cmap_rank` database.
+
 ```{r cmap_rank2h5, eval=FALSE}
 matrix2h5(rankM_sub_gene, "./data/cmap_rank.h5", overwrite=TRUE) # 12403 X 3587
 rhdf5::h5ls("./data/cmap_rank.h5")
@@ -365,28 +421,27 @@ rhdf5::h5ls("./data/cmap_rank.h5")
 cmap_rank_se <- readHDF5chunk("./data/cmap_rank.h5", colindex=1:5)
 ```
 
-# `cmap_expr` signature database
-For correlation based GESS methods (`gess_cor`) in the `signatureSearch` software 
-package, the signature database containing gene expression values of compound 
-treatment samples could also be used to search for similarity when the query
-signature are also gene expression profiles.
+<font color="blue">[ThG-Comment: unclear where cmap_rank.h5 is generated. Without it the code is not 
+reproducible.]</font>
 
-The `cmap_expr` database was created from the raw CEL files from CMap project
-generated by scanning Affymetrix Gene Chips. The source data was downloaded at 
-[Connectivity Map website](https://portals.broadinstitute.org/cmap/).
-The total number of CEL files is 7,056, each CEL file represents expression
-intensity value of probe sets for a compound treatment or control sample. 
-The experimental design of the CMap instances is defined in the file
-`cmap_instances_02.xls`. The downloaded CEL files were normalized by `MAS5` method. 
-Then, the expression values of compound treatment samples at different 
-concentration, duration were averaged and used as expression values of that compound
-treatment in a cell. The expression matrix was then saved in an HDF5 file, which
-is referred to as the `cmap_expr` database. It represents mean expression values of 
-1,309 compound treatment samples in 5 cells (3,587 signatures in total).
+## Intensities from `AnnotationHub`
 
-## Load from `AnnotationHub`
-The `cmap_expr` database that is processed from CEL files according to the above steps 
-can be loaded through the `AnnotationHub` interface as follows.
+To search CMap2 with `signatureSearch's` correlation based GESS methods
+(`gess_cor`), normalized gene expression values (here intensities) are required
+where the biological replicate information has been collapsed to mean values.
+For this, the `cmap_expr` database has been created from CEL files, which are
+the raw data of the Affymetrix technology. To obtain normalized expression
+data, the CEL files were downloaded from the CMap project site, and then
+processed with the MAS5 algorithm. Gene level expression data was generated the
+same way as described above. Next, the gene expression values for different
+concentrations and treatment times of each compound and cell were averaged.
+Subsequently, the expression matrix was saved to an HDF5 file, 
+referred to as the `cmap_expr` database. It represents mean expression values
+of 12,403 genes for 1,309 compound treatments in up to 5 cells (3,587 signatures in total).
+
+The `cmap_expr` database can be downloaded as HDF5 file from Bioconductor's 
+`AnnotationHub` as follows.
+
 ```{r cmap_expr, eval=FALSE}
 library(AnnotationHub)
 ah <- AnnotationHub()
@@ -394,56 +449,41 @@ query(ah, c("signatureSearchData", "cmap_expr"))
 cmap_expr_path <- ah[["AH69091"]]
 ```
 
-In summary, the loaded data instance includes mean expression values of 12,403
-genes of 1,309 compound treatments across a total of 5 cell lines. This data set 
-can be used by correlation based GESS methods provided by the `signatureSearch` package.
+This data set can be used by all correlation-based GESS methods provided by the
+`signatureSearch` package.
 
-## Generate from the original resources
-The following steps explain how to generate the above data set from scratch. 
+## Intensities from Sources
+The following steps explain how to generate the above `cmap_expr` database from scratch. 
 
-### Create expected directory structure
-The following creates the expected directory structure. Input data will be 
-stored in the data directory and results will be written to the results 
-directory. All paths are given relative to the present working directory of 
-the user’s R session.
+### Directory Structure
+
+The large number of files processed in the next steps are organized in two
+sub-directories of a user's R session. Input files will be stored in a `data`
+directory, while all output files will be written to a `results` directory. 
+
 ```{r work_envir, eval=FALSE}
 dir.create("data"); dir.create("data/CEL"); dir.create("results") 
 ```
 
-### Download data from Connectivity Map project site
-The CEL files are downloaded from the [CMap website](http://www.broadinstitute.org/cmap). 
-The `getCmapCEL` function downloads the 7,056 CEL files. The functions will write the
-downloaded files to the `data/CEL` directories within the present 
-working directory of the user's R session. Since some of the raw data sets 
-are large, the functions will only rerun the download if the argument `rerun` 
-is assigned `TRUE`. If the raw data are not needed then users can skip this 
-time consuming download step and work with the preprocessed `cmap_expr` database 
-loaded from the `AnnotationHub` interface.
+### Download of CEL Files
+
+The `getCmapCEL` function will download the 7,056 CEL files from the [CMap
+project site](http://www.broadinstitute.org/cmap), and save each of them to a
+subdirectory named `CEL` under `data`. Since this download step will take some time,
+the argument `rerun` has been assigned `FALSE` in the below function call to
+avoid running it accidentally. To execute the download, the argument `rerun`
+needs to be assigned `TRUE`. If the raw data are not needed, users can skip
+this time consuming step and work with the preprocessed `cmap_expr` database
+downloaded from the `AnnotationHub` instead.
 
 ```{r download_cmap, eval=FALSE}
-getCmapCEL(rerun=FALSE) # Download cmap CEL files. this will take hours
+getCmapCEL(rerun=FALSE) 
 ```
 
-Download the [cmap_instances_02.xls](https://portals.broadinstitute.org/cmap/cmap_instances_02.xls). 
-Note, this file required some cleaning in LibreOffice
-(Excel would work for this too). After this it was saved as tab delimited txt
-file named `cmap_instances_02.txt`. It is stored in `extdata` of this package.
-```{r cmap_inst2, eval=TRUE}
-path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
-cmap_inst <- read.delim(path, check.names=FALSE) 
-```
-
-The panel of cell lines used by CMAP includes 
-[MCF7](http://www.broadinstitute.org/cmap/help_topics_linkified.jsp#mcf7), 
-[ssMCF7](http://www.broadinstitute.org/cmap/help_topics_linkified.jsp#mcf7), 
-[HL60](http://www.broadinstitute.org/cmap/help_topics_linkified.jsp#hl60), 
-[PC3](http://www.broadinstitute.org/cmap/help_topics_linkified.jsp#pc3) and 
-[SKMEL5](http://www.broadinstitute.org/cmap/help_topics_linkified.jsp#skmel5). 
-
-### Determine chip type from CEL files 
+### Determine Chip Type 
 The CMAP data set is based on three different Affymetrix chip types (HG-U133A,
 HT_HG-U133A and U133AAofAv2). The following extracts the chip type information
-from the CEL files and stores the result in an `rds` file with the path 
+from the downloaded CEL files and stores the information in an `rds` file with the path 
 `./data/chiptype.rds`.
 
 ```{r get_cel_type, eval=FALSE}
@@ -453,60 +493,57 @@ chiptype <- sapply(celfiles, function(x) affxparser::readCelHeader(paste0("data/
 saveRDS(chiptype, "./data/chiptype.rds")
 ```
 
-### Normalization of CEL files
+### Normalization of CEL Files
 
 The following processes the CEL files from each chip type separately using the
 MAS5 normalization algorithm. The results will be written to 3 subdirectores
-under `data` that are named after the chip type names. Since thousands of CEL 
-files would consume too much memory to be read at once, they are normalized in batches
-by processing 200 files at once. The normalization process takes about 10 hours, 
-to save time, the process can be easily paralleled on a computer cluster with 
-a scheduler (e.g. Slurm).
-
-The number of CEL files from each chip type are: 807 CEL files from HG-U133A, 
-6029 CEL files from HT_HG-U133A, and 220 CEL files from U133AAofAv2. 
-Note, these numbers are slightly different than those reported in the 
-`cmap_instances_02.txt` file. 
+under `data` that are named after the chip type names. To reduce the memory
+consumption of this step, the CEL files are normalized in batches of 200. The
+normalization takes about 10 hours without parallelization.  To save time, this
+process can be easily accelerated on a computer cluster.
 
 ```{r normalize_chips, eval=FALSE}
 chiptype <- readRDS("./data/chiptype.rds")
 chiptype_list <- split(names(chiptype), as.character(chiptype))
-normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) # it takes about 10 hours
+normalizeCel(chiptype_list, batchsize=200, rerun=FALSE) 
 ```
 
-Combine results from same chip type into a single data frame, then combine the data
-frame from different chip types into a single data frame termed `mas5df`.
+Next the results from each chip type are assembled in a data frame. After this
+all three of these data frames are combined to a single one, here named `mas5df`.
 ```{r comb_chip_type_data, eval=FALSE}
 chiptype_dir <- unique(chiptype)
 combineResults(chiptype_dir, rerun=FALSE)
 mas5df <- combineNormRes(chiptype_dir, norm_method="MAS5")
 ```
 
-### Transform probe set to gene level data
-Copy the `myAnnot.rds` generated from the above "cmap_rank signature database" 
-section to the `data` directory under your current R session
+### Gene Level Data
+After moving the `myAnnot.rds` file from above into the 'data' directory, the `probe2gene`
+function is used to transforms probe set to gene level data. If genes are represented by
+several probe sets then their mean intensities are used.
+
 ```{r prof2gene, eval=FALSE}
 myAnnot <- readRDS("./data/myAnnot.rds") 
-mas5df <- probe2gene(mas5df, myAnnot) # It takes about 15 minutes
+mas5df <- probe2gene(mas5df, myAnnot) 
 saveRDS(mas5df,"./data/mas5df.rds")
 ```
 
-### Take mean expression values of compound treatment samples
+### Average Intensities Across Replicates
 
-Take mean expression values of multiple samples treated by the same compound at different 
-concentration and duration in the same cell as expression value of that compound
-treatment in the cell.
+The following averages the normalized gene expression values for different
+concentrations, treatment times and replicates of compounds and cell types.
 ```{r rma2cmap_expr, eval=FALSE}
-mas5df <- readRDS("./data/mas5df.rds") # matrix: 12403 7056
+mas5df <- readRDS("./data/mas5df.rds") # dim: 12403 x 7056
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 cmap_inst <- read.delim(path, check.names=FALSE) 
-cmap_drug_cell_expr <- meanExpr(mas5df, cmap_inst) # 12403 X 3587
+cmap_drug_cell_expr <- meanExpr(mas5df, cmap_inst) # dim: 12403 X 3587
 saveRDS(cmap_drug_cell_expr, "./data/cmap_drug_cell_expr.rds")
 ```
 
-### Save the expression matrix to HDF5 file
-The mean expression matrix of compound treatment in cells was save to an HDF5 file,
-which is referred to as `cmap_expr` database.
+### Mean Intensities in HDF5
+
+The normalized and averaged expression values are saved to an HDF5 file,
+referred to as `cmap_expr` database.
+
 ```{r gen_cmap_expr, eval=FALSE}
 cmap_drug_cell_expr <- readRDS("./data/cmap_drug_cell_expr.rds")
 ## match colnames to '(drug)__(cell)__(factor)' format
@@ -517,35 +554,34 @@ matrix2h5(cmap_drug_cell_expr, "./data/cmap_expr.h5", overwrite=TRUE)
 cmap_expr_se <- readHDF5chunk("./data/cmap_expr.h5", colindex=1:5)
 ```
 
-# Discussion
-The `lincs`, `lincs_expr`, `cmap_rank`, and `cmap_expr` signature databases we
-generated above are collection of genome-wide expression profiles of small molecule 
-treatments in cells. The data types of the profile could be normalized gene expression values 
-(e.g. intensity values), LFC, Z-scores, gene rankings, log transformed read counts 
-from RNA-seq *etc*. Users can also build their custom signature database via 
-`build_custom_db` function in the `signatureSearch` software package. 
+# Custom Signature Databases
 
-The signature database is technology independent, the profiles could be from
-Affymetrix chips, L1000 assay, RNA-seq or other gene expression profiling 
-technology. The treatments could be any of bioactive small molecules, genetic 
-perturbations, disease state *etc*.
+Custom databases of GESs can be built with the `build_custom_db` function
+provided by the `signatureSearch` package. For this the user provides custom
+genome-wide gene expression data (e.g. for drug, disease or genetic
+perturbations) in a `data.frame` or `matrix`. The gene expression data can be
+most types of the pre-processed gene expression values described under section
+1.4 of the `signatureSearch` vignette.
 
-For the CMap dataset, the MAS5 normalized expression data could also be used for
-DE analysis, the resulting scores (e.g. LFC) can be used to build
-the `cmap` signature database used for all the GESS methods in the 
-`signatureSearch` package. The details is under the "Supplement" section.
 
-# Other datasets
-This annotation package also contains other intermediate datasets used for
-functionality in the `signatureSearch` software package, 
-such as getting targets of query drugs in [DrugBank](https://www.drugbank.ca/), 
-[CLUE](https://clue.io/) and [STITCH](http://stitch.embl.de/) databases, 
-conducting GO enrichment analysis or computing WTCS p-values or tau scores of the
-`gess_lincs` method in the `signatureSearch` package. 
+# Additional Datasets
 
-# Supplement
+The `signatureSearchData` package also contains several annotation datasets, such
+as drug-target and mode of action (MOA) information of small molecules. They are 
+required for `signatureSearch's` functional enrichment analysis (FEA) routines. 
+Currently, most of these annotation data were downloaded from the following databases:
+
++ [DrugBank](https://www.drugbank.ca/) 
++ [CLUE](https://clue.io/) 
++ [STITCH](http://stitch.embl.de/)
+
+
+<!-- 
+
+# Supplemental Material
 
 ## `cmap` signature database
+
 The MAS5 normalized CEL files from the "cmap_expr signature database" section
 can be used for DE analysis with `limma` package to get the `logMA` matrix 
 containing the LFC scores. The treatment v.s. control instances 
@@ -607,5 +643,28 @@ matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
 ## Read in cmap.h5 by chunks
 cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 ```
+
+-->
+
+<font color="blue">[ThG-Comment: I have commented out the Supplement section
+with the DEG analysis. Do we really need this section for anything in the
+signatureSearch package, or the paper?]</font>
+
+# Session Info
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+# Funding
+
+This project is funded by NIH grants
+[U19AG02312](https://www.longevityconsortium.org/) and
+[U24AG051129](https://www.longevitygenomics.org/) awarded by the National
+Institute on Aging (NIA). Subcomponents of the environment are based on methods
+developed by projects funded by NSF awards ABI-1661152 and PGRP-1810468. The
+High-Performance Computing (HPC) resources used for optimizing and applying the the code of
+this project were funded by NIH and NSF grants 1S10OD016290-01A1 and MRI-1429826,
+respectively. 
 
 # References
