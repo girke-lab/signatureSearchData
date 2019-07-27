@@ -1,4 +1,17 @@
-## Create empty HDF5 file
+#' Create empty HDF5 file 
+#' 
+#' The created HDF5 file has three datasets named "assay", "colnames", 
+#' "rownames" under root group. 
+#' 
+#' @param h5file path to the HDF5 file to be created
+#' @param delete_existing whether to delete the HDF5 if already existed
+#' @param level The compression level used. An integer value between 0 
+#' (no compression) and 9 (highest and slowest compression).
+#' @return empty HDF5 file
+#' @examples
+#' tmp_file <- tempfile(fileext=".h5")
+#' createEmptyH5(tmp_file, level=6)
+#' @export
 createEmptyH5 <- function(h5file, delete_existing=FALSE, level=6) {
     if(delete_existing==TRUE) unlink(h5file)
     h5createFile(file=h5file)
@@ -10,7 +23,19 @@ createEmptyH5 <- function(h5file, delete_existing=FALSE, level=6) {
                     storage.mode='character', size=100, level=level)
 }
 
-## Write in chunks to existing/empty HDF5 file
+#' Write matrix in chunks to existing/empty HDF5 file
+#' @param x matrix
+#' @param h5file path to the existing/empty HDF5 file
+#' @param printstatus whether to print status
+#' @return Append matrix to existing/empty HDF5 file
+#' @examples 
+#' mat <- matrix(1:12, nrow=3)
+#' rownames(mat) <- paste0("r", 1:3); colnames(mat) <- paste0("c", 1:4)
+#' tmp_file <- tempfile(fileext=".h5")
+#' createEmptyH5(tmp_file)
+#' append2H5(mat, tmp_file)
+#' h5ls(tmp_file)
+#' @export
 append2H5 <- function(x, h5file, printstatus=TRUE) {
     status <- h5ls(h5file)[c("name", "dim")]
     rowstatus <- as.numeric(gsub(" x \\d{1,}$", "", status[status$name=="assay", "dim"]))
