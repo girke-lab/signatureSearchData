@@ -3,8 +3,6 @@ title: _signatureSearchData_ - Reference Data for Gene Expression Signature Sear
 author: "Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
-  pdf_document:
-    toc: true
   html_document:
     toc: true
     toc_float:
@@ -14,6 +12,8 @@ output:
     fig_caption: yes
     code_folding: show
     number_sections: true
+  pdf_document:
+    toc: true
 fontsize: 15pt
 bibliography: bibtex.bib
 vignette: >
@@ -89,13 +89,13 @@ once the technology has become more affordable.
 
 # Install and Load Package
 
-`signatureSearch` is a R/Bioconductor package and can be installed using 
+`signatureSearchData` is a R/Bioconductor package and can be installed using 
 `BiocManager::install()`.
 
 ```{r install, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("signatureSearchData", version = "3.9")
+BiocManager::install("signatureSearchData")
 ```
 
 After the package is installed, it can be loaded in an R session as follows.
@@ -193,7 +193,8 @@ h5ls(lincs_db_path)
 In this case the loaded data instance includes moderated Z-scores from DE
 analyses of 12,328 genes for 8,140 compound treatments across a total of 30
 cell lines corresponding to 45,956 expression signatures. This data set can be
-used by all set-based GESS methods provided by the `signatureSearch` package.
+used by all set-based and correlation-based GESS methods provided by the 
+`signatureSearch` package.
 
 ## Z-scores from GEO 
 
@@ -411,8 +412,8 @@ rankM_sub_gene <- probe2gene(rankM_sub, myAnnot)
 
 ### Store Rank Matrix in HDF5 file
 
-The sub-setted `rankMatrix` is written to an HDF5 file, referred to as
-`cmap_rank` database.
+The sub-setted `rankMatrix` is written to an HDF5 file called `cmap_rank.h5`, 
+which is stored under `data` directory and referred to as `cmap_rank` database.
 
 ```{r cmap_rank2h5, eval=FALSE}
 matrix2h5(rankM_sub_gene, "./data/cmap_rank.h5", overwrite=TRUE) # 12403 X 3587
@@ -421,9 +422,6 @@ rhdf5::h5ls("./data/cmap_rank.h5")
 cmap_rank_se <- readHDF5chunk("./data/cmap_rank.h5", colindex=1:5)
 ```
 
-<font color="blue">[ThG-Comment: unclear where cmap_rank.h5 is generated. Without it the code is not 
-reproducible.]</font>
-
 ## Intensities from `AnnotationHub`
 
 To search CMap2 with `signatureSearch's` correlation based GESS methods
@@ -431,7 +429,7 @@ To search CMap2 with `signatureSearch's` correlation based GESS methods
 where the biological replicate information has been collapsed to mean values.
 For this, the `cmap_expr` database has been created from CEL files, which are
 the raw data of the Affymetrix technology. To obtain normalized expression
-data, the CEL files were downloaded from the CMap project site, and then
+data, the CEL files were downloaded from the [CMap project site](https://portals.broadinstitute.org/cmap/#), and then
 processed with the MAS5 algorithm. Gene level expression data was generated the
 same way as described above. Next, the gene expression values for different
 concentrations and treatment times of each compound and cell were averaged.
@@ -517,7 +515,7 @@ mas5df <- combineNormRes(chiptype_dir, norm_method="MAS5")
 ```
 
 ### Gene Level Data
-After moving the `myAnnot.rds` file from above into the 'data' directory, the `probe2gene`
+After moving the `myAnnot.rds` file from above into the `data` directory, the `probe2gene`
 function is used to transforms probe set to gene level data. If genes are represented by
 several probe sets then their mean intensities are used.
 
@@ -567,7 +565,7 @@ most types of the pre-processed gene expression values described under section
 # Additional Datasets
 
 The `signatureSearchData` package also contains several annotation datasets, such
-as drug-target and mode of action (MOA) information of small molecules. They are 
+as drug-target information of small molecules. They are 
 required for `signatureSearch's` functional enrichment analysis (FEA) routines. 
 Currently, most of these annotation data were downloaded from the following databases:
 
@@ -646,10 +644,6 @@ cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 
 -->
 
-<font color="blue">[ThG-Comment: I have commented out the Supplement section
-with the DEG analysis. Do we really need this section for anything in the
-signatureSearch package, or the paper?]</font>
-
 # Session Info
 
 ```{r sessionInfo}
@@ -663,7 +657,7 @@ This project is funded by NIH grants
 [U24AG051129](https://www.longevitygenomics.org/) awarded by the National
 Institute on Aging (NIA). Subcomponents of the environment are based on methods
 developed by projects funded by NSF awards ABI-1661152 and PGRP-1810468. The
-High-Performance Computing (HPC) resources used for optimizing and applying the the code of
+High-Performance Computing (HPC) resources used for optimizing and applying the code of
 this project were funded by NIH and NSF grants 1S10OD016290-01A1 and MRI-1429826,
 respectively. 
 
