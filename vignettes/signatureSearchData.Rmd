@@ -43,21 +43,21 @@ suppressPackageStartupMessages({
 The `signatureSearchData` package provides access to the reference data used by
 the associated `signatureSearch` software package. The latter allows to search 
 with a query gene expression signature (GES) a database of treatment GESs to 
-identify cellular states with similar expression responses (connections). This 
+identify cellular states sharing similar expression responses (connections). This 
 way one can identify drugs or gene knockouts that induce expression phenotypes 
 similar to a sample of interest. The resulting associations may lead to novel 
 functional insights how perturbagens of interest interact with biological systems. 
 
-Currently, `signatureSearchData` includes gene expression data from the CMap
-(Connectivity Map) and LINCS (Library of Network-Based Cellular Signatures)
-projects that are largely based on drug and genetic perturbation experiments
-performed on variable numbers of human cell lines [@Lamb2006-du;
-@Subramanian2017-fu]. In `signatureSearchData` these data sets have been
-preprocessed for the gene expression signature search (GESS) algorithms
+Currently, `signatureSearchData` includes GES data from the CMap (Connectivity
+Map) and LINCS (Library of Network-Based Cellular Signatures) projects that are
+largely based on drug and genetic perturbation experiments performed on
+variable numbers of human cell lines [@Lamb2006-du; @Subramanian2017-fu]. In
+`signatureSearchData` these data sets have been preprocessed to be compatible
+with the different gene expression signature search (GESS) algorithms
 implemented in `signatureSearch`. The preprocessed data types include but are
 not limited to normalized gene expression values (_e.g._ intensity values), log
-fold changes (LFC) and Z-scores, p-values or FDRs of differentially expressed 
-genes (DEGs), rankings based on selected preprocessing routines or sets of top 
+fold changes (LFC) and Z-scores, p-values or FDRs of differentially expressed
+genes (DEGs), rankings based on selected preprocessing routines or sets of top
 up/down-regulated DEGs. 
 
 The CMap data were downloaded from the [CMap project
@@ -81,10 +81,10 @@ The data structures and search algorithms used by `signatureSearch` and
 `signatureSearchData` are designed to work with most genome-wide expression
 data including hybridization-based methods, such as Affymetrix or L1000, as
 well as sequencing-based methods, such as RNA-Seq. Currently,
-`signatureSearchData` does not include RNA-Seq data mainly due to the lack
-of large-scale perturbation studies (_e.g._ drug-based) available in the public
+`signatureSearchData` does not include preconfigured RNA-Seq reference data mainly 
+due to the lack of large-scale perturbation studies (_e.g._ drug-based) available in the public
 domain that are based on RNA-Seq. This situation may change in the near future
-once the technology has become more affordable. 
+once the technology has become more affordable for this purpose. 
 
 
 # Install and Load Package
@@ -232,7 +232,7 @@ Next, the large Z-score matrix of expression signatures is imported step-wise
 in subsets of manageable sizes and then appended to an HDF5 file (here
 `lincs.h5`).  In this vignette, the latter is referred to as the LINCS
 Z-score database. Since the size of the full matrix is several GBs in size, it would
-consume too much memory to be read it into R at once. Reading the matrix in
+consume too much memory to be read into R at once. Reading the matrix in
 smaller batches and appending them to an HDF5 file is much more memory
 efficient. Subsequently, the `readHDF5chunk` function, defined by the
 `signatureSearchData` package, imports user-definable subsets of the data from
