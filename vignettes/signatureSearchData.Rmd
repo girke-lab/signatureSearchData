@@ -412,8 +412,8 @@ rankM_sub_gene <- probe2gene(rankM_sub, myAnnot)
 
 ### Store Rank Matrix in HDF5 file
 
-The sub-setted `rankMatrix` is written to an HDF5 file called `cmap_rank.h5`, 
-which is stored under `data` directory and referred to as `cmap_rank` database.
+The sub-setted `rankMatrix` is written to an HDF5 file, referred to as
+`cmap_rank` database.
 
 ```{r cmap_rank2h5, eval=FALSE}
 matrix2h5(rankM_sub_gene, "./data/cmap_rank.h5", overwrite=TRUE) # 12403 X 3587

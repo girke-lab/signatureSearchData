@@ -68,6 +68,8 @@ overflow: auto;
 margin-left: 2%;
 position: fixed;
 border: 1px solid #ccc;
+webkit-border-radius: 6px;
+moz-border-radius: 6px;
 border-radius: 6px;
 }
 
@@ -95,14 +97,9 @@ font-size: 12px;
 .tocify-subheader .tocify-subheader {
 text-indent: 30px;
 }
+
 .tocify-subheader .tocify-subheader .tocify-subheader {
 text-indent: 40px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 50px;
-}
-.tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader .tocify-subheader {
-text-indent: 60px;
 }
 
 .tocify .tocify-item > a, .tocify .nav-list .nav-header {
@@ -506,13 +503,13 @@ float: none;
 
           item.append($("<a/>", {
 
-            "html": self.html()
+            "text": self.text()
 
           }));
 
         } else {
 
-          item.html(self.html());
+          item.text(self.text());
 
         }
 
@@ -1575,6 +1572,8 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -1620,11 +1619,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><em>signatureSearchData</em> - Reference Data for Gene Expression Signature Searching</h1>
 <h4 class="author">Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke</h4>
-<<<<<<< HEAD
-<h4 class="date">Last update: 21 July, 2019</h4>
-=======
-<h4 class="date">Last update: 24 July, 2019</h4>
->>>>>>> f9a71f1cd1806459b0de5c42efafbfeb4d3f1d02
+<h4 class="date">Last update: 27 July, 2019</h4>
 
 </div>
 
@@ -1845,7 +1840,7 @@ saveRDS(myAnnot, &quot;./data/myAnnot.rds&quot;)</code></pre>
 </div>
 <div id="store-rank-matrix-in-hdf5-file" class="section level3">
 <h3><span class="header-section-number">5.2.4</span> Store Rank Matrix in HDF5 file</h3>
-<p>The sub-setted <code>rankMatrix</code> is written to an HDF5 file called <code>cmap_rank.h5</code>, which is stored under <code>data</code> directory and referred to as <code>cmap_rank</code> database.</p>
+<p>The sub-setted <code>rankMatrix</code> is written to an HDF5 file, referred to as <code>cmap_rank</code> database.</p>
 <pre class="r"><code>matrix2h5(rankM_sub_gene, &quot;./data/cmap_rank.h5&quot;, overwrite=TRUE) # 12403 X 3587
 rhdf5::h5ls(&quot;./data/cmap_rank.h5&quot;)
 ## Read in cmap_rank.h5 as SummarizedExperiment object by chunks
@@ -2012,67 +2007,61 @@ cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 <div id="session-info" class="section level1">
 <h1><span class="header-section-number">8</span> Session Info</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.6.1 (2019-07-05)
+<pre><code>## R version 3.6.0 (2019-04-26)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Pop!_OS 19.04
+## Running under: CentOS Linux 7 (Core)
 ## 
 ## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.8.0
-## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.8.0
+## BLAS/LAPACK: /usr/lib64/libopenblas-r0.2.20.so
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## [1] C
 ## 
 ## attached base packages:
 ## [1] parallel  stats     graphics  grDevices utils     datasets  methods  
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] AnnotationHub_2.16.0       BiocFileCache_1.8.0       
-## [3] dbplyr_1.4.2               BiocGenerics_0.30.0       
+## [1] AnnotationHub_2.15.15      BiocFileCache_1.7.10      
+## [3] dbplyr_1.4.0               BiocGenerics_0.29.2       
 ## [5] signatureSearchData_0.99.1
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.1                    lattice_0.20-38              
-##  [3] assertthat_0.2.1              digest_0.6.20                
-##  [5] mime_0.7                      R6_2.4.0                     
-##  [7] GenomeInfoDb_1.20.0           stats4_3.6.1                 
-##  [9] RSQLite_2.1.1                 evaluate_0.14                
-## [11] httr_1.4.0                    pillar_1.4.1                 
-## [13] zlibbioc_1.30.0               rlang_0.4.0                  
+##  [3] assertthat_0.2.1              digest_0.6.18                
+##  [5] mime_0.6                      R6_2.4.0                     
+##  [7] GenomeInfoDb_1.19.3           stats4_3.6.0                 
+##  [9] RSQLite_2.1.1                 evaluate_0.13                
+## [11] httr_1.4.0                    pillar_1.3.1                 
+## [13] zlibbioc_1.29.0               rlang_0.4.0                  
 ## [15] curl_3.3                      blob_1.1.1                   
-## [17] S4Vectors_0.22.0              R.utils_2.9.0                
+## [17] S4Vectors_0.21.24             R.utils_2.8.0                
 ## [19] R.oo_1.22.0                   Matrix_1.2-17                
-## [21] preprocessCore_1.46.0         rmarkdown_1.13               
-## [23] BiocParallel_1.18.0           stringr_1.4.0                
+## [21] preprocessCore_1.45.0         rmarkdown_1.12               
+## [23] BiocParallel_1.17.19          stringr_1.4.0                
 ## [25] RCurl_1.95-4.12               bit_1.1-14                   
-## [27] shiny_1.3.2                   DelayedArray_0.10.0          
-## [29] compiler_3.6.1                httpuv_1.5.1                 
-## [31] xfun_0.8                      pkgconfig_2.0.2              
+## [27] shiny_1.3.2                   DelayedArray_0.9.9           
+## [29] compiler_3.6.0                httpuv_1.5.1                 
+## [31] xfun_0.6                      pkgconfig_2.0.2              
 ## [33] htmltools_0.3.6               tidyselect_0.2.5             
-## [35] SummarizedExperiment_1.14.0   tibble_2.1.3                 
-## [37] GenomeInfoDbData_1.2.1        interactiveDisplayBase_1.22.0
-## [39] IRanges_2.18.1                matrixStats_0.54.0           
-## [41] crayon_1.3.4                  dplyr_0.8.1                  
+## [35] SummarizedExperiment_1.13.0   tibble_2.1.1                 
+## [37] GenomeInfoDbData_1.2.1        interactiveDisplayBase_1.21.0
+## [39] IRanges_2.17.6                matrixStats_0.54.0           
+## [41] crayon_1.3.4                  dplyr_0.8.0.1                
 ## [43] later_0.8.0                   bitops_1.0-6                 
 ## [45] R.methodsS3_1.7.1             rappdirs_0.3.1               
-## [47] grid_3.6.1                    xtable_1.8-4                 
-## [49] affy_1.62.0                   DBI_1.0.0                    
+## [47] grid_3.6.0                    xtable_1.8-4                 
+## [49] affy_1.61.0                   DBI_1.0.0                    
 ## [51] magrittr_1.5                  stringi_1.4.3                
-## [53] XVector_0.24.0                promises_1.0.1               
-## [55] affyio_1.54.0                 limma_3.40.2                 
-## [57] Rhdf5lib_1.6.0                tools_3.6.1                  
-## [59] bit64_0.9-7                   Biobase_2.44.0               
+## [53] XVector_0.23.2                promises_1.0.1               
+## [55] affyio_1.53.0                 limma_3.39.19                
+## [57] Rhdf5lib_1.5.4                tools_3.6.0                  
+## [59] bit64_0.9-7                   Biobase_2.43.1               
 ## [61] glue_1.3.1                    purrr_0.3.2                  
-## [63] yaml_2.2.0                    AnnotationDbi_1.46.0         
-## [65] rhdf5_2.28.0                  BiocManager_1.30.4           
-## [67] GenomicRanges_1.36.0          memoise_1.1.0                
-## [69] knitr_1.23</code></pre>
+## [63] yaml_2.2.0                    AnnotationDbi_1.45.1         
+## [65] rhdf5_2.27.19                 BiocManager_1.30.4           
+## [67] GenomicRanges_1.35.2          memoise_1.1.0                
+## [69] knitr_1.22</code></pre>
 </div>
 <div id="funding" class="section level1">
 <h1><span class="header-section-number">9</span> Funding</h1>
@@ -2082,16 +2071,16 @@ cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
 <h1>References</h1>
 <div id="refs" class="references">
 <div id="ref-Edgar2002-di">
-<p>Edgar, Ron, Michael Domrachev, and Alex E Lash. 2002. “Gene Expression Omnibus: NCBI Gene Expression and Hybridization Array Data Repository.” <em>Nucleic Acids Res.</em> 30 (1): 207–10. <a href="https://www.ncbi.nlm.nih.gov/pubmed/11752295">https://www.ncbi.nlm.nih.gov/pubmed/11752295</a>.</p>
+<p>Edgar, Ron, Michael Domrachev, and Alex E Lash. 2002. “Gene Expression Omnibus: NCBI Gene Expression and Hybridization Array Data Repository.” <em>Nucleic Acids Res.</em> 30 (1): 207–10. <a href="https://www.ncbi.nlm.nih.gov/pubmed/11752295" class="uri">https://www.ncbi.nlm.nih.gov/pubmed/11752295</a>.</p>
 </div>
 <div id="ref-Lamb2006-du">
-<p>Lamb, Justin, Emily D Crawford, David Peck, Joshua W Modell, Irene C Blat, Matthew J Wrobel, Jim Lerner, et al. 2006. “The Connectivity Map: Using Gene-Expression Signatures to Connect Small Molecules, Genes, and Disease.” <em>Science</em> 313 (5795): 1929–35. <a href="http://dx.doi.org/10.1126/science.1132939">http://dx.doi.org/10.1126/science.1132939</a>.</p>
+<p>Lamb, Justin, Emily D Crawford, David Peck, Joshua W Modell, Irene C Blat, Matthew J Wrobel, Jim Lerner, et al. 2006. “The Connectivity Map: Using Gene-Expression Signatures to Connect Small Molecules, Genes, and Disease.” <em>Science</em> 313 (5795): 1929–35. <a href="http://dx.doi.org/10.1126/science.1132939" class="uri">http://dx.doi.org/10.1126/science.1132939</a>.</p>
 </div>
 <div id="ref-Peck2006-rf">
-<p>Peck, David, Emily D Crawford, Kenneth N Ross, Kimberly Stegmaier, Todd R Golub, and Justin Lamb. 2006. “A Method for High-Throughput Gene Expression Signature Analysis.” <em>Genome Biol.</em> 7 (7): R61. <a href="http://dx.doi.org/10.1186/gb-2006-7-7-r61">http://dx.doi.org/10.1186/gb-2006-7-7-r61</a>.</p>
+<p>Peck, David, Emily D Crawford, Kenneth N Ross, Kimberly Stegmaier, Todd R Golub, and Justin Lamb. 2006. “A Method for High-Throughput Gene Expression Signature Analysis.” <em>Genome Biol.</em> 7 (7): R61. <a href="http://dx.doi.org/10.1186/gb-2006-7-7-r61" class="uri">http://dx.doi.org/10.1186/gb-2006-7-7-r61</a>.</p>
 </div>
 <div id="ref-Subramanian2017-fu">
-<p>Subramanian, Aravind, Rajiv Narayan, Steven M Corsello, David D Peck, Ted E Natoli, Xiaodong Lu, Joshua Gould, et al. 2017. “A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles.” <em>Cell</em> 171 (6): 1437–1452.e17. <a href="http://dx.doi.org/10.1016/j.cell.2017.10.049">http://dx.doi.org/10.1016/j.cell.2017.10.049</a>.</p>
+<p>Subramanian, Aravind, Rajiv Narayan, Steven M Corsello, David D Peck, Ted E Natoli, Xiaodong Lu, Joshua Gould, et al. 2017. “A Next Generation Connectivity Map: L1000 Platform and the First 1,000,000 Profiles.” <em>Cell</em> 171 (6): 1437–1452.e17. <a href="http://dx.doi.org/10.1016/j.cell.2017.10.049" class="uri">http://dx.doi.org/10.1016/j.cell.2017.10.049</a>.</p>
 </div>
 </div>
 </div>
