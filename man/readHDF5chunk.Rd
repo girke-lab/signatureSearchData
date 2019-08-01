@@ -9,7 +9,7 @@ readHDF5chunk(h5file, colindex = seq_len(10), colnames = NULL)
 \arguments{
 \item{h5file}{character(1), path to the HDF5 file}
 
-\item{colindex}{index of the columns of the matrix to be read in}
+\item{colindex}{integer vector, index of the columns of the matrix to be read in}
 
 \item{colnames}{character vector, names of the columns of the matrix to be 
 read in. If 'colnames' is set, 'colindex' will be ignored.}
@@ -18,8 +18,13 @@ read in. If 'colnames' is set, 'colindex' will be ignored.}
 \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 }
 \description{
-Read in a subset of matrix from HDF5 file as 
-\code{\link[SummarizedExperiment]{SummarizedExperiment}} object
+Read in a subset of matrix by setting column index from an HDF5 file as a
+\code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
+HDF5 file need to has three datasets named 
+'assay', 'colnames', 'rownames' under root group. 
+'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
+are used to store character vectors of column names and row names of the 
+matrix, respectively.
 }
 \examples{
 gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

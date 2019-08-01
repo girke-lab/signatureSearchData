@@ -2,22 +2,24 @@
 % Please edit documentation in R/hdf5_utilities.R
 \name{append2H5}
 \alias{append2H5}
-\title{Write matrix in chunks to existing/empty HDF5 file}
+\title{Append matrix to an existing/empty HDF5 file}
 \usage{
 append2H5(x, h5file, printstatus = TRUE)
 }
 \arguments{
-\item{x}{matrix}
+\item{x}{matrix object in R to be appended. If the HDF5 file is not empty,
+it needs to have the same row number as the matrix already existing in the HDF5
+file, the columns will be appended to the existing columns.}
 
-\item{h5file}{path to the existing/empty HDF5 file}
+\item{h5file}{character(1), path to the existing/empty HDF5 file}
 
-\item{printstatus}{whether to print status}
+\item{printstatus}{logical, whether to print status}
 }
 \value{
-Append matrix to existing/empty HDF5 file
+existing/empty HDF5 file appended by a new matrix
 }
 \description{
-Write matrix in chunks to existing/empty HDF5 file
+Append matrix to an existing/empty HDF5 file
 }
 \examples{
 mat <- matrix(1:12, nrow=3)
@@ -25,5 +27,5 @@ rownames(mat) <- paste0("r", 1:3); colnames(mat) <- paste0("c", 1:4)
 tmp_file <- tempfile(fileext=".h5")
 createEmptyH5(tmp_file)
 append2H5(mat, tmp_file)
-h5ls(tmp_file)
+rhdf5::h5ls(tmp_file)
 }

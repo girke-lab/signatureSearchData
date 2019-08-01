@@ -28,6 +28,7 @@ ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "dtlink_db_clue_sti"))
 names(qr)
 conn <- load_sqlite("AH69083")
+RSQLite::dbListTables(conn)
 RSQLite::dbDisconnect(conn)
 }
 

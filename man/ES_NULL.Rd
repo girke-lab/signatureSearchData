@@ -10,10 +10,8 @@ p-values of WTCS score in the \code{gess_lincs} result from
 
 \references{
 For detailed description of the \code{gess_lincs} method and scores, 
-please refer to: Subramanian, A., Narayan, R., Corsello, S. M., Peck, D. D., 
-Natoli, T. E., Lu, X., … Golub, T. R. (2017). A Next Generation 
-Connectivity Map: L1000 Platform and the First 1,000,000 Profiles. Cell, 
-171(6), 1437–1452.e17. \url{https://doi.org/10.1016/j.cell.2017.10.049}
+please refer to the vignette of the \code{signatureSearch} package by
+running \code{browseVignettes("signatureSearch")} in your R session.
 }
 
 \seealso{
