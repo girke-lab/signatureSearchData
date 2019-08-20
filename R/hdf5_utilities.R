@@ -1,10 +1,14 @@
 #' Create empty HDF5 file 
 #' 
-#' The created HDF5 file has three datasets named "assay", "colnames", 
-#' "rownames" under root group. 
+#' This function can be used to create an empty HDF5 file by defining the file
+#' path and compression level. The created HDF5 file has three datasets named 
+#' 'assay', 'colnames', 'rownames' under root group. 
+#' 'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
+#' are used to store character vectors of column names and row names of the 
+#' matrix, respectively.
 #' 
-#' @param h5file path to the HDF5 file to be created
-#' @param delete_existing whether to delete the HDF5 if already existed
+#' @param h5file character(1), path to the HDF5 file to be created
+#' @param delete_existing logical, whether to delete the existing HDF5 file
 #' @param level The compression level used. An integer value between 0 
 #' (no compression) and 9 (highest and slowest compression).
 #' @return empty HDF5 file
@@ -23,18 +27,20 @@ createEmptyH5 <- function(h5file, delete_existing=FALSE, level=6) {
                     storage.mode='character', size=100, level=level)
 }
 
-#' Write matrix in chunks to existing/empty HDF5 file
-#' @param x matrix
-#' @param h5file path to the existing/empty HDF5 file
-#' @param printstatus whether to print status
-#' @return Append matrix to existing/empty HDF5 file
+#' Append matrix to an existing/empty HDF5 file
+#' @param x matrix object in R to be appended. If the HDF5 file is not empty,
+#' it needs to have the same row number as the matrix already existing in the HDF5
+#' file, the columns will be appended to the existing columns. 
+#' @param h5file character(1), path to the existing/empty HDF5 file
+#' @param printstatus logical, whether to print status
+#' @return existing/empty HDF5 file appended by a new matrix
 #' @examples 
 #' mat <- matrix(1:12, nrow=3)
 #' rownames(mat) <- paste0("r", 1:3); colnames(mat) <- paste0("c", 1:4)
 #' tmp_file <- tempfile(fileext=".h5")
 #' createEmptyH5(tmp_file)
 #' append2H5(mat, tmp_file)
-#' h5ls(tmp_file)
+#' rhdf5::h5ls(tmp_file)
 #' @export
 append2H5 <- function(x, h5file, printstatus=TRUE) {
     status <- h5ls(h5file)[c("name", "dim")]
@@ -58,11 +64,16 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 
 #' Read HDF5 file as SummarizedExperiment object
 #' 
-#' Read in a subset of matrix from HDF5 file as 
-#' \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
+#' Read in a subset of matrix by setting column index from an HDF5 file as a
+#' \code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
+#' HDF5 file need to has three datasets named 
+#' 'assay', 'colnames', 'rownames' under root group. 
+#' 'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
+#' are used to store character vectors of column names and row names of the 
+#' matrix, respectively.
 #' 
 #' @param h5file character(1), path to the HDF5 file
-#' @param colindex index of the columns of the matrix to be read in
+#' @param colindex integer vector, index of the columns of the matrix to be read in
 #' @param colnames character vector, names of the columns of the matrix to be 
 #' read in. If 'colnames' is set, 'colindex' will be ignored.
 #' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object

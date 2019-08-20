@@ -7,9 +7,9 @@
 createEmptyH5(h5file, delete_existing = FALSE, level = 6)
 }
 \arguments{
-\item{h5file}{path to the HDF5 file to be created}
+\item{h5file}{character(1), path to the HDF5 file to be created}
 
-\item{delete_existing}{whether to delete the HDF5 if already existed}
+\item{delete_existing}{logical, whether to delete the existing HDF5 file}
 
 \item{level}{The compression level used. An integer value between 0 
 (no compression) and 9 (highest and slowest compression).}
@@ -18,8 +18,12 @@ createEmptyH5(h5file, delete_existing = FALSE, level = 6)
 empty HDF5 file
 }
 \description{
-The created HDF5 file has three datasets named "assay", "colnames", 
-"rownames" under root group.
+This function can be used to create an empty HDF5 file by defining the file
+path and compression level. The created HDF5 file has three datasets named 
+'assay', 'colnames', 'rownames' under root group. 
+'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
+are used to store character vectors of column names and row names of the 
+matrix, respectively.
 }
 \examples{
 tmp_file <- tempfile(fileext=".h5")

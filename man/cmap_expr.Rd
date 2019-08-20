@@ -1,30 +1,40 @@
 \name{cmap_expr}
 \alias{cmap_expr}
-\title{cmap expression signature database}
+\title{CMap Intensity Signature Database}
 \description{
-For correlation based GESS methods in the \code{signatureSearch} software package, 
-the signature database containing gene expression values of drug treatment 
-samples could also be used to search for similarity. 
-
-The `cmap_expr` database represents mean expression values of 1,309 drug
-treatment samples in 4 cells (3,587 signatures in total).
-It is stored in an HDF5 file.
+To search CMap2 with signatureSearch's correlation based GESS methods (gess_cor),
+normalized gene expression values (here intensities) are required where the 
+biological replicate information has been collapsed to mean values. For this, 
+the \code{cmap_expr} database has been created from CEL files, which are the 
+raw data of the Affymetrix technology. To obtain normalized expression data,
+the CEL files were downloaded from the CMap project site, and then processed 
+with the MAS5 algorithm. Gene level expression data was generated the same way 
+as described in help file of \code{cmap_rank}. Next, the gene expression values 
+for different concentrations and treatment times of each compound and cell 
+were averaged. Subsequently, the expression matrix was saved to an HDF5 file, 
+referred to as the cmap_expr database. It represents mean expression values of 
+12,403 genes for 1,309 compound treatments in up to 5 cells (3,587 signatures in total).
 }
 \details{
-The same as the \code{\link{cmap}} database, the resource data was downloaded 
-from the Connectivity Map project 
-\url{https://portals.broadinstitute.org/cmap/}.
-The expression intensity data was normalized by MAS5 method. Then, the mean expression 
-values of drug treatment samples at different concentration, duration was used
-as expression values of that drug treatment in a cell. The expression matrix
-was written in an HDF5 file (cmap_expr database).
+The cmap_expr database can be downloaded as HDF5 file from Bioconductor’s 
+AnnotationHub as shown in the Example section. 
+
+The loaded \code{cmap_expr} data object is generated from the raw CEL files
+downloaded from the CMap project site.
+For documentation and code of generating the cmap_expr databases from sources, 
+please refer to the vignette of this package by running 
+\code{browseVignettes("signatureSearchData")} in R.
+}
+
+\references{
+CMap project site: \url{https://portals.broadinstitute.org/cmap}
 }
 
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
 query(ah, c("signatureSearchData", "cmap_expr"))
-# cmap_expr <- ah[["AH69091"]]
+# cmap_expr_path <- ah[["AH69091"]]
 }
 
 \keyword{datasets}
