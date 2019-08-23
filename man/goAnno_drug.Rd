@@ -1,14 +1,15 @@
 \name{goAnno_drug}
 \alias{goAnno_drug}
-\title{Annotation of GO ID to drug name mappings} 
+\title{GO Term ID to Drug Name Mapping Annotation} 
 \description{
-It is an intermediate file storing the GO ID to drug name mapping information
-for \code{dsea_*} functions in \code{signatureSearch} package.
+It is a \code{data.frame} containing the GO term ID to drug name mapping 
+information used for \code{dsea_*} functions in \code{signatureSearch} package.
 }
 
 \details{
-The GO ID to gene SYMBOL mappings were converted to GO ID to drug mappings via
-drug-target links in DrugBank, CLUE and STITCH databases
+The original GO annotation system contains GO term ID to gene SYMBOL id mappings,
+the latter are converted to drug names mappings via
+drug to target protein-encoding genes links in DrugBank, CLUE and STITCH databases.
 }
 \seealso{
   \itemize{
@@ -20,8 +21,7 @@ drug-target links in DrugBank, CLUE and STITCH databases
 \examples{
 library(AnnotationHub)
 ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "goAnno"))
-# goAnno_drug <- qr[["AH69085"]]
+# goAnno_drug <- ah[["AH69085"]]
 }
 
 \keyword{datasets}

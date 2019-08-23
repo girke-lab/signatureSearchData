@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_fct.R
 \name{load_sqlite}
 \alias{load_sqlite}
-\title{Load dtlink database}
+\title{Load SQLite Database from AnnotationHub}
 \usage{
 load_sqlite(ah_id)
 }
@@ -14,11 +14,10 @@ of the hub records.}
 SQLiteConnection
 }
 \description{
-Load "dtlink_db_clue_sti" SQLite database into R by returning the
-connection to the SQLite file.
-}
-\details{
-The `dtlink_db_clue_sti` database is stored in \code{\link{AnnotationHub}}
+This function loads the \code{\link{dtlink_db_clue_sti}} SQLite database 
+into R by downloading the database from AnnotationHub if it is not in the cache
+file and creating the connection to the SQLite file in R via \code{dbConnect} 
+function in \code{RSQLite} package.
 }
 \examples{
 library(AnnotationHub)

@@ -1,9 +1,17 @@
-#' Process each chip type separately running MAS5 normalization in batch
-#' @title normalize CEL files
+#' Function processes the CEL files from each chip type (three for CMap2 data)
+#' separately using the MAS5 normalization algorithm. The results will be written
+#' to subdirectores (under a data parent directory) that are named after the chip
+#' type names. To reduce the memory consumption of this step, the CEL files are
+#' processed in user definable batch sizes. For details on the overall workflow,
+#' please consult the vignette of this package. The normalization takes about 10
+#' hours without parallelization. To save time, this process can be easily
+#' accelerated on a computer cluster.
+#' @title Normalize CEL Files
 #' @param chiptype_list list, storing CEL files in each chiptype
-#' @param batchsize number of CEL files read in and normalizaed at once
+#' @param batchsize number of CEL files to import and to normalize at once
 #' @param rerun TRUE or FALSE, whether to run the function
-#' @return files storing normalized matrix in each chip type
+#' @return Files storing normalized expression values in matrix, here one matrix file 
+#' per chip type
 #' @importFrom affy ReadAffy
 #' @importFrom affy mas5
 #' @importFrom affy exprs 

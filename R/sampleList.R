@@ -1,9 +1,13 @@
-#' Generate CEL file list for treatment vs. control comparisons
-#' @title Generate drug treatment vs. control list 
-#' @param cmap cmap instances annotation
+#' This function generates a list of treatment samples and control samples CEL ids
+#' for each compound treatment from the experiment annotation of CMAP02 
+#' instances. For more context of the CMAP02 database, please consult the vignette
+#' of this package. 
+#' @title Generate List of Treatment vs. Control Samples 
+#' @param cmap data.frame containing experiment information of CMAP02 instances
 #' @param myby "CMP" or "CMP_CELL", "CMP": by compound treatments in all cells;
 #' "CMP_CELL": by compound treatments in individual cell
-#' @return list
+#' @return a list object containing treatment samples and control samples ids
+#' for each compound treament. 
 #' @examples 
 #' path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 #' cmap_inst <- read.delim(path, check.names=FALSE) 

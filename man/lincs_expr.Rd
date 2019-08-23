@@ -26,8 +26,8 @@ This data set can be used by all correlation-based GESS methods provided by the
 signatureSearch package.
 
 The loaded \code{lincs_expr} data object is filtered and generated from the original
-LINCS level 3 data stored at GEO
-\url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742}. 
+LINCS level 3 data stored at GEO:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742. 
 For documentation and code of generating the lincs_expr databases from sources, 
 please refer to the vignette of this package by running 
 \code{browseVignettes("signatureSearchData")} in R.
@@ -35,7 +35,7 @@ please refer to the vignette of this package by running
 
 \references{
   LINCS source data at 5 levels from GEO: 
-  \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742} 
+  https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742
 }
 
 \examples{

@@ -55,29 +55,25 @@ analysis (FEA) routines or null distribution of Enrichment
 Scores (ES) used for computing WTCS p-values from LINCS GESS method.
 }
 \details{
-This package contains the following datasets:
+This package contains the following main datasets:
   \itemize{
     \item \code{\link{cmap}} 
     \item \code{\link{cmap_expr}} 
     \item \code{\link{cmap_rank}} 
     \item \code{\link{lincs}} 
     \item \code{\link{lincs_expr}} 
-    \item \code{\link{dtlink_db_clue_sti}} 
-    \item \code{\link{goAnno}} 
-    \item \code{\link{GO_DATA}} 
-    \item \code{\link{GO_DATA_drug}} 
-    \item \code{\link{taurefList}} 
-    \item \code{\link{ES_NULL}} 
+    \item \code{\link{dtlink_db_clue_sti}}
+    \item \code{\link{taurefList}}
   }
 For documentation of generating the CMAP/LINCS databases from sources, 
 please refer to the vignette of this package by running 
 \code{browseVignettes("signatureSearchData")} in R.
 
-This package also includes several functions used for creating an empty HDF5 file
-and appending matrix in batches to the HDF5 file, as well as read in the HDF5 file
+This package also includes several functions used for creating an empty HDF5 file,
+appending a matrix object in batches to an HDF5 file, as well as read in an HDF5 file
 into a \code{\link[SummarizedExperiment]{SummarizedExperiment}} object by selecting columns.
 
-The main functions includes:
+The main functions include:
 \itemize{
     \item \code{\link{createEmptyH5}} 
     \item \code{\link{append2H5}} 
@@ -91,7 +87,6 @@ The main functions includes:
 
 \examples{
 library(AnnotationHub)
-library(signatureSearchData)
 ah <- AnnotationHub()
 ssd <- query(ah, c("signatureSearchData"))
 ssd
@@ -121,20 +116,20 @@ as.list(ssd)[10]
 Lamb, Justin, Emily D Crawford, David Peck, Joshua W Modell, Irene C Blat, 
 Matthew J Wrobel, Jim Lerner, et al. 2006. “The Connectivity Map: Using 
 Gene-Expression Signatures to Connect Small Molecules, Genes, and Disease.” 
-Science 313 (5795): 1929–35. \url{http://dx.doi.org/10.1126/science.1132939}.
+Science 313 (5795): 1929–35. http://dx.doi.org/10.1126/science.1132939.
 
 Subramanian, Aravind, Rajiv Narayan, Steven M Corsello, David D Peck, Ted E 
 Natoli, Xiaodong Lu, Joshua Gould, et al. 2017. “A Next Generation Connectivity 
 Map: L1000 Platform and the First 1,000,000 Profiles.” Cell 171 (6): 
-1437–1452.e17. \url{http://dx.doi.org/10.1016/j.cell.2017.10.049}.
+1437–1452.e17. http://dx.doi.org/10.1016/j.cell.2017.10.049.
 
 Edgar, Ron, Michael Domrachev, and Alex E Lash. 2002. “Gene Expression Omnibus: 
 NCBI Gene Expression and Hybridization Array Data Repository.” Nucleic Acids 
-Res. 30 (1): 207–10. \url{https://www.ncbi.nlm.nih.gov/pubmed/11752295}.
+Res. 30 (1): 207–10. https://www.ncbi.nlm.nih.gov/pubmed/11752295.
 
 Peck, David, Emily D Crawford, Kenneth N Ross, Kimberly Stegmaier, Todd R Golub,
 and Justin Lamb. 2006. “A Method for High-Throughput Gene Expression Signature 
-Analysis.” Genome Biol. 7 (7): R61. \url{http://dx.doi.org/10.1186/gb-2006-7-7-r61}.
+Analysis.” Genome Biol. 7 (7): R61. http://dx.doi.org/10.1186/gb-2006-7-7-r61.
 }
 \keyword{package}
 

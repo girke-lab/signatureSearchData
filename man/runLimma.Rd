@@ -2,18 +2,20 @@
 % Please edit documentation in R/runLimma.R
 \name{runLimma}
 \alias{runLimma}
-\title{DEG analysis with Limma}
+\title{DEG Analysis with Limma}
 \usage{
 runLimma(df, comp_list, fdr = 0.05, foldchange = 1, verbose = TRUE)
 }
 \arguments{
-\item{df}{data.frame storing normalized intensity values of samples}
+\item{df}{data.frame containing normalized intensity values of CMAP02 samples}
 
-\item{comp_list}{CEL file list for treatment vs. control comparisons}
+\item{comp_list}{list of CEL file ids of treatment and control samples for 
+each compound treatment. The list for CMAP02 data is generated from 
+the \code{\link{sampleList}} function.}
 
-\item{fdr}{cutoff of false discovery rate for defining DEGs}
+\item{fdr}{cutoff of false discovery rate (FDR) for defining DEGs}
 
-\item{foldchange}{cutoff of log2 fold change for defining DEGs}
+\item{foldchange}{cutoff of log2 fold change (LFC) for defining DEGs}
 
 \item{verbose}{TRUE or FALSE}
 }
@@ -21,7 +23,10 @@ runLimma(df, comp_list, fdr = 0.05, foldchange = 1, verbose = TRUE)
 list containing DEGs and log2FC matrix
 }
 \description{
-DEG analysis with Limma as specified fdr and foldchange
+This function runs DEG analysis with Limma at user defined FDR and LFC
+cutoff by providing CMAP02 normalized expression values and annotation of
+treatment v.s. control samples. For more context of the CMAP02 database, 
+please consult the vignette of this package.
 }
 \examples{
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")

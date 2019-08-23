@@ -2,28 +2,29 @@
 % Please edit documentation in R/meta_filter.R
 \name{sig_filter}
 \alias{sig_filter}
-\title{LINCS signature meta data filter}
+\title{Filter LINCS Level 5 by Condition}
 \usage{
 sig_filter(meta, pert_type = "trt_cp", dose, time = "24 h")
 }
 \arguments{
-\item{meta}{tibble, read in from LINCS signature info meta data}
+\item{meta}{tibble containing experimental conditions of LINCS data}
 
-\item{pert_type}{perturbation type, 'trt_cp' represents compound. Description
-of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
-\url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}}
+\item{pert_type}{perturbation type, 'trt_cp' refers to treatment ('trt') with compound ('cp'). 
+Description of other perturbation types ('pert_type') can be found in the GEO CMap LINCS 
+User Guide v2.1 URL: https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
 
-\item{dose}{dose/concentration of compound treatment, need to match elements
+\item{dose}{concentration of compound used for treatment, needs to match elements
 in 'pert_idose' column of 'meta'}
 
-\item{time}{compound treatment time, need to match elements in 'pert_itime' 
+\item{time}{compound treatment time, needs to match elements in 'pert_itime' 
 column of 'meta'}
 }
 \value{
 tibble
 }
 \description{
-Filter LINCS level5 signatures at specific concentration and treatment time
+Function to filter Level 5 data from LINCS by specific conditions, such as compound 
+concentrations and treatment times.
 }
 \examples{
 meta <- data.frame(pert_idose=c("2 um","4 um", "10 um"), 

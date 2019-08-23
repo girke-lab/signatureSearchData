@@ -1,15 +1,14 @@
-#' Create empty HDF5 file 
+#' Create Empty HDF5 File 
 #' 
-#' This function can be used to create an empty HDF5 file by defining the file
-#' path and compression level. The created HDF5 file has three datasets named 
-#' 'assay', 'colnames', 'rownames' under root group. 
-#' 'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
-#' are used to store character vectors of column names and row names of the 
-#' matrix, respectively.
+#' This function can be used to create an empty HDF5 file where the user defines
+#' the file path and compression level. The empty HDF5 file has under its root
+#' group three data slots named 'assay', 'colnames' and 'rownames' for storing a
+#' \code{numeric matrix} along with its column names (\code{character}) and row names
+#' (\code{character}), respectively.
 #' 
 #' @param h5file character(1), path to the HDF5 file to be created
-#' @param delete_existing logical, whether to delete the existing HDF5 file
-#' @param level The compression level used. An integer value between 0 
+#' @param delete_existing logical, whether to delete an existing HDF5 file with identical path
+#' @param level The compression level used, here given as integer value between 0
 #' (no compression) and 9 (highest and slowest compression).
 #' @return empty HDF5 file
 #' @examples
@@ -27,13 +26,19 @@ createEmptyH5 <- function(h5file, delete_existing=FALSE, level=6) {
                     storage.mode='character', size=100, level=level)
 }
 
-#' Append matrix to an existing/empty HDF5 file
-#' @param x matrix object in R to be appended. If the HDF5 file is not empty,
-#' it needs to have the same row number as the matrix already existing in the HDF5
-#' file, the columns will be appended to the existing columns. 
-#' @param h5file character(1), path to the existing/empty HDF5 file
+#' Append Matrix to HDF5 File
+#' 
+#' Function to write matrix data to an existing HDF5 file. If the file contains 
+#' already matrix data then both need to have the same number of rows. The append
+#' will be column-wise.
+#' @param x matrix object to write to an HDF5 file. If the HDF5 file is not empty,
+#' the exported matrix data needs to have the same number rows as the matrix
+#' stored in the HDF5 file, and will be appended column-wise to the existing
+#' one.
+#' @param h5file character(1), path to existing HDF5 file that can be empty or
+#' contain matrix data
 #' @param printstatus logical, whether to print status
-#' @return existing/empty HDF5 file appended by a new matrix
+#' @return HDF5 file storing exported matrix
 #' @examples 
 #' mat <- matrix(1:12, nrow=3)
 #' rownames(mat) <- paste0("r", 1:3); colnames(mat) <- paste0("c", 1:4)
@@ -62,20 +67,18 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
     h5closeAll()
 }
 
-#' Read HDF5 file as SummarizedExperiment object
+#' Import HDF5 Data into SummarizedExperiment Object
 #' 
-#' Read in a subset of matrix by setting column index from an HDF5 file as a
+#' Imports user-definable subsets of matrix data from an HDF5 file into a 
 #' \code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
-#' HDF5 file need to has three datasets named 
-#' 'assay', 'colnames', 'rownames' under root group. 
-#' 'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
-#' are used to store character vectors of column names and row names of the 
-#' matrix, respectively.
+#' corresponding HDF5 file is expected to have three data components named
+#' 'assay', 'colnames' and 'rownames' containing the numeric values, column
+#' names and row names of a matrix, respectively.
 #' 
-#' @param h5file character(1), path to the HDF5 file
-#' @param colindex integer vector, index of the columns of the matrix to be read in
+#' @param h5file character(1), path to HDF5 file
+#' @param colindex integer vector, position index of the matrix columns to be imported
 #' @param colnames character vector, names of the columns of the matrix to be 
-#' read in. If 'colnames' is set, 'colindex' will be ignored.
+#' imported. If 'colnames' is set, 'colindex' will be ignored.
 #' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @seealso 

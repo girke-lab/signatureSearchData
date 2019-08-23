@@ -27,7 +27,7 @@ please refer to the vignette of this package by running
 }
 
 \references{
-CMap project site: \url{https://portals.broadinstitute.org/cmap}
+CMap project site: https://portals.broadinstitute.org/cmap
 }
 
 \examples{

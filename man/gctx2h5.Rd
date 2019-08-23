@@ -2,32 +2,32 @@
 % Please edit documentation in R/gctx2h5.R
 \name{gctx2h5}
 \alias{gctx2h5}
-\title{gctx to hdf5 file}
+\title{Convert GCTX to HDF5 File}
 \usage{
 gctx2h5(gctx, cid, new_cid = cid, h5file, chunksize = 5000,
   overwrite = TRUE)
 }
 \arguments{
-\item{gctx}{character(1), path to the LINCS gctx file}
+\item{gctx}{character(1), path to gctx file from LINCS}
 
-\item{cid}{either a character vector or integer column indices indicating
-the columns of the matrix to be parsed.}
+\item{cid}{character or integer vector referencing the
+columns of the matrix to include}
 
-\item{new_cid}{a character vector of the same length of cid, assigning new
-column names for the matrix}
+\item{new_cid}{character vector of the same length as cid, assigning new
+column names to matrix}
 
-\item{h5file}{character(1), path to the destination hdf5 file}
+\item{h5file}{character(1), path of the hdf5 destination file}
 
-\item{chunksize}{size of the matrix (number of columns) to be read in by chunks}
+\item{chunksize}{number of columns to import in each iteration to limit memory usage}
 
-\item{overwrite}{TRUE or FALSE, whether to overwrite or append
-matrix to the existing 'h5file'}
+\item{overwrite}{TRUE or FALSE, whether to overwrite or to append to existing 'h5file'}
 }
 \value{
 HDF5 file
 }
 \description{
-Read large matrix in gctx file by chunks and write the matrix to an HDF5 file
+Read matrix-like data from large gctx file in chunks and write result back to an 
+HDF5 file.
 }
 \examples{
 gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

@@ -1,15 +1,14 @@
-#' Read large matrix in gctx file by chunks and write the matrix to an HDF5 file
-#' 
-#' @title gctx to hdf5 file
-#' @param gctx character(1), path to the LINCS gctx file
-#' @param cid either a character vector or integer column indices indicating
-#' the columns of the matrix to be parsed.
-#' @param new_cid a character vector of the same length of cid, assigning new
-#' column names for the matrix
-#' @param h5file character(1), path to the destination hdf5 file
-#' @param chunksize size of the matrix (number of columns) to be read in by chunks
-#' @param overwrite TRUE or FALSE, whether to overwrite or append
-#' matrix to the existing 'h5file'
+#' Read matrix-like data from large gctx file in chunks and write result back to an 
+#' HDF5 file.
+#' @title Convert GCTX to HDF5 File
+#' @param gctx character(1), path to gctx file from LINCS
+#' @param cid character or integer vector referencing the
+#' columns of the matrix to include
+#' @param new_cid character vector of the same length as cid, assigning new
+#' column names to matrix
+#' @param h5file character(1), path of the hdf5 destination file
+#' @param chunksize number of columns to import in each iteration to limit memory usage
+#' @param overwrite TRUE or FALSE, whether to overwrite or to append to existing 'h5file'
 #' @return HDF5 file
 #' @import rhdf5
 #' @examples 

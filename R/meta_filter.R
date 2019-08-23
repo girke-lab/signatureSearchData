@@ -1,14 +1,14 @@
-#' LINCS signature meta data filter
+#' Filter LINCS Level 5 by Condition
 #' 
-#' Filter LINCS level5 signatures at specific concentration and treatment time
-#' 
-#' @param meta tibble, read in from LINCS signature info meta data 
-#' @param pert_type perturbation type, 'trt_cp' represents compound. Description
-#' of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
-#' \url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
-#' @param dose dose/concentration of compound treatment, need to match elements
+#' Function to filter Level 5 data from LINCS by specific conditions, such as compound 
+#' concentrations and treatment times.
+#' @param meta tibble containing experimental conditions of LINCS data
+#' @param pert_type perturbation type, 'trt_cp' refers to treatment ('trt') with compound ('cp'). 
+#' Description of other perturbation types ('pert_type') can be found in the GEO CMap LINCS 
+#' User Guide v2.1 URL: https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#
+#' @param dose concentration of compound used for treatment, needs to match elements
 #' in 'pert_idose' column of 'meta'
-#' @param time compound treatment time, need to match elements in 'pert_itime' 
+#' @param time compound treatment time, needs to match elements in 'pert_itime' 
 #' column of 'meta'
 #' @return tibble
 #' @importFrom magrittr %<>%
@@ -33,21 +33,22 @@ sig_filter <- function(meta, pert_type="trt_cp", dose, time="24 h"){
     return(meta)
 }
 
-#' LINCS instance meta data filter
+#' Filter LINCS Level 3 by Condition
 #' 
-#' Filter LINCS level3 instances at specific concentration and treatment time
-#' 
-#' @param meta tibble, read in from LINCS instance info meta data
-#' @param pert_type perturbation type, 'trt_cp' represents compound. Description
-#' of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
-#' \url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
-#' @param dose dose/concentration of compound treatment, need to match elements
+#' Function to filter Level 3 data from LINCS by specific conditions, such as compound 
+#' concentrations and treatment times.
+#' @param meta tibble containing experimental conditions of LINCS data
+#' @param pert_type perturbation type, 'trt_cp' refers to treatment ('trt') with 
+#' compound ('cp'). Description of other perturbation types ('pert_type') can 
+#' be found in the GEO CMap LINCS User Guide v2.1 
+#' URL: https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#
+#' @param dose concentration of compound used for treatment, needs to match elements
 #' in 'pert_dose' column of 'meta'
-#' @param dose_unit unit of dose of compound treatment, need to match elements
+#' @param dose_unit unit of dose of compound treatment, needs to match elements
 #' in 'pert_dose_unit' column of 'meta'
-#' @param time compound treatment time, need to match elements in 'pert_time' 
+#' @param time compound treatment time, needs to match elements in 'pert_time' 
 #' column of 'meta'
-#' @param time_unit unit of time, need to match elements in 'pert_time_unit' 
+#' @param time_unit unit of time, needs to match elements in 'pert_time_unit' 
 #' column of 'meta'
 #' @return tibble
 #' @examples 

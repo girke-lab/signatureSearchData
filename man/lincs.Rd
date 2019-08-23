@@ -49,8 +49,8 @@ be used by all set-based and correlation-based GESS methods provided by the
 signatureSearch package.
 
 The loaded \code{lincs} data object is filtered and generated from the original
-LINCS level 5 data stored at GEO
-\url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742}. 
+LINCS level 5 data stored at GEO:
+https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742. 
 For documentation and code of generating the lincs databases from sources, 
 please refer to the vignette of this package by running 
 \code{browseVignettes("signatureSearchData")} in R.
@@ -58,9 +58,10 @@ please refer to the vignette of this package by running
 
 \references{
   LINCS source data at 5 levels from GEO: 
-  \url{https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742} 
+  https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742
   
-  LINCS user guide: \url{https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#}
+  LINCS User Guide v2.1: 
+  https://docs.google.com/document/d/1q2gciWRhVCAAnlvF2iRLuJ7whrGP6QjpsCMq1yWz7dU/edit#
 }
 
 \examples{

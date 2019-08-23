@@ -1,12 +1,14 @@
 \name{GO_DATA}
 \alias{GO_DATA}
-\title{GO annotation environment} 
+\title{GO Annotation Environment} 
 \description{
-It is an intermediate file storing the GO annotation environment (GO term to 
-gene sets, gene to GO terms, GO term ID to description, GO ID to ontology) 
-used for \code{tsea_*} methods in \code{signatureSearch} package to do GO 
-enrichment analysis to accelerate the speed by avoiding building this 
-environment every time running the tsea functions 
+It is an RDS file storing the GO annotation environment (GO term ID to 
+gene SYMBOLs mapping, gene SYMBOL to annotated GO terms, GO term ID to 
+its description, GO term ID to its ontology) 
+used for \code{tsea_*} functions in \code{signatureSearch} package with GO 
+enrichment analysis. This environment is saved to an RDS file to accelerate the 
+analysis speed by avoiding building this environment from scratch every time 
+running the \code{tsea} functions.
 }
 
 \seealso{
@@ -17,7 +19,7 @@ environment every time running the tsea functions
 library(AnnotationHub)
 ah <- AnnotationHub()
 qr <- query(ah, c("signatureSearchData", "GO_DATA"))
-# GO_DATA <- qr[["AH69086"]]
+# GO_DATA <- ah[["AH69086"]]
 }
 
 \keyword{datasets}

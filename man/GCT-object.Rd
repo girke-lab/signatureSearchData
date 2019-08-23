@@ -2,10 +2,10 @@
 % Please edit documentation in R/io.R
 \name{GCT object}
 \alias{GCT object}
-\title{An S4 class to represent a GCT object}
+\title{An S4 Class to Represent a GCT Object}
 \description{
 The GCT class serves to represent annotated
-  matrices. The \code{mat} slot contains said data and the
+  matrices. The \code{mat} slot contains the numeric matrix data and the
   \code{rdesc} and \code{cdesc} slots contain data frames with
   annotations about the rows and columns, respectively
 }
@@ -26,5 +26,5 @@ The GCT class serves to represent annotated
 }}
 
 \seealso{
-\code{\link{parse_gctx}}, \code{read.gctx.meta}, \code{read.gctx.ids}
+\code{\link{parse_gctx}}
 }

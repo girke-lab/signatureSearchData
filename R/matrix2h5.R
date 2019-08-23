@@ -1,9 +1,12 @@
-#' Save matrix to HDF5 file
-#' @param matrix matrix to be written to HDF5 file, need to have rownames and colnames
-#' @param h5file character(1), path to the destination hdf5 file
+#' Write Matrix to HDF5 file
+#' 
+#' Function writes matrix object to an HDF5 file.
+#' @param matrix matrix to be written to HDF5 file, row and column name slots need
+#' to be populated
+#' @param h5file character(1), path to the hdf5 destination file
 #' @param overwrite TRUE or FALSE, whether to overwrite or append
-#' matrix to the existing 'h5file'
-#' @return HDF5 file storing the matrix
+#' matrix to an existing 'h5file'
+#' @return HDF5 file containing exported matrix
 #' @examples 
 #' mat <- matrix(rnorm(12), nrow=3, dimnames=list(paste0("r",1:3), paste0("c",1:4)))
 #' h5file <- tempfile(fileext=".h5")

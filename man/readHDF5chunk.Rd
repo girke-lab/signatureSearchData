@@ -2,29 +2,27 @@
 % Please edit documentation in R/hdf5_utilities.R
 \name{readHDF5chunk}
 \alias{readHDF5chunk}
-\title{Read HDF5 file as SummarizedExperiment object}
+\title{Import HDF5 Data into SummarizedExperiment Object}
 \usage{
 readHDF5chunk(h5file, colindex = seq_len(10), colnames = NULL)
 }
 \arguments{
-\item{h5file}{character(1), path to the HDF5 file}
+\item{h5file}{character(1), path to HDF5 file}
 
-\item{colindex}{integer vector, index of the columns of the matrix to be read in}
+\item{colindex}{integer vector, position index of the matrix columns to be imported}
 
 \item{colnames}{character vector, names of the columns of the matrix to be 
-read in. If 'colnames' is set, 'colindex' will be ignored.}
+imported. If 'colnames' is set, 'colindex' will be ignored.}
 }
 \value{
 \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
 }
 \description{
-Read in a subset of matrix by setting column index from an HDF5 file as a
+Imports user-definable subsets of matrix data from an HDF5 file into a 
 \code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
-HDF5 file need to has three datasets named 
-'assay', 'colnames', 'rownames' under root group. 
-'assay' is used to store values a numeric matrix, 'colnames' and 'rownames' 
-are used to store character vectors of column names and row names of the 
-matrix, respectively.
+corresponding HDF5 file is expected to have three data components named
+'assay', 'colnames' and 'rownames' containing the numeric values, column
+names and row names of a matrix, respectively.
 }
 \examples{
 gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

@@ -2,13 +2,13 @@
 % Please edit documentation in R/io.R
 \name{parse_gctx}
 \alias{parse_gctx}
-\title{parse gctx}
+\title{Parse GCTX}
 \usage{
 parse_gctx(fname, rid = NULL, cid = NULL, set_annot_rownames = FALSE,
   matrix_only = FALSE)
 }
 \arguments{
-\item{fname}{path to the GCTX file on disk}
+\item{fname}{character(1), path to the GCTX file on disk}
 
 \item{rid}{either a vector of character or integer
 row indices or a path to a grp file containing character
@@ -31,7 +31,7 @@ the matrix (ignoring row and column annotations)}
 gct object
 }
 \description{
-Parse a GCTX file into the workspace as a GCT object
+Parse a GCTX file into the R workspace as a GCT object
 }
 \examples{
 gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

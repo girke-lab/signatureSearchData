@@ -2,22 +2,23 @@
 % Please edit documentation in R/meanExpr.R
 \name{meanExpr}
 \alias{meanExpr}
-\title{Take mean expression values of drug treatment samples}
+\title{Calculate Mean Value for Replicated Samples}
 \usage{
 meanExpr(expr_df, cmap_inst)
 }
 \arguments{
-\item{expr_df}{data.frame with expression values in CEL samples}
+\item{expr_df}{\code{data.frame} containing normalized expression values}
 
-\item{cmap_inst}{data.frame defining drug treatment of CEL samples}
+\item{cmap_inst}{\code{data.frame} defining experimental conditions}
 }
 \value{
-data.frame with mean expression values of drug treatment in a cell
+\code{data.frame} with mean expression values of replicates
 }
 \description{
-Take mean expression values of multiple drug treatment samples at different 
-concentration and duration in the same cell as expression value of that drug
-treatment in the cell.
+Function averages the normalized gene expression values for different
+concentrations, treatment times and replicates of compounds and cell types.
+For more context on this step, please consult the corresponding section in the
+vignette of this package.
 }
 \examples{
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")

@@ -2,35 +2,37 @@
 % Please edit documentation in R/meta_filter.R
 \name{inst_filter}
 \alias{inst_filter}
-\title{LINCS instance meta data filter}
+\title{Filter LINCS Level 3 by Condition}
 \usage{
 inst_filter(meta, pert_type = "trt_cp", dose = 10, dose_unit = "um",
   time = 24, time_unit = "h")
 }
 \arguments{
-\item{meta}{tibble, read in from LINCS instance info meta data}
+\item{meta}{tibble containing experimental conditions of LINCS data}
 
-\item{pert_type}{perturbation type, 'trt_cp' represents compound. Description
-of other 'pert_type' can be found at GEO CMap LINCS User Guide v2.1 
-\url{https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}}
+\item{pert_type}{perturbation type, 'trt_cp' refers to treatment ('trt') with 
+compound ('cp'). Description of other perturbation types ('pert_type') can 
+be found in the GEO CMap LINCS User Guide v2.1 
+URL: https://docs.google.com/document/d/1rbHBy3DKekFm9lZouRG-ZcfLmCsfkUKzGPxxjqxPlYw/edit#}
 
-\item{dose}{dose/concentration of compound treatment, need to match elements
+\item{dose}{concentration of compound used for treatment, needs to match elements
 in 'pert_dose' column of 'meta'}
 
-\item{dose_unit}{unit of dose of compound treatment, need to match elements
+\item{dose_unit}{unit of dose of compound treatment, needs to match elements
 in 'pert_dose_unit' column of 'meta'}
 
-\item{time}{compound treatment time, need to match elements in 'pert_time' 
+\item{time}{compound treatment time, needs to match elements in 'pert_time' 
 column of 'meta'}
 
-\item{time_unit}{unit of time, need to match elements in 'pert_time_unit' 
+\item{time_unit}{unit of time, needs to match elements in 'pert_time_unit' 
 column of 'meta'}
 }
 \value{
 tibble
 }
 \description{
-Filter LINCS level3 instances at specific concentration and treatment time
+Function to filter Level 3 data from LINCS by specific conditions, such as compound 
+concentrations and treatment times.
 }
 \examples{
 meta <- data.frame(pert_dose=c(2,4,10), pert_dose_unit="um", 

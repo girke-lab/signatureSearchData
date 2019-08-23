@@ -1,7 +1,12 @@
-#' Download CEL files from CMap project \url{http://www.broadinstitute.org/cmap}
-#' to the `data/CEL` directories within the present working directory of the 
-#' user's R session
-#' @title get CEL files
+#' This function will download the 7,056 CEL files from the CMap2 project 
+#' site (http://www.broadinstitute.org/cmap), and save each of them to a
+#' subdirectory named CEL under data. Since this download step will take 
+#' some time, the \code{rerun} argument has been assigned \code{FALSE} in
+#' the example code below to avoid running it accidentally. If the raw data are not
+#' needed, users can skip this time consuming step and work with the preprocessed
+#' \code{\link{cmap}} or \code{\link{cmap_expr}} database downloaded from the 
+#' AnnotationHub instead.
+#' @title Download CMap2 CEL Files
 #' @param rerun TRUE or FALSE, whether to download the data
 #' @return download files
 #' @examples 

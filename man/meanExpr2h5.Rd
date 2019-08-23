@@ -2,31 +2,32 @@
 % Please edit documentation in R/meanExpr2h5.R
 \name{meanExpr2h5}
 \alias{meanExpr2h5}
-\title{Calculate mean expression value of compound treatment samples and save to HDF5 file}
+\title{Calculate Mean Expression Values of LINCS Level 3 Data}
 \usage{
 meanExpr2h5(gctx, inst, h5file, chunksize = 2000, overwrite = TRUE)
 }
 \arguments{
-\item{gctx}{character(1), path to the LINCS level3 gctx file}
+\item{gctx}{character(1), path to the LINCS Level 3 gctx file}
 
-\item{inst}{tibble, LINCS level3 instances after filtering at specific concentration and time}
+\item{inst}{tibble, LINCS Level 3 instances after filtering for specific concentrations and times}
 
-\item{h5file}{character(1), path to the destination hdf5 file}
+\item{h5file}{character(1), path to the destination HDF5 file}
 
-\item{chunksize}{size of the matrix (number of columns) to be saved in HDF5 file by chunks}
+\item{chunksize}{number of columns of the matrix to be processed at a time to limit memory usage}
 
-\item{overwrite}{TRUE or FALSE, whether to overwrite or append the
-matrix to the existing 'h5file'}
+\item{overwrite}{TRUE or FALSE, whether to overwrite or append data to an
+existing 'h5file'}
 }
 \value{
 HDF5 file, representing the 'lincs_expr' database
 }
 \description{
-Calculate mean expression values of replicated samples that are treated by the same
-compound in the same cell type with selected concentration and treatment time after 
-filtering the LINCS level3 instances/samples. 
-Then write the mean expression matrix to an HDF5 file, which is the `lincs_expr`
-database.
+Function calculates mean expression values for replicated samples of LINCS
+Level 3 data that have been treated by the same compound in the same cell type
+at a chosen concentration and treatment time. Usually, the function is used
+after filtering the Level 3 data with \code{inst_filter}. The results (here
+matrix with mean expression values) are saved to an HDF5 file. The latter is
+referred to as the `lincs_expr` database.
 }
 \examples{
 gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")

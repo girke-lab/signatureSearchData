@@ -2,7 +2,7 @@
 ### GCT class and method definitions ###
 ########################################
 
-#' An S4 class to represent a GCT object
+#' An S4 Class to Represent a GCT Object
 #' @name GCT object
 #' @slot mat a numeric matrix
 #' @slot rid a character vector of row ids
@@ -12,11 +12,11 @@
 #' @slot src a character indicating the source (usually file path) of the data
 #' 
 #' @description The GCT class serves to represent annotated
-#'   matrices. The \code{mat} slot contains said data and the
+#'   matrices. The \code{mat} slot contains the numeric matrix data and the
 #'   \code{rdesc} and \code{cdesc} slots contain data frames with
 #'   annotations about the rows and columns, respectively
 #'   
-#' @seealso \code{\link{parse_gctx}}, \code{read.gctx.meta}, \code{read.gctx.ids}
+#' @seealso \code{\link{parse_gctx}}
 methods::setClass("GCT",
          methods::representation(
              mat = "matrix",
@@ -389,9 +389,9 @@ methods::setMethod("initialize",
 )
 
 
-#' Parse a GCTX file into the workspace as a GCT object
-#' @title parse gctx
-#' @param fname path to the GCTX file on disk
+#' Parse a GCTX file into the R workspace as a GCT object
+#' @title Parse GCTX
+#' @param fname character(1), path to the GCTX file on disk
 #' @param rid either a vector of character or integer
 #'   row indices or a path to a grp file containing character
 #'   row indices. Only these indices will be parsed from the

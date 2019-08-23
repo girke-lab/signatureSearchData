@@ -1,11 +1,12 @@
-#' Take mean expression values of drug treatment samples
+#' Calculate Mean Value for Replicated Samples
 #' 
-#' Take mean expression values of multiple drug treatment samples at different 
-#' concentration and duration in the same cell as expression value of that drug
-#' treatment in the cell.
-#' @param expr_df data.frame with expression values in CEL samples
-#' @param cmap_inst data.frame defining drug treatment of CEL samples
-#' @return data.frame with mean expression values of drug treatment in a cell
+#' Function averages the normalized gene expression values for different
+#' concentrations, treatment times and replicates of compounds and cell types.
+#' For more context on this step, please consult the corresponding section in the
+#' vignette of this package.
+#' @param expr_df \code{data.frame} containing normalized expression values
+#' @param cmap_inst \code{data.frame} defining experimental conditions
+#' @return \code{data.frame} with mean expression values of replicates
 #' @examples
 #' path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 #' cmap_inst <- read.delim(path, check.names=FALSE) 

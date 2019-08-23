@@ -2,23 +2,24 @@
 % Please edit documentation in R/matrix2h5.R
 \name{matrix2h5}
 \alias{matrix2h5}
-\title{Save matrix to HDF5 file}
+\title{Write Matrix to HDF5 file}
 \usage{
 matrix2h5(matrix, h5file, overwrite = TRUE)
 }
 \arguments{
-\item{matrix}{matrix to be written to HDF5 file, need to have rownames and colnames}
+\item{matrix}{matrix to be written to HDF5 file, row and column name slots need
+to be populated}
 
-\item{h5file}{character(1), path to the destination hdf5 file}
+\item{h5file}{character(1), path to the hdf5 destination file}
 
 \item{overwrite}{TRUE or FALSE, whether to overwrite or append
-matrix to the existing 'h5file'}
+matrix to an existing 'h5file'}
 }
 \value{
-HDF5 file storing the matrix
+HDF5 file containing exported matrix
 }
 \description{
-Save matrix to HDF5 file
+Function writes matrix object to an HDF5 file.
 }
 \examples{
 mat <- matrix(rnorm(12), nrow=3, dimnames=list(paste0("r",1:3), paste0("c",1:4)))

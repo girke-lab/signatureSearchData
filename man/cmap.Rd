@@ -20,7 +20,7 @@ is discarded if the number of control and treatment samples are less than 3 duri
 The cmap database can be downloaded as HDF5 file from Bioconductor’s 
 AnnotationHub as shown in the Example section. 
 
-The same as the cmap_expr dataset, the loaded \code{cmap} data object is 
+The same as the \code{cmap_expr} dataset, the loaded \code{cmap} data object is 
 also generated from the raw CEL files downloaded from the CMap project site and
 processed as describe above.
 }

@@ -2,24 +2,28 @@
 % Please edit documentation in R/hdf5_utilities.R
 \name{append2H5}
 \alias{append2H5}
-\title{Append matrix to an existing/empty HDF5 file}
+\title{Append Matrix to HDF5 File}
 \usage{
 append2H5(x, h5file, printstatus = TRUE)
 }
 \arguments{
-\item{x}{matrix object in R to be appended. If the HDF5 file is not empty,
-it needs to have the same row number as the matrix already existing in the HDF5
-file, the columns will be appended to the existing columns.}
+\item{x}{matrix object to write to an HDF5 file. If the HDF5 file is not empty,
+the exported matrix data needs to have the same number rows as the matrix
+stored in the HDF5 file, and will be appended column-wise to the existing
+one.}
 
-\item{h5file}{character(1), path to the existing/empty HDF5 file}
+\item{h5file}{character(1), path to existing HDF5 file that can be empty or
+contain matrix data}
 
 \item{printstatus}{logical, whether to print status}
 }
 \value{
-existing/empty HDF5 file appended by a new matrix
+HDF5 file storing exported matrix
 }
 \description{
-Append matrix to an existing/empty HDF5 file
+Function to write matrix data to an existing HDF5 file. If the file contains 
+already matrix data then both need to have the same number of rows. The append
+will be column-wise.
 }
 \examples{
 mat <- matrix(1:12, nrow=3)

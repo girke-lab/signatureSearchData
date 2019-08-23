@@ -1,8 +1,9 @@
-#' Load "dtlink_db_clue_sti" SQLite database into R by returning the
-#' connection to the SQLite file.
+#' This function loads the \code{\link{dtlink_db_clue_sti}} SQLite database 
+#' into R by downloading the database from AnnotationHub if it is not in the cache
+#' file and creating the connection to the SQLite file in R via \code{dbConnect} 
+#' function in \code{RSQLite} package.
 #' 
-#' The `dtlink_db_clue_sti` database is stored in \code{\link{AnnotationHub}}
-#' @title Load dtlink database
+#' @title Load SQLite Database from AnnotationHub
 #' @param ah_id AnnotationHub unique identifiers, of the form "AH12345",
 #' of the hub records.
 #' @return SQLiteConnection 

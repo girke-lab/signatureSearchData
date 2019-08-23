@@ -1,10 +1,11 @@
 \name{ES_NULL}
 \alias{ES_NULL}
-\title{Null distribution of WTCS score of \code{gess_lincs} method} 
+\title{Null Distribution of WTCS from \code{gess_lincs} Method} 
 \description{
-WTCS null distribution is generated with 1000 random queries searching against 
-the \code{lincs} database for computing nominal 
-p-values of WTCS score in the \code{gess_lincs} result from 
+This pre-computed WTCS null distribution is generated with 1000 random queries
+(150 randomly sampled up and down gene labels sets) searching against the 
+\code{\link{lincs}} database. It is used for computing nominal 
+p-values of WTCS scores in the \code{gess_lincs} result from 
 \code{signatureSearch} package.
 }
 

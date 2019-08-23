@@ -1,25 +1,32 @@
 \name{dtlink_db_clue_sti}
 \alias{dtlink_db_clue_sti}
-\title{Annotation of drug-target links from DrugBank, CLUE and STITCH databases}
+\title{Drug-Target Annotation Resources}
 \description{
-It is a SQLite database containing drug-target links in DrugBank, CLUE, 
-and STITCH databases. 
+This is a SQLite database containing drug-target links (drug names to gene SYMBOL ids)
+obtained from DrugBank, CLUE, and STITCH annotation databases. 
 }
 \details{
 It is an intermediate database used for functionality in the 
-\code{signatureSearch} software package to get targets of query drugs in 
-DrugBank \url{https://www.drugbank.ca/}, CLUE \url{https://clue.io/} and STITCH
-\url{http://stitch.embl.de/} databases.
+\code{signatureSearch} software package to get target genes/proteins of query 
+drugs in DrugBank (https://www.drugbank.ca/), CLUE (https://clue.io/) and STITCH
+(http://stitch.embl.de/) databases.
+
+The target proteins of drugs are mapped to their encoding genes by using 
+identifier mapping resources from R/Bioconductor such as the \code{org.Hs.eg.db}
+annotation package. Thus, the drug-target links in this database are drug names
+to gene SYMBOLs mapping. 
 
 The STITCH database provides confidence scores for each drug-target interaction.
-Only interactions with confidence scores >=0.7 were selected. 
+Only interactions with confidence scores >=0.7 were selected.
+
+The drug-target interaction annotations from the above three databases are combined.
 To minimize noise, e.g. from promiscuous binders, drugs with more than 100 
-distinct targets were removed. Similarly, targets with more than 100 annotated 
-drugs were excluded.
+distinct targets are removed. Similarly, targets with more than 100 annotated 
+drugs are excluded.
 }
 
 \seealso{
-    get_targets
+    \code{get_targets}
 }
 
 \examples{

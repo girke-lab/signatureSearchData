@@ -2,21 +2,25 @@
 % Please edit documentation in R/sampleList.R
 \name{sampleList}
 \alias{sampleList}
-\title{Generate drug treatment vs. control list}
+\title{Generate List of Treatment vs. Control Samples}
 \usage{
 sampleList(cmap, myby)
 }
 \arguments{
-\item{cmap}{cmap instances annotation}
+\item{cmap}{data.frame containing experiment information of CMAP02 instances}
 
 \item{myby}{"CMP" or "CMP_CELL", "CMP": by compound treatments in all cells;
 "CMP_CELL": by compound treatments in individual cell}
 }
 \value{
-list
+a list object containing treatment samples and control samples ids
+for each compound treament.
 }
 \description{
-Generate CEL file list for treatment vs. control comparisons
+This function generates a list of treatment samples and control samples CEL ids
+for each compound treatment from the experiment annotation of CMAP02 
+instances. For more context of the CMAP02 database, please consult the vignette
+of this package.
 }
 \examples{
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
