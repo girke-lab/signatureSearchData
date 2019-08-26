@@ -18,7 +18,7 @@
 #' RSQLite::dbListTables(conn)
 #' RSQLite::dbDisconnect(conn)
 #' @seealso 
-#' \code{\link{dtlink_db_clue_sti}}, \code{\link[AnnotationHub]{AnnotationHub}}
+#' \code{\link{dtlink_db_clue_sti}}, \code{AnnotationHub}
 #' @export
 load_sqlite <- function(ah_id){
     ah <- AnnotationHub()

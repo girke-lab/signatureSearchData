@@ -70,7 +70,7 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' Import HDF5 Data into SummarizedExperiment Object
 #' 
 #' Imports user-definable subsets of matrix data from an HDF5 file into a 
-#' \code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
+#' \code{SummarizedExperiment} object. The
 #' corresponding HDF5 file is expected to have three data components named
 #' 'assay', 'colnames' and 'rownames' containing the numeric values, column
 #' names and row names of a matrix, respectively.
@@ -79,10 +79,10 @@ append2H5 <- function(x, h5file, printstatus=TRUE) {
 #' @param colindex integer vector, position index of the matrix columns to be imported
 #' @param colnames character vector, names of the columns of the matrix to be 
 #' imported. If 'colnames' is set, 'colindex' will be ignored.
-#' @return \code{\link[SummarizedExperiment]{SummarizedExperiment}} object
+#' @return \code{SummarizedExperiment} object
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @seealso 
-#' \code{\link[SummarizedExperiment]{SummarizedExperiment}}
+#' \code{SummarizedExperiment}
 #' @examples
 #' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
 #' h5file <- tempfile(fileext=".h5")

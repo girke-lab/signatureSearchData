@@ -15,11 +15,11 @@ readHDF5chunk(h5file, colindex = seq_len(10), colnames = NULL)
 imported. If 'colnames' is set, 'colindex' will be ignored.}
 }
 \value{
-\code{\link[SummarizedExperiment]{SummarizedExperiment}} object
+\code{SummarizedExperiment} object
 }
 \description{
 Imports user-definable subsets of matrix data from an HDF5 file into a 
-\code{\link[SummarizedExperiment]{SummarizedExperiment}} object. The
+\code{SummarizedExperiment} object. The
 corresponding HDF5 file is expected to have three data components named
 'assay', 'colnames' and 'rownames' containing the numeric values, column
 names and row names of a matrix, respectively.
@@ -32,5 +32,5 @@ gctx2h5(gctx, cid=1:2, new_cid=c('sirolimus__MCF7__trt_cp', 'vorinostat__SKB__tr
 se <- readHDF5chunk(h5file, colindex=1:2)
 }
 \seealso{
-\code{\link[SummarizedExperiment]{SummarizedExperiment}}
+\code{SummarizedExperiment}
 }

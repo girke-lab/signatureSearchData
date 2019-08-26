@@ -71,7 +71,7 @@ please refer to the vignette of this package by running
 
 This package also includes several functions used for creating an empty HDF5 file,
 appending a matrix object in batches to an HDF5 file, as well as read in an HDF5 file
-into a \code{\link[SummarizedExperiment]{SummarizedExperiment}} object by selecting columns.
+into a \code{SummarizedExperiment} object by selecting columns.
 
 The main functions include:
 \itemize{
