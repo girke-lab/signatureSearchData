@@ -16,7 +16,7 @@
 #' @importFrom utils unzip
 #' @export
 getCmapCEL <- function(rerun=TRUE) {
-    if(isTRUE(rerun)) {
+    if(rerun) {
         ## Check for presence of target directory
         if(!dir.exists("./data/CEL"))
             stop("Target directory ./data/CEL does not exist. 

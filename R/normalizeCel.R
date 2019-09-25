@@ -20,7 +20,7 @@
 #' normalizeCel(chiptype_list, rerun=FALSE)
 #' @export
 normalizeCel <- function(chiptype_list, batchsize=300, rerun=TRUE) {
-    if(rerun==TRUE) {
+    if(rerun) {
         for(i in names(chiptype_list)) {
             celfiles <- chiptype_list[[i]]
             cel_list <- suppressWarnings(

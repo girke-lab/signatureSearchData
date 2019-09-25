@@ -24,6 +24,6 @@ vignette of this package.
 path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
 cmap_inst <- read.delim(path, check.names=FALSE) 
 expr_df <- as.data.frame(matrix(runif(30), ncol=5))
-colnames(expr_df) <- paste0(cmap_inst$perturbation_scan_id[1:5],".CEL")
-mexpr <- meanExpr(expr_df, cmap_inst[1:5,])
+colnames(expr_df) <- paste0(cmap_inst$perturbation_scan_id[seq_len(5)],".CEL")
+mexpr <- meanExpr(expr_df, cmap_inst[seq_len(5),])
 }

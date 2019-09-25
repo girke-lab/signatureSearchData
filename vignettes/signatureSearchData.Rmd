@@ -187,7 +187,7 @@ library(AnnotationHub); library(rhdf5)
 ah <- AnnotationHub()
 query(ah, c("signatureSearchData", "lincs"))
 lincs_path <- ah[['AH69092']]
-h5ls(lincs_path) 
+rhdf5::h5ls(lincs_path) 
 ```
 
 In this case the loaded data instance includes moderated Z-scores from DE
@@ -240,6 +240,7 @@ efficient. Subsequently, the `readHDF5chunk` function, defined by the
 the HDF5 file into a `SummarizedExperiment` object, here assigned to `se`.
 
 ```{r extract_modz, eval=FALSE}
+library(signatureSearch)
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
         h5file="./data/lincs.h5", chunksize=5000, overwrite=TRUE)

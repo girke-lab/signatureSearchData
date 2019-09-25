@@ -13,6 +13,11 @@
 #' @param overwrite TRUE or FALSE, whether to overwrite or append data to an
 #' existing 'h5file'
 #' @return HDF5 file, representing the 'lincs_expr' database
+#' @importFrom signatureSearch createEmptyH5
+#' @importFrom signatureSearch parse_gctx
+#' @importFrom signatureSearch append2H5
+#' @importFrom rhdf5 h5ls
+#' @import AnnotationHub
 #' @examples
 #' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
 #' h5file <- tempfile(fileext=".h5")
@@ -29,7 +34,7 @@ meanExpr2h5 <- function(gctx, inst, h5file, chunksize=2000, overwrite=TRUE){
         split(pert_cell_list, rep(seq_len(ceiling(length(pert_cell_list)/chunksize)), each=chunksize)))
     ## Creat an empty h5file
     if(file.exists(h5file)){
-        if(isTRUE(overwrite)){
+        if(overwrite){
             createEmptyH5(h5file, delete_existing=TRUE)
         }
     } else {

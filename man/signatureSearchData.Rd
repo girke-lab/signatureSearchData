@@ -68,17 +68,6 @@ This package contains the following main datasets:
 For documentation of generating the CMAP/LINCS databases from sources, 
 please refer to the vignette of this package by running 
 \code{browseVignettes("signatureSearchData")} in R.
-
-This package also includes several functions used for creating an empty HDF5 file,
-appending a matrix object in batches to an HDF5 file, as well as read in an HDF5 file
-into a \code{SummarizedExperiment} object by selecting columns.
-
-The main functions include:
-\itemize{
-    \item \code{\link{createEmptyH5}} 
-    \item \code{\link{append2H5}} 
-    \item \code{\link{readHDF5chunk}} 
-  }
 }
 
 \seealso{
@@ -87,6 +76,7 @@ The main functions include:
 
 \examples{
 library(AnnotationHub)
+library(signatureSearch)
 ah <- AnnotationHub()
 ssd <- query(ah, c("signatureSearchData"))
 ssd
@@ -103,13 +93,6 @@ as.list(ssd)[10]
 # lincs_path <- ah[['AH69092']] # stores moderated z-scores
 # h5ls(lincs_path)
 # lincs_expr_path <- ah[['AH69093']] # stores gene expression intensity values
-# 
-## Load dtlink SQLite database
-# conn <- load_sqlite("AH69083")
-# RSQLite::dbListTables(conn)
-# 
-## Load GO annotation system (RDS files)
-# goAnno <- ah[["AH69084"]]
 }
 
 \references{

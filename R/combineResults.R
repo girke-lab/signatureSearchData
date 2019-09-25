@@ -13,7 +13,7 @@
 #' combineResults(chiptype_dir, rerun=FALSE)
 #' @export
 combineResults <- function(chiptype_dir, rerun=TRUE) {
-    if(isTRUE(rerun)) {
+    if(rerun) {
         for(j in seq_along(chiptype_dir)) {
             mydirs <- list.files(paste0("data/", chiptype_dir[j]), 
                                  pattern="cellbatch_", full.names=TRUE)
