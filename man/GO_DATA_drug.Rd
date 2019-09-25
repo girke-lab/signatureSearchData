@@ -20,7 +20,7 @@ building this environment from scratch every time running the \code{dsea} functi
 library(AnnotationHub)
 #ah <- AnnotationHub()
 #qr <- query(ah, c("signatureSearchData", "GO_DATA"))
-# GO_DATA_drug <- ah[["AH69087"]]
+#GO_DATA_drug <- ah[["AH69087"]]
 }
 
 \keyword{datasets}

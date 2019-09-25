@@ -76,7 +76,6 @@ please refer to the vignette of this package by running
 
 \examples{
 library(AnnotationHub)
-library(signatureSearch)
 ah <- AnnotationHub()
 ssd <- query(ah, c("signatureSearchData"))
 ssd
@@ -87,7 +86,7 @@ as.list(ssd)[10]
 # cmap_path <- ah[["AH69090"]] # stores LFC scores
 # cmap_expr_path <- ah[["AH69091"]] # stores gene expression intensity values
 # cmap_rank_path <- ah[["AH69763"]] # stores gene ranks
-# se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
+# se <- signatureSearch::readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
 # 
 ## Load LINCS databases
 # lincs_path <- ah[['AH69092']] # stores moderated z-scores

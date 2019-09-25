@@ -27,9 +27,9 @@ processed as describe above.
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap"))
-# cmap_path <- ah[["AH69090"]]
+#ah <- AnnotationHub()
+#query(ah, c("signatureSearchData", "cmap"))
+#cmap_path <- ah[["AH69090"]]
 }
 
 \keyword{datasets}
