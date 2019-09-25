@@ -66,8 +66,8 @@ please refer to the vignette of this package by running
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "lincs"))
+#ah <- AnnotationHub()
+#query(ah, c("signatureSearchData", "lincs"))
 # lincs_path <- ah[['AH69092']]
 # h5ls(lincs_path) 
 }

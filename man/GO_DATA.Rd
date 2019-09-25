@@ -17,8 +17,8 @@ running the \code{tsea} functions.
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-qr <- query(ah, c("signatureSearchData", "GO_DATA"))
+#ah <- AnnotationHub()
+#qr <- query(ah, c("signatureSearchData", "GO_DATA"))
 # GO_DATA <- ah[["AH69086"]]
 }
 

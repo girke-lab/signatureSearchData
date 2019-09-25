@@ -40,8 +40,8 @@ CMap project site: https://portals.broadinstitute.org/cmap
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap_rank"))
+#ah <- AnnotationHub()
+#query(ah, c("signatureSearchData", "cmap_rank"))
 # cmap_rank_path <- ah[["AH69763"]]
 # se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
 }

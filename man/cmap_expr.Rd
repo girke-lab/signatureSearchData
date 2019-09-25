@@ -32,9 +32,9 @@ CMap project site: https://portals.broadinstitute.org/cmap
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap_expr"))
-# cmap_expr_path <- ah[["AH69091"]]
+#ah <- AnnotationHub()
+#query(ah, c("signatureSearchData", "cmap_expr"))
+#cmap_expr_path <- ah[["AH69091"]]
 }
 
 \keyword{datasets}

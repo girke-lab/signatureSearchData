@@ -40,8 +40,8 @@ please refer to the vignette of this package by running
 
 \examples{
 library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "lincs_expr"))
+#ah <- AnnotationHub()
+#query(ah, c("signatureSearchData", "lincs_expr"))
 # lincs_expr_path <- ah[["AH69093"]]
 }
 
