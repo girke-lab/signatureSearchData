@@ -13,7 +13,7 @@
 #' @param overwrite TRUE or FALSE, whether to overwrite or append data to an
 #' existing 'h5file'
 #' @return HDF5 file, representing the 'lincs_expr' database
-#' @importFrom signatureSearch createEmptyH5
+#' @importFrom signatureSearch create_empty_h5
 #' @importFrom signatureSearch parse_gctx
 #' @importFrom signatureSearch append2H5
 #' @importFrom rhdf5 h5ls
@@ -35,10 +35,10 @@ meanExpr2h5 <- function(gctx, inst, h5file, chunksize=2000, overwrite=TRUE){
     ## Creat an empty h5file
     if(file.exists(h5file)){
         if(overwrite){
-            createEmptyH5(h5file, delete_existing=TRUE)
+            create_empty_h5(h5file, delete_existing=TRUE)
         }
     } else {
-        createEmptyH5(h5file, delete_existing=FALSE)
+        create_empty_h5(h5file, delete_existing=FALSE)
     }
     ## append mean expr mat in each chunk to h5file
     lapply(chunk_list, function(pcl){
