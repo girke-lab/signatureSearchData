@@ -452,7 +452,107 @@ This data set can be used by all correlation-based GESS methods provided by the
 `signatureSearch` package.
 
 ## Intensities from Sources
-The following steps explain how to generate the above `cmap_expr` database from scratch. 
+How to generate the above `cmap_expr` database from scratch is explained in the Supplementary Material 
+section of this vignette (see Section 8). 
+
+
+# Custom Signature Databases
+
+Custom databases of GESs can be built with the `build_custom_db` function
+provided by the `signatureSearch` package. For this the user provides custom
+genome-wide gene expression data (e.g. for drug, disease or genetic
+perturbations) in a `data.frame` or `matrix`. The gene expression data can be
+most types of the pre-processed gene expression values described under section
+1.4 of the `signatureSearch` vignette.
+
+
+# Additional Datasets
+
+The `signatureSearchData` package also contains several annotation datasets, such
+as drug-target information of small molecules. They are 
+required for `signatureSearch's` functional enrichment analysis (FEA) routines. 
+Currently, most of these annotation data were downloaded from the following databases:
+
++ [DrugBank](https://www.drugbank.ca/) 
++ [CLUE](https://clue.io/) 
++ [STITCH](http://stitch.embl.de/)
+
+
+<!-- 
+
+# Supplemental Material
+
+## `cmap` signature database
+
+The MAS5 normalized CEL files from the "cmap_expr signature database" section
+can be used for DE analysis with `limma` package to get the `logMA` matrix 
+containing the LFC scores. The treatment v.s. control instances 
+were defined in the `cmap_instances_02.txt`. The same as the `cmap_expr` database,
+only one treatment condition is selected for a compound in a cell. 
+So, the resulting `logMA` matrix has LFC scores of 1,281 compound treatments in 5 cells
+(3,478 signatures in total). The latter was stored in an HDF5 file, which is 
+referred to as the `cmap` database. Note, The number of compound treatments in `cmap`
+database is slightly different from that of the `cmap_expr` database. The reason
+is that some of the compound treatment is discarded if the number of control and treatment
+samples are less than 3 during the DE analysis.
+
+### Load from `AnnotationHub`
+The preprocessed `cmap` database can be loaded through the `AnnotationHub` interface as follows.
+```{r cmap, eval=FALSE}
+library(AnnotationHub)
+ah <- AnnotationHub()
+query(ah, c("signatureSearchData", "cmap"))
+cmap_expr_path <- ah[["AH69090"]]
+```
+
+In summary, the loaded data instance includes LFC scores of 12,403
+genes of 1,281 compound treatments across a total of 5 cell lines. This data set 
+can be used by all GESS methods provided by the `signatureSearch` package.
+
+### Generate from the original resources
+The following steps explain how to generate the above data set from the MAS5 
+normalized expression matrix of CEL files (`mas5df`) generated at the
+"cmap_expr signature database" section. Use the same working directory as 
+`cmap_expr` signature database.
+
+#### Generate list of CEL files defining treatment vs. control comparisons
+
+The `sampleList` function extracts the sample comparisons (contrasts) from the
+CMAP annotation table and stores them as a list.
+```{r cel_file_list, eval=FALSE}
+path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
+cmap_inst <- read.delim(path, check.names=FALSE) 
+comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
+```
+
+#### DEG analysis with `limma`
+The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
+```{r deg_limma, eval=FALSE}
+mas5df <- readRDS("./data/mas5df.rds")
+degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
+saveRDS(degList, "./results/degList.rds") # saves entire degList
+```
+
+#### Save the `logMA` into an HDF5 file
+The `logMA` contains the LFC scores of compound treatments in cells. It is saved
+to an HDF5 file, which is the `cmap` database.
+```{r se, eval=FALSE}
+degList <- readRDS("./results/degList.rds")
+logMA <- degList$logFC
+## match colnames of logMA to '(drug)__(cell)__(factor)' format
+colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA)) 
+matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
+## Read in cmap.h5 by chunks
+cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
+```
+
+-->
+
+# Supplemental Material
+
+## CMap2 Intensities from Sources
+The following steps explain how to generate the `cmap_expr` database in subsection 5.3 from scratch.
+They are intended for expert users and have been included here for reproduciblity reasons.
 
 ### Directory Structure
 
@@ -552,98 +652,6 @@ matrix2h5(cmap_drug_cell_expr, "./data/cmap_expr.h5", overwrite=TRUE)
 ## Read in cmap_expr.h5 by chunks
 cmap_expr_se <- readHDF5chunk("./data/cmap_expr.h5", colindex=1:5)
 ```
-
-# Custom Signature Databases
-
-Custom databases of GESs can be built with the `build_custom_db` function
-provided by the `signatureSearch` package. For this the user provides custom
-genome-wide gene expression data (e.g. for drug, disease or genetic
-perturbations) in a `data.frame` or `matrix`. The gene expression data can be
-most types of the pre-processed gene expression values described under section
-1.4 of the `signatureSearch` vignette.
-
-
-# Additional Datasets
-
-The `signatureSearchData` package also contains several annotation datasets, such
-as drug-target information of small molecules. They are 
-required for `signatureSearch's` functional enrichment analysis (FEA) routines. 
-Currently, most of these annotation data were downloaded from the following databases:
-
-+ [DrugBank](https://www.drugbank.ca/) 
-+ [CLUE](https://clue.io/) 
-+ [STITCH](http://stitch.embl.de/)
-
-
-<!-- 
-
-# Supplemental Material
-
-## `cmap` signature database
-
-The MAS5 normalized CEL files from the "cmap_expr signature database" section
-can be used for DE analysis with `limma` package to get the `logMA` matrix 
-containing the LFC scores. The treatment v.s. control instances 
-were defined in the `cmap_instances_02.txt`. The same as the `cmap_expr` database,
-only one treatment condition is selected for a compound in a cell. 
-So, the resulting `logMA` matrix has LFC scores of 1,281 compound treatments in 5 cells
-(3,478 signatures in total). The latter was stored in an HDF5 file, which is 
-referred to as the `cmap` database. Note, The number of compound treatments in `cmap`
-database is slightly different from that of the `cmap_expr` database. The reason
-is that some of the compound treatment is discarded if the number of control and treatment
-samples are less than 3 during the DE analysis.
-
-### Load from `AnnotationHub`
-The preprocessed `cmap` database can be loaded through the `AnnotationHub` interface as follows.
-```{r cmap, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap"))
-cmap_expr_path <- ah[["AH69090"]]
-```
-
-In summary, the loaded data instance includes LFC scores of 12,403
-genes of 1,281 compound treatments across a total of 5 cell lines. This data set 
-can be used by all GESS methods provided by the `signatureSearch` package.
-
-### Generate from the original resources
-The following steps explain how to generate the above data set from the MAS5 
-normalized expression matrix of CEL files (`mas5df`) generated at the
-"cmap_expr signature database" section. Use the same working directory as 
-`cmap_expr` signature database.
-
-#### Generate list of CEL files defining treatment vs. control comparisons
-
-The `sampleList` function extracts the sample comparisons (contrasts) from the
-CMAP annotation table and stores them as a list.
-```{r cel_file_list, eval=FALSE}
-path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
-cmap_inst <- read.delim(path, check.names=FALSE) 
-comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
-```
-
-#### DEG analysis with `limma`
-The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
-```{r deg_limma, eval=FALSE}
-mas5df <- readRDS("./data/mas5df.rds")
-degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
-saveRDS(degList, "./results/degList.rds") # saves entire degList
-```
-
-#### Save the `logMA` into an HDF5 file
-The `logMA` contains the LFC scores of compound treatments in cells. It is saved
-to an HDF5 file, which is the `cmap` database.
-```{r se, eval=FALSE}
-degList <- readRDS("./results/degList.rds")
-logMA <- degList$logFC
-## match colnames of logMA to '(drug)__(cell)__(factor)' format
-colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA)) 
-matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
-## Read in cmap.h5 by chunks
-cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
-```
-
--->
 
 # Session Info
 
