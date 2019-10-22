@@ -243,7 +243,7 @@ the HDF5 file into a `SummarizedExperiment` object, here assigned to `se`.
 library(signatureSearch)
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
-        h5file="./data/lincs.h5", chunksize=5000, overwrite=TRUE)
+        h5file="./data/lincs.h5", by_ncol=5000, overwrite=TRUE)
 se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 ```
 

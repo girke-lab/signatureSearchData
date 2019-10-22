@@ -1,9 +1,0 @@
-Changes in version 0.99.1 (2019-04-04)
-+ Save LINCS gctx databases to hdf5 files
-+ Save cmap databases (cmap, cmap_rank, cmap_expr) to hdf5 files
-+ Load hdf5 file into R as SummarizedExperiment object
-  o hdf5 file includes matrix, rownames and colnames
-
-Changes in version 0.99.0 (2019-04-02)
-+ First version of signatureSearchData package
-+ Need 50Gb memory to read in LINCS gctx file and save as HDF5 backed SE object
