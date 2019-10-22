@@ -106,30 +106,30 @@ library(signatureSearchData)
 # Explore Data Sets
 
 A summary of the data sets provided by the `signatureSearchData` package can be
-obtained with the `query` function of the `AnnotationHub` package. The information
-is stored in an object of class `AnnotationHub`, here assigned to `ssd`.
+obtained with the `query` function of the `ExperimentHub` package. The information
+is stored in an object of class `ExperimentHub`, here assigned to `ssd`.
 
-```{r ah_explore_ssd1, eval=TRUE, warning=FALSE, message=FALSE }
-library(AnnotationHub)
-ah <- AnnotationHub()
-ssd <- query(ah, c("signatureSearchData"))
+```{r eh_explore_ssd1, eval=TRUE, warning=FALSE, message=FALSE }
+library(ExperimentHub)
+eh <- ExperimentHub()
+ssd <- query(eh, c("signatureSearchData"))
 ssd
 ```
 
 The titles of the data sets can be returned with `ssd$title`.
 
-```{r ah_explore_ssd2, eval=TRUE, warning=FALSE, message=FALSE }
+```{r eh_explore_ssd2, eval=TRUE, warning=FALSE, message=FALSE }
 ssd$title
 ```
 
 More detailed information about each data set can be returned as a `list`, below 
 subsetted to 10th entry with `[10]`.
 
-```{r ah_explore_ssd3, eval=TRUE}
+```{r eh_explore_ssd3, eval=TRUE}
 as.list(ssd)[10]
 ```
 
-Details about the usage of `AnnotationHub` can be found in its vignettes [here](http://bioconductor.org/packages/AnnotationHub/).
+Details about the usage of `ExperimentHub` can be found in its vignettes [here](http://bioconductor.org/packages/ExperimentHub/).
 
 # LINCS Signature Database
 
@@ -172,10 +172,10 @@ cell lines. The total number of expression signatures meeting this requirement
 is 45,956, while the total number of cell lines included in this data set is
 30. 
 
-## Z-scores from `AnnotationHub`
+## Z-scores from `ExperimentHub`
 
 The LINCS sub-dataset, filtered and assembled according to the above criteria,
-can be downloaded from Bioconductor's `AnnotationHub` as HDF5 file. In the
+can be downloaded from Bioconductor's `ExperimentHub` as HDF5 file. In the
 example below, the path to this file is assigned to a character vector called
 `lincs_path`. A summary of the content of the HDF5 file can be returned with
 the `h5ls` function. Note, due to the large size of the LINCS data set, its download 
@@ -183,10 +183,10 @@ takes too much time to evaluate the following code section during the build time
 this vignette. 
 
 ```{r lincs, eval=FALSE}
-library(AnnotationHub); library(rhdf5)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "lincs"))
-lincs_path <- ah[['AH69092']]
+library(ExperimentHub); library(rhdf5)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "lincs"))
+lincs_path <- eh[['EH3226']]
 rhdf5::h5ls(lincs_path) 
 ```
 
@@ -247,7 +247,7 @@ gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
 se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
 ```
 
-## Intensities from `AnnotationHub`
+## Intensities from `ExperimentHub`
 
 The LINCS Level 3 data can be downloaded from
 [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742) the same way
@@ -265,13 +265,13 @@ this inconsistency is most likely that the Level 3 dataset, downloadable from GE
 is incomplete.
 
 The filtered and processed LINCS Level3 data (`lincs_expr`) can be loaded from 
-Bioconductor's `AnnotationHub` interface as follows.
+Bioconductor's `ExperimentHub` interface as follows.
 
 ```{r lincs_expr, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "lincs_expr"))
-lincs_expr_path <- ah[['AH69093']]
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "lincs_expr"))
+lincs_expr_path <- eh[['EH3227']]
 ```
 
 In this case the loaded `lincs_expr` instance includes mean expression values of 
@@ -338,18 +338,18 @@ cells corresponding to a total of 3,587 treatment signatures. This matrix can
 be used for all GESS methods in the `signatureSearch` package that are
 compatible with rank data, such as the `gess_cmap` method.
 
-## Rank Matrix from `AnnotationHub`
+## Rank Matrix from `ExperimentHub`
 
-The `cmap_rank` data can be downloaded from Bioconductor's `AnnotationHub` as HDF5
+The `cmap_rank` data can be downloaded from Bioconductor's `ExperimentHub` as HDF5
 file. Since CMap2 is much smaller than LINCS, it can be imported in its
 entirety into a `SummarizedExperiment` object (here assigned to `se`) without
 excessive memory requirements. 
 
 ```{r cmap_rank, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap_rank"))
-cmap_rank_path <- ah[["AH69763"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "cmap_rank"))
+cmap_rank_path <- eh[["EH3225"]]
 se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
 ```
 
@@ -423,7 +423,7 @@ rhdf5::h5ls("./data/cmap_rank.h5")
 cmap_rank_se <- readHDF5chunk("./data/cmap_rank.h5", colindex=1:5)
 ```
 
-## Intensities from `AnnotationHub`
+## Intensities from `ExperimentHub`
 
 To search CMap2 with `signatureSearch's` correlation based GESS methods
 (`gess_cor`), normalized gene expression values (here intensities) are required
@@ -439,13 +439,13 @@ referred to as the `cmap_expr` database. It represents mean expression values
 of 12,403 genes for 1,309 compound treatments in up to 5 cells (3,587 signatures in total).
 
 The `cmap_expr` database can be downloaded as HDF5 file from Bioconductor's 
-`AnnotationHub` as follows.
+`ExperimentHub` as follows.
 
 ```{r cmap_expr, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap_expr"))
-cmap_expr_path <- ah[["AH69091"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "cmap_expr"))
+cmap_expr_path <- eh[["EH3224"]]
 ```
 
 This data set can be used by all correlation-based GESS methods provided by the
@@ -496,13 +496,13 @@ database is slightly different from that of the `cmap_expr` database. The reason
 is that some of the compound treatment is discarded if the number of control and treatment
 samples are less than 3 during the DE analysis.
 
-### Load from `AnnotationHub`
-The preprocessed `cmap` database can be loaded through the `AnnotationHub` interface as follows.
+### Load from `ExperimentHub`
+The preprocessed `cmap` database can be loaded through the `ExperimentHub` interface as follows.
 ```{r cmap, eval=FALSE}
-library(AnnotationHub)
-ah <- AnnotationHub()
-query(ah, c("signatureSearchData", "cmap"))
-cmap_expr_path <- ah[["AH69090"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "cmap"))
+cmap_expr_path <- eh[["EH3224"]]
 ```
 
 In summary, the loaded data instance includes LFC scores of 12,403
@@ -573,7 +573,7 @@ the argument `rerun` has been assigned `FALSE` in the below function call to
 avoid running it accidentally. To execute the download, the argument `rerun`
 needs to be assigned `TRUE`. If the raw data are not needed, users can skip
 this time consuming step and work with the preprocessed `cmap_expr` database
-downloaded from the `AnnotationHub` instead.
+downloaded from the `ExperimentHub` instead.
 
 ```{r download_cmap, eval=FALSE}
 getCmapCEL(rerun=FALSE) 

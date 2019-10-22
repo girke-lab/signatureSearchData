@@ -19,7 +19,7 @@ meanExpr2h5(gctx, inst, h5file, chunksize = 2000, overwrite = TRUE)
 existing 'h5file'}
 }
 \value{
-HDF5 file, representing the 'lincs_expr' database
+HDF5 file, representing the \code{lincs_expr} database
 }
 \description{
 Function calculates mean expression values for replicated samples of LINCS

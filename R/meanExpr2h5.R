@@ -12,12 +12,12 @@
 #' @param chunksize number of columns of the matrix to be processed at a time to limit memory usage
 #' @param overwrite TRUE or FALSE, whether to overwrite or append data to an
 #' existing 'h5file'
-#' @return HDF5 file, representing the 'lincs_expr' database
+#' @return HDF5 file, representing the \code{lincs_expr} database
 #' @importFrom signatureSearch create_empty_h5
 #' @importFrom signatureSearch parse_gctx
 #' @importFrom signatureSearch append2H5
 #' @importFrom rhdf5 h5ls
-#' @import AnnotationHub
+#' @import ExperimentHub
 #' @examples
 #' gctx <- system.file("extdata", "test_sample_n2x12328.gctx", package="signatureSearchData")
 #' h5file <- tempfile(fileext=".h5")

@@ -17,7 +17,7 @@ referred to as the cmap_expr database. It represents mean expression values of
 }
 \details{
 The cmap_expr database can be downloaded as HDF5 file from Bioconductor’s 
-AnnotationHub as shown in the Example section. 
+ExperimentHub as shown in the Example section. 
 
 The loaded \code{cmap_expr} data object is generated from the raw CEL files
 downloaded from the CMap project site.
@@ -31,10 +31,11 @@ CMap project site: https://portals.broadinstitute.org/cmap
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#query(ah, c("signatureSearchData", "cmap_expr"))
-#cmap_expr_path <- ah[["AH69091"]]
+library(ExperimentHub)
+# eh <- ExperimentHub()
+# query(eh, c("signatureSearchData", "cmap_expr"))
+# cmap_expr_path <- eh[["EH3224"]]
+# rhdf5::h5ls(cmap_expr_path)
 }
 
 \keyword{datasets}

@@ -2,16 +2,16 @@ Package: signatureSearchData
 Title: Datasets for signatureSearch package
 Description: CMAP/LINCS hdf5 databases and other annotations used for 
              signatureSearch software package.
-Version: 0.99.9
+Version: 0.99.10
 Author: Yuzhu Duan <yduan004@ucr.edu>,
         Thomas Girke <thomas.girke@ucr.edu>
 Maintainer: Yuzhu Duan <yduan004@ucr.edu>
 Depends: R (>= 3.6)
-Imports: AnnotationHub, utils, affy, limma, Biobase, magrittr, dplyr,
+Imports: ExperimentHub, utils, affy, limma, Biobase, magrittr, dplyr,
          R.utils, stats, signatureSearch, rhdf5
-Suggests:knitr, rmarkdown
+Suggests: knitr, rmarkdown
 License: Artistic-2.0
-biocViews: AnnotationHub, AnnotationData, FunctionalAnnotation
+biocViews: ExperimentHub, Experiment Data
 Encoding: UTF-8
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

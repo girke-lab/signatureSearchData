@@ -8,10 +8,10 @@ to get the annotated gene labels set if the 'set' argument is a GO term ID.
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#qr <- query(ah, c("signatureSearchData", "goAnno"))
-# goAnno <- ah[["AH69084"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+goAnno <- eh["EH3229"]
+# goAnno <- eh[["EH3229"]]
 }
 \keyword{datasets}
 

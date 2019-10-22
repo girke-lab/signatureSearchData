@@ -20,10 +20,9 @@ running \code{browseVignettes("signatureSearch")} in your R session.
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#qr <- query(ah, c("signatureSearchData", "ES_NULL"))
-#ES_NULL <- ah[["AH69089"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+es_null <- eh[["EH3234"]]
 }
 
 \keyword{datasets}

@@ -41,7 +41,7 @@ of cell lines included in this data set is 30.
 }
 \details{
 The LINCS sub-dataset, filtered and assembled according to the above criteria, 
-can be downloaded from Bioconductor’s \code{AnnotationHub} as HDF5 file. 
+can be downloaded from Bioconductor’s \code{ExperimentHub} as HDF5 file. 
 In this case the loaded data instance includes moderated Z-scores from 
 DE analyses of 12,328 genes for 8,140 compound treatments across a total of 
 30 cell lines corresponding to 45,956 expression signatures. This data set can 
@@ -65,11 +65,11 @@ please refer to the vignette of this package by running
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#query(ah, c("signatureSearchData", "lincs"))
-# lincs_path <- ah[['AH69092']]
-# h5ls(lincs_path) 
+library(ExperimentHub)
+# eh <- ExperimentHub()
+# query(eh, c("signatureSearchData", "lincs"))
+# lincs_path <- eh[['EH3226']]
+# rhdf5::h5ls(lincs_path) 
 }
 
 \keyword{datasets}

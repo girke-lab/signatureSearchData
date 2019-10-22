@@ -19,9 +19,10 @@ drug to target protein-encoding genes links in DrugBank, CLUE and STITCH databas
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#goAnno_drug <- ah[["AH69085"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+goAnno_drug <- eh["EH3230"]
+# goAnno_drug <- eh[["EH3230"]]
 }
 
 \keyword{datasets}

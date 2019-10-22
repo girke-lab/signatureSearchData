@@ -30,10 +30,11 @@ drugs are excluded.
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#qr <- query(ah, c("signatureSearchData", "dtlink_db_clue_sti"))
-#names(qr)
+library(ExperimentHub)
+eh <- ExperimentHub()
+qr <- query(eh, c("signatureSearchData", "dtlink_db_clue_sti"))
+dtlink <- eh["EH3228"]
+# dtlink <- eh[["EH3228"]]
 }
 
 \keyword{datasets}

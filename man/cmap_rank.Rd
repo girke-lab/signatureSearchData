@@ -22,7 +22,7 @@ the signatureSearch package that are compatible with rank data, such as the
 \code{gess_cmap} method.
 }
 \details{
-The \code{cmap_rank} data can be downloaded from Bioconductor’s AnnotationHub as 
+The \code{cmap_rank} data can be downloaded from Bioconductor’s ExperimentHub as 
 HDF5 file. Since CMap2 is much smaller than LINCS, it can be imported in its 
 entirety into a SummarizedExperiment object without excessive memory requirements
 as shown in the Examples section.
@@ -39,11 +39,11 @@ CMap project site: https://portals.broadinstitute.org/cmap
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#query(ah, c("signatureSearchData", "cmap_rank"))
-# cmap_rank_path <- ah[["AH69763"]]
-# se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
+library(ExperimentHub)
+# eh <- ExperimentHub()
+# query(eh, c("signatureSearchData", "cmap_rank"))
+# cmap_rank_path <- eh[["EH3225"]]
+# rhdf5::h5ls(cmap_rank_path)
 }
 
 \keyword{datasets}

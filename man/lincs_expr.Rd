@@ -18,7 +18,7 @@ likely that the Level 3 dataset, downloadable from GEO, is incomplete.
 }
 \details{
 The filtered and processed LINCS Level3 data (lincs_expr) can be loaded from 
-Bioconductor’s AnnotationHub interface as shown in Examples section. 
+Bioconductor’s \code{ExperimentHub} interface as shown in Examples section. 
 In this case the loaded lincs_expr instance includes mean expression values of
 12,328 genes for 5,925 compound treatments across a total of 30 cell lines
 (38,824 signatures in total). 
@@ -39,10 +39,11 @@ please refer to the vignette of this package by running
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#query(ah, c("signatureSearchData", "lincs_expr"))
-# lincs_expr_path <- ah[["AH69093"]]
+library(ExperimentHub)
+# eh <- ExperimentHub()
+# query(eh, c("signatureSearchData", "lincs_expr"))
+# lincs_expr_path <- eh[["EH3227"]]
+# rhdf5::h5ls(lincs_expr_path) 
 }
 
 \keyword{datasets}

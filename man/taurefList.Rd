@@ -29,10 +29,10 @@ Connectivity Map: L1000 Platform and the First 1,000,000 Profiles. Cell,
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#qr <- query(ah, c("signatureSearchData", "taurefList"))
-#taurefList <- ah[["AH69088"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+taurefList <- eh["EH3233"]
+# taurefList <- eh[["EH3233"]]
 }
 
 \keyword{datasets}

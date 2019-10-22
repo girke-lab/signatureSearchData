@@ -17,10 +17,11 @@ building this environment from scratch every time running the \code{dsea} functi
 }
 
 \examples{
-library(AnnotationHub)
-#ah <- AnnotationHub()
-#qr <- query(ah, c("signatureSearchData", "GO_DATA"))
-#GO_DATA_drug <- ah[["AH69087"]]
+library(ExperimentHub)
+eh <- ExperimentHub()
+qr <- query(eh, c("signatureSearchData", "GO_DATA"))
+go_data_drug <- eh["EH3232"]
+# go_data_drug <- eh[["EH3232"]]
 }
 
 \keyword{datasets}
