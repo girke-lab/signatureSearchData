@@ -48,6 +48,9 @@ due to the lack of large-scale perturbation studies (_e.g._ drug-based) availabl
 domain that are based on RNA-Seq. This situation may change in the near future
 once the technology has become more affordable for this purpose. 
 
+# Vignette
+The vignette of this package is available at [here](https://www.bioconductor.org/packages/release/data/experiment/vignettes/signatureSearchData/inst/doc/signatureSearchData.html)
+
 # Install and Load Package
 
 `signatureSearchData` is a R/Bioconductor package and can be installed using 
