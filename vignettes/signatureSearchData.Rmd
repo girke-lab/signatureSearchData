@@ -235,20 +235,59 @@ in subsets of manageable sizes and then appended to an HDF5 file (here
 Z-score database. Since the size of the full matrix is several GBs in size, it would
 consume too much memory to be read into R at once. Reading the matrix in
 smaller batches and appending them to an HDF5 file is much more memory
-efficient. Subsequently, the `readHDF5chunk` function, defined by the
-`signatureSearchData` package, imports user-definable subsets of the data from
-the HDF5 file into a `SummarizedExperiment` object, here assigned to `se`.
+efficient. Subsequently, the `HDF5Array` function from the `HDF5Array` package
+combined with the `SummarizedExperiment` function
+could import the data from the HDF5 file into a `SummarizedExperiment` object, 
+here assigned to `se`.
 
 ```{r extract_modz, eval=FALSE}
 library(signatureSearch)
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
         h5file="./data/lincs.h5", by_ncol=5000, overwrite=TRUE)
-se <- readHDF5chunk(h5file="./data/lincs.h5", colindex=1:5000)
+se <- SummarizedExperiment(HDF5Array("./data/lincs.h5", name="assay"))
+rownames(se) <- HDF5Array("./data/lincs.h5", name="rownames")
+colnames(se) <- HDF5Array("./data/lincs.h5", name="colnames")
 ```
 
-## Intensities from `ExperimentHub`
+### DEGs and Cutoffs Definition
+The DEGs for the LINCS level 5 Z-score database can be defined by users by setting
+the cutoffs of Z-scores (*e.g.* +2 and -2) to define up/down regulated DEGs. 
+The cutoff parameters of defining DEGs are available as the argument of the 
+GESS methods when the reference database needs to be DEG sets and the `lincs`
+Z-score data are provided (only for _gCMAP_ and _Fisher_ GESS methods). 
+The GS-Qs could also be defined by users by either selecting 150 up and down genes
+or defining cutoffs of Z-scores. The GS-Qs can be used for _CMAP_, _LINCS_ GESS
+methods. The following codes show examples of defining DEGs used as query and
+defining DEG sets used as reference database.
 
+Defining GS-Qs
+```{r lincs_degs, eval=FALSE}
+library(signatureSearch)
+# Get up and down 150 DEGs
+degs <- getDEGSig(cmp="vorinostat", cell="SKB", refdb="lincs", Nup=150, Ndown=150)
+
+# Get DEGs by setting cutoffs
+gep <- getSig(cmp="vorinostat", cell="SKB", refdb="lincs")
+higher <- 2; lower <- -2
+up <- rownames(gep[gep > higher,,drop=FALSE])
+down <- rownames(gep[gep < lower,,drop=FALSE])
+```
+
+Defining GS-DBs. The LINCS Z-score reference database will be internally
+converted to the gene sets database in forms of the 0, 1, -1 matrix when 
+user defining the `higher` and `lower` cutoffs in the `gess_gcmap` and `gess_fisher`
+functions.
+```{r lincs_degs_db, eval=FALSE}
+# gCMAP method
+qsig_gcmap <- qSig(query = gep, gess_method = "gCMAP", refdb = "lincs")
+gcmap_res <- gess_gcmap(qsig_gcmap, higher=2, lower=-2)
+# Fisher method
+qsig_fisher <- qSig(query = degs, gess_method = "Fisher", refdb = "lincs")
+fisher_res <- gess_fisher(qSig=qsig_fisher, higher=2, lower=-2)
+```
+
+## Intensities from ExperimentHub
 The LINCS Level 3 data can be downloaded from
 [GEO](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742) the same way
 as described above for the Level 5 data. The Level 3 data contain normalized
@@ -477,77 +516,6 @@ Currently, most of these annotation data were downloaded from the following data
 + [CLUE](https://clue.io/) 
 + [STITCH](http://stitch.embl.de/)
 
-
-<!-- 
-
-# Supplemental Material
-
-## `cmap` signature database
-
-The MAS5 normalized CEL files from the "cmap_expr signature database" section
-can be used for DE analysis with `limma` package to get the `logMA` matrix 
-containing the LFC scores. The treatment v.s. control instances 
-were defined in the `cmap_instances_02.txt`. The same as the `cmap_expr` database,
-only one treatment condition is selected for a compound in a cell. 
-So, the resulting `logMA` matrix has LFC scores of 1,281 compound treatments in 5 cells
-(3,478 signatures in total). The latter was stored in an HDF5 file, which is 
-referred to as the `cmap` database. Note, The number of compound treatments in `cmap`
-database is slightly different from that of the `cmap_expr` database. The reason
-is that some of the compound treatment is discarded if the number of control and treatment
-samples are less than 3 during the DE analysis.
-
-### Load from `ExperimentHub`
-The preprocessed `cmap` database can be loaded through the `ExperimentHub` interface as follows.
-```{r cmap, eval=FALSE}
-library(ExperimentHub)
-eh <- ExperimentHub()
-query(eh, c("signatureSearchData", "cmap"))
-cmap_expr_path <- eh[["EH3224"]]
-```
-
-In summary, the loaded data instance includes LFC scores of 12,403
-genes of 1,281 compound treatments across a total of 5 cell lines. This data set 
-can be used by all GESS methods provided by the `signatureSearch` package.
-
-### Generate from the original resources
-The following steps explain how to generate the above data set from the MAS5 
-normalized expression matrix of CEL files (`mas5df`) generated at the
-"cmap_expr signature database" section. Use the same working directory as 
-`cmap_expr` signature database.
-
-#### Generate list of CEL files defining treatment vs. control comparisons
-
-The `sampleList` function extracts the sample comparisons (contrasts) from the
-CMAP annotation table and stores them as a list.
-```{r cel_file_list, eval=FALSE}
-path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
-cmap_inst <- read.delim(path, check.names=FALSE) 
-comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
-```
-
-#### DEG analysis with `limma`
-The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
-```{r deg_limma, eval=FALSE}
-mas5df <- readRDS("./data/mas5df.rds")
-degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
-saveRDS(degList, "./results/degList.rds") # saves entire degList
-```
-
-#### Save the `logMA` into an HDF5 file
-The `logMA` contains the LFC scores of compound treatments in cells. It is saved
-to an HDF5 file, which is the `cmap` database.
-```{r se, eval=FALSE}
-degList <- readRDS("./results/degList.rds")
-logMA <- degList$logFC
-## match colnames of logMA to '(drug)__(cell)__(factor)' format
-colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA)) 
-matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
-## Read in cmap.h5 by chunks
-cmap_se <- readHDF5chunk("./data/cmap.h5", colindex=1:5)
-```
-
--->
-
 # Supplemental Material
 
 ## CMap2 Intensities from Sources
@@ -651,6 +619,69 @@ colnames(cmap_drug_cell_expr) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp",
 matrix2h5(cmap_drug_cell_expr, "./data/cmap_expr.h5", overwrite=TRUE)
 ## Read in cmap_expr.h5 by chunks
 cmap_expr_se <- readHDF5chunk("./data/cmap_expr.h5", colindex=1:5)
+```
+
+## CMap2 LFC database
+
+The MAS5 normalized CEL files from the `CMap2 Intensities from Sources` section
+can be used for DE analysis with `limma` package to get the `logMA` matrix 
+containing the LFC scores. The treatment v.s. control instances 
+were defined in the `cmap_instances_02.txt`. The same as the `cmap_expr` database,
+only one treatment condition is selected for a compound in a cell. 
+So, the resulting `logMA` matrix has LFC scores of 1,281 compound treatments in 5 cells
+(3,478 signatures in total). The latter was stored in an HDF5 file, which is 
+referred to as the `cmap` database. Note, The number of compound treatments in `cmap`
+database is slightly different from that of the `cmap_expr` database. The reason
+is that some of the compound treatment is discarded if the number of control and treatment
+samples are less than 3 during the DE analysis.
+
+### Load from `ExperimentHub`
+The preprocessed `cmap` database can be loaded through the `ExperimentHub` interface as follows.
+```{r cmap, eval=FALSE}
+library(ExperimentHub)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "cmap"))
+cmap_path <- eh[["EH3223"]]
+```
+
+In summary, the loaded data instance includes LFC scores of 12,403
+genes of 1,281 compound treatments across a total of 5 cell lines. This data set 
+can be used by all GESS methods provided by the `signatureSearch` package.
+
+### Generate from Sources
+The following steps explain how to generate the above data set from the MAS5 
+normalized expression matrix of CEL files (`mas5df`) generated at the
+`CMap2 Intensities from Sources` section. Use the same working directory as 
+`cmap_expr` signature database.
+
+#### Generate list of CEL files defining treatment vs. control comparisons
+
+The `sampleList` function extracts the sample comparisons (contrasts) from the
+CMAP annotation table and stores them as a list.
+```{r cel_file_list, eval=FALSE}
+path <- system.file("extdata", "cmap_instances_02.txt", package="signatureSearchData")
+cmap_inst <- read.delim(path, check.names=FALSE) 
+comp_list <- sampleList(cmap_inst, myby="CMP_CELL")
+```
+
+#### DEG analysis with `limma`
+The analysis of differentially expressed genes (DEGs) is performed with the `limma` package.
+```{r deg_limma, eval=FALSE}
+mas5df <- readRDS("./data/mas5df.rds")
+degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=TRUE)
+saveRDS(degList, "./results/degList.rds") # saves entire degList
+```
+
+#### Save the `logMA` into an HDF5 file
+The `logMA` contains the LFC scores of compound treatments in cells. It is saved
+to an HDF5 file, which is the `cmap` database.
+```{r se, eval=FALSE}
+degList <- readRDS("./results/degList.rds")
+logMA <- degList$logFC
+## match colnames of logMA to '(drug)__(cell)__(factor)' format
+colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA)) 
+matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
+rhdf5::h5ls("./data/cmap.h5")
 ```
 
 # Session Info
