@@ -1,5 +1,5 @@
 ---
-title: _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
+title: "_signatureSearchData_: Reference Data for Gene Expression Signature Searching"
 author: "Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
@@ -20,6 +20,8 @@ vignette: >
   %\VignetteIndexEntry{signatureSearchData}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 <style>
@@ -245,6 +247,7 @@ library(signatureSearch)
 gctx <- "./data/GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx"
 gctx2h5(gctx, cid=meta42_filter$sig_id, new_cid=meta42_filter$pert_cell_factor,
         h5file="./data/lincs.h5", by_ncol=5000, overwrite=TRUE)
+library(HDF5Array)
 se <- SummarizedExperiment(HDF5Array("./data/lincs.h5", name="assay"))
 rownames(se) <- HDF5Array("./data/lincs.h5", name="rownames")
 colnames(se) <- HDF5Array("./data/lincs.h5", name="colnames")
@@ -268,10 +271,7 @@ library(signatureSearch)
 degs <- getDEGSig(cmp="vorinostat", cell="SKB", refdb="lincs", Nup=150, Ndown=150)
 
 # Get DEGs by setting cutoffs
-gep <- getSig(cmp="vorinostat", cell="SKB", refdb="lincs")
-higher <- 2; lower <- -2
-up <- rownames(gep[gep > higher,,drop=FALSE])
-down <- rownames(gep[gep < lower,,drop=FALSE])
+degs2 <- getDEGSig(cmp="vorinostat", cell="SKB", refdb="lincs", higher=2, lower=-2)
 ```
 
 Defining GS-DBs. The LINCS Z-score reference database will be internally
@@ -280,6 +280,7 @@ user defining the `higher` and `lower` cutoffs in the `gess_gcmap` and `gess_fis
 functions.
 ```{r lincs_degs_db, eval=FALSE}
 # gCMAP method
+gep <- getSig("vorinostat", "SKB", refdb="lincs")
 qsig_gcmap <- qSig(query = gep, gess_method = "gCMAP", refdb = "lincs")
 gcmap_res <- gess_gcmap(qsig_gcmap, higher=2, lower=-2)
 # Fisher method
@@ -389,7 +390,9 @@ library(ExperimentHub)
 eh <- ExperimentHub()
 query(eh, c("signatureSearchData", "cmap_rank"))
 cmap_rank_path <- eh[["EH3225"]]
-se <- readHDF5chunk(h5file=cmap_rank_path, colindex=1:3587)
+se <- SummarizedExperiment(HDF5Array(cmap_rank_path, name="assay"))
+rownames(se) <- HDF5Array(cmap_rank_path, name="rownames")
+colnames(se) <- HDF5Array(cmap_rank_path, name="colnames")
 ```
 
 ## Rank Matrix from Sources
@@ -458,8 +461,10 @@ The sub-setted `rankMatrix` is written to an HDF5 file, referred to as
 ```{r cmap_rank2h5, eval=FALSE}
 matrix2h5(rankM_sub_gene, "./data/cmap_rank.h5", overwrite=TRUE) # 12403 X 3587
 rhdf5::h5ls("./data/cmap_rank.h5")
-## Read in cmap_rank.h5 as SummarizedExperiment object by chunks
-cmap_rank_se <- readHDF5chunk("./data/cmap_rank.h5", colindex=1:5)
+## Read in cmap_rank.h5 as SummarizedExperiment object
+se <- SummarizedExperiment(HDF5Array("./data/cmap_rank.h5", name="assay"))
+rownames(se) <- HDF5Array("./data/cmap_rank.h5", name="rownames")
+colnames(se) <- HDF5Array("./data/cmap_rank.h5", name="colnames")
 ```
 
 ## Intensities from `ExperimentHub`
@@ -617,8 +622,7 @@ cmap_drug_cell_expr <- readRDS("./data/cmap_drug_cell_expr.rds")
 colnames(cmap_drug_cell_expr) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", 
                                       colnames(cmap_drug_cell_expr)) 
 matrix2h5(cmap_drug_cell_expr, "./data/cmap_expr.h5", overwrite=TRUE)
-## Read in cmap_expr.h5 by chunks
-cmap_expr_se <- readHDF5chunk("./data/cmap_expr.h5", colindex=1:5)
+h5ls("./data/cmap_expr.h5")
 ```
 
 ## CMap2 LFC database
@@ -672,20 +676,64 @@ degList <- runLimma(df=log2(mas5df), comp_list, fdr=0.10, foldchange=1, verbose=
 saveRDS(degList, "./results/degList.rds") # saves entire degList
 ```
 
-#### Save the `logMA` into an HDF5 file
-The `logMA` contains the LFC scores of compound treatments in cells. It is saved
-to an HDF5 file, which is the `cmap` database.
+#### Save the LFC and FDR matrix to an HDF5 file
+The `logMA` contains the LFC scores of compound treatments in cells. The LFC
+as well as the FDR matrix are saved to an HDF5 file, which is the `cmap` database.
 ```{r se, eval=FALSE}
 degList <- readRDS("./results/degList.rds")
 logMA <- degList$logFC
 ## match colnames of logMA to '(drug)__(cell)__(factor)' format
-colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA)) 
-matrix2h5(logMA, "./data/cmap.h5", overwrite=TRUE) # 12403 X 3478
+colnames(logMA) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(logMA))
+fdr <- degList$FDR
+colnames(fdr) <- gsub("(^.*)_(.*$)", "\\1__\\2__trt_cp", colnames(fdr))
+matrix2h5(logMA, "./data/cmap.h5", name="assay", overwrite=TRUE) # 12403 X 3478
+matrix2h5(fdr, "./data/cmap.h5", name="padj", overwrite=FALSE)
 rhdf5::h5ls("./data/cmap.h5")
 ```
 
-# Session Info
+#### DEGs and Cutoffs Definition
+The DEGs for the CMAP2 database can be defined by users by setting
+the cutoffs of LFC as well as the adjusted p-value or FDR to define up/down 
+regulated DEGs if the p-value matrix is available in the CMAP HDF5 file. 
+The cutoff parameters of defining DEGs are available as the argument of the 
+GESS methods when the reference database needs to be DEG sets (only for _gCMAP_ 
+and _Fisher_ GESS methods). 
 
+The GS-Qs could also be defined by users by either selecting 150 up and down genes
+or defining cutoffs of LFC and FDRs. The GS-Qs can be used for _CMAP_, _LINCS_ GESS
+methods. The following codes show examples of defining DEGs used as query and
+defining DEG sets used as reference database.
+
+Defining GS-Qs
+```{r cmap_degs, eval=FALSE}
+library(signatureSearch)
+# Get up and down 150 DEGs
+degs <- getDEGSig(cmp="vorinostat", cell="PC3", refdb="cmap", Nup=150, Ndown=150)
+
+# Get DEGs by setting cutoffs
+degs2 <- getDEGSig(cmp="vorinostat", cell="PC3", refdb="cmap", 
+                 higher=1, lower=-1, padj=0.05)
+```
+
+Defining GS-DBs. The CMAP2 reference database will be internally
+converted to the gene sets database in forms of the 0, 1, -1 matrix when 
+user defining the `higher`, `lower` and `padj` cutoffs in the `gess_gcmap` and 
+`gess_fisher` functions. The `padj` argument is supported when the reference 
+database contains both the LFC score and p-value matrix, so it is possible to 
+define DEGs combined from the LFC and p-value (could be either p-value,
+adjusted p-value or FDR depending on the type of p-value stored in dataset
+named as `padj`) cutoffs.
+```{r cmap_degs_db, eval=FALSE}
+# gCMAP method
+gep <- getSig("vorinostat", "PC3", refdb="cmap")
+qsig_gcmap <- qSig(query = gep, gess_method = "gCMAP", refdb = "cmap")
+gcmap_res <- gess_gcmap(qsig_gcmap, higher=1, lower=-1, padj=0.05)
+# Fisher method
+qsig_fisher <- qSig(query = degs, gess_method = "Fisher", refdb = "cmap")
+fisher_res <- gess_fisher(qSig=qsig_fisher, higher=1, lower=-1, padj=0.05)
+```
+
+# Session Info
 ```{r sessionInfo}
 sessionInfo()
 ```
