@@ -1,4 +1,4 @@
-# _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
+# _signatureSearchData_: Reference Data for Gene Expression Signature Searching
 
 # Introduction
 
