@@ -1,4 +1,4 @@
-# _signatureSearchData_ - Reference Data for Gene Expression Signature Searching
+# _signatureSearchData_: Reference Data for Gene Expression Signature Searching
 
 # Introduction
 
@@ -47,6 +47,9 @@ well as sequencing-based methods, such as RNA-Seq. Currently,
 due to the lack of large-scale perturbation studies (_e.g._ drug-based) available in the public
 domain that are based on RNA-Seq. This situation may change in the near future
 once the technology has become more affordable for this purpose. 
+
+# Vignette
+The vignette of this package is available at [here](https://www.bioconductor.org/packages/release/data/experiment/vignettes/signatureSearchData/inst/doc/signatureSearchData.html)
 
 # Install and Load Package
 

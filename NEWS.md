@@ -1,3 +1,8 @@
+## Changes in version 1.2.1 (2020-08-14)
++ Edited vignette containing 'DEGs and Cutoffs Definition' subsections to
+document how to defining query DEGs and gene set reference database by setting
+LFC scores and FDR cutoffs.
+
 ## Changes in version 1.1.0 (2019-10-23)
 + Initial version 
 

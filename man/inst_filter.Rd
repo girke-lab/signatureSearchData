@@ -4,8 +4,14 @@
 \alias{inst_filter}
 \title{Filter LINCS Level 3 by Condition}
 \usage{
-inst_filter(meta, pert_type = "trt_cp", dose = 10, dose_unit = "um",
-  time = 24, time_unit = "h")
+inst_filter(
+  meta,
+  pert_type = "trt_cp",
+  dose = 10,
+  dose_unit = "um",
+  time = 24,
+  time_unit = "h"
+)
 }
 \arguments{
 \item{meta}{tibble containing experimental conditions of LINCS data}
