@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore"><em>signatureSearchData</em>: Reference Data for Gene Expression Signature Searching</h1>
 <h4 class="author">Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke</h4>
-<h4 class="date">Last update: 15 August, 2020</h4>
+<h4 class="date">Last update: 18 August, 2020</h4>
 
 </div>
 
@@ -1717,8 +1717,8 @@ se &lt;- SummarizedExperiment(HDF5Array(&quot;./data/lincs.h5&quot;, name=&quot;
 rownames(se) &lt;- HDF5Array(&quot;./data/lincs.h5&quot;, name=&quot;rownames&quot;)
 colnames(se) &lt;- HDF5Array(&quot;./data/lincs.h5&quot;, name=&quot;colnames&quot;)</code></pre>
 </div>
-<div id="degs-and-cutoffs-definition" class="section level3">
-<h3><span class="header-section-number">4.2.4</span> DEGs and Cutoffs Definition</h3>
+<div id="deg-and-cutoff-definitions" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> DEG and Cutoff Definitions</h3>
 <p>The DEGs for the LINCS level 5 Z-score database can be defined by users by setting the cutoffs of Z-scores (<em>e.g.</em> +2 and -2) to define up/down regulated DEGs. The cutoff parameters of defining DEGs are available as the argument of the GESS methods when the reference database needs to be DEG sets and the <code>lincs</code> Z-score data are provided (only for <em>gCMAP</em> and <em>Fisher</em> GESS methods). The query gene sets could also be defined by users by either selecting 150 up and down genes or defining cutoffs of Z-scores. The query gene sets can be used for <em>CMAP</em>, <em>LINCS</em> GESS methods. The following codes show examples of defining DEGs used as query and defining DEG sets used as reference database.</p>
 <p>Defining query gene sets</p>
 <pre class="r"><code>library(signatureSearch)
@@ -1969,8 +1969,8 @@ matrix2h5(logMA, &quot;./data/cmap.h5&quot;, name=&quot;assay&quot;, overwrite=T
 matrix2h5(fdr, &quot;./data/cmap.h5&quot;, name=&quot;padj&quot;, overwrite=FALSE)
 rhdf5::h5ls(&quot;./data/cmap.h5&quot;)</code></pre>
 </div>
-<div id="degs-and-cutoffs-definition-1" class="section level4">
-<h4><span class="header-section-number">8.2.2.4</span> DEGs and Cutoffs Definition</h4>
+<div id="deg-and-cutoff-definitions-1" class="section level4">
+<h4><span class="header-section-number">8.2.2.4</span> DEG and Cutoff Definitions</h4>
 <p>The DEGs for the CMAP2 database can be defined by users by setting the cutoffs of LFC as well as the adjusted p-value or FDR to define up/down regulated DEGs if the p-value matrix is available in the CMAP HDF5 file. The cutoff parameters of defining DEGs are available as the argument of the GESS methods when the reference database needs to be DEG sets (only for <em>gCMAP</em> and <em>Fisher</em> GESS methods).</p>
 <p>The query gene sets could also be defined by users by either selecting 150 up and down genes or defining cutoffs of LFC and FDRs. The query gene sets can be used for <em>CMAP</em>, <em>LINCS</em> GESS methods. The following codes show examples of defining DEGs used as query and defining DEG sets used as reference database.</p>
 <p>Defining query gene sets</p>
