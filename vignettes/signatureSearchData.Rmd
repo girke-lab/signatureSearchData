@@ -253,18 +253,18 @@ rownames(se) <- HDF5Array("./data/lincs.h5", name="rownames")
 colnames(se) <- HDF5Array("./data/lincs.h5", name="colnames")
 ```
 
-### DEGs and Cutoffs Definition
+### DEG and Cutoff Definitions
 The DEGs for the LINCS level 5 Z-score database can be defined by users by setting
 the cutoffs of Z-scores (*e.g.* +2 and -2) to define up/down regulated DEGs. 
 The cutoff parameters of defining DEGs are available as the argument of the 
 GESS methods when the reference database needs to be DEG sets and the `lincs`
 Z-score data are provided (only for _gCMAP_ and _Fisher_ GESS methods). 
-The GS-Qs could also be defined by users by either selecting 150 up and down genes
-or defining cutoffs of Z-scores. The GS-Qs can be used for _CMAP_, _LINCS_ GESS
-methods. The following codes show examples of defining DEGs used as query and
-defining DEG sets used as reference database.
+The query gene sets could also be defined by users by either selecting 150 up and down genes
+or defining cutoffs of Z-scores. The query gene sets can be used for _CMAP_, 
+_LINCS_ GESS methods. The following codes show examples of defining DEGs used as 
+query and defining DEG sets used as reference database.
 
-Defining GS-Qs
+Defining query gene sets
 ```{r lincs_degs, eval=FALSE}
 library(signatureSearch)
 # Get up and down 150 DEGs
@@ -274,8 +274,8 @@ degs <- getDEGSig(cmp="vorinostat", cell="SKB", refdb="lincs", Nup=150, Ndown=15
 degs2 <- getDEGSig(cmp="vorinostat", cell="SKB", refdb="lincs", higher=2, lower=-2)
 ```
 
-Defining GS-DBs. The LINCS Z-score reference database will be internally
-converted to the gene sets database in forms of the 0, 1, -1 matrix when 
+Defining gene sets reference database. The LINCS Z-score reference database will 
+be internally converted to the gene sets database in forms of the 0, 1, -1 matrix when 
 user defining the `higher` and `lower` cutoffs in the `gess_gcmap` and `gess_fisher`
 functions.
 ```{r lincs_degs_db, eval=FALSE}
@@ -691,7 +691,7 @@ matrix2h5(fdr, "./data/cmap.h5", name="padj", overwrite=FALSE)
 rhdf5::h5ls("./data/cmap.h5")
 ```
 
-#### DEGs and Cutoffs Definition
+#### DEG and Cutoff Definitions
 The DEGs for the CMAP2 database can be defined by users by setting
 the cutoffs of LFC as well as the adjusted p-value or FDR to define up/down 
 regulated DEGs if the p-value matrix is available in the CMAP HDF5 file. 
@@ -699,12 +699,12 @@ The cutoff parameters of defining DEGs are available as the argument of the
 GESS methods when the reference database needs to be DEG sets (only for _gCMAP_ 
 and _Fisher_ GESS methods). 
 
-The GS-Qs could also be defined by users by either selecting 150 up and down genes
-or defining cutoffs of LFC and FDRs. The GS-Qs can be used for _CMAP_, _LINCS_ GESS
+The query gene sets could also be defined by users by either selecting 150 up and down genes
+or defining cutoffs of LFC and FDRs. The query gene sets can be used for _CMAP_, _LINCS_ GESS
 methods. The following codes show examples of defining DEGs used as query and
 defining DEG sets used as reference database.
 
-Defining GS-Qs
+Defining query gene sets
 ```{r cmap_degs, eval=FALSE}
 library(signatureSearch)
 # Get up and down 150 DEGs
@@ -715,7 +715,7 @@ degs2 <- getDEGSig(cmp="vorinostat", cell="PC3", refdb="cmap",
                  higher=1, lower=-1, padj=0.05)
 ```
 
-Defining GS-DBs. The CMAP2 reference database will be internally
+Defining gene sets reference database. The CMAP2 reference database will be internally
 converted to the gene sets database in forms of the 0, 1, -1 matrix when 
 user defining the `higher`, `lower` and `padj` cutoffs in the `gess_gcmap` and 
 `gess_fisher` functions. The `padj` argument is supported when the reference 
