@@ -42,13 +42,14 @@ suppressPackageStartupMessages({
 
 # Introduction
 
-The `signatureSearchData` package provides access to the reference data used by
-the associated `signatureSearch` software package. The latter allows to search 
-with a query gene expression signature (GES) a database of treatment GESs to 
-identify cellular states sharing similar expression responses (connections). This 
-way one can identify drugs or gene knockouts that induce expression phenotypes 
-similar to a sample of interest. The resulting associations may lead to novel 
-functional insights how perturbagens of interest interact with biological systems. 
+The `signatureSearchData` package is published in @Duan2020-bj. It provides access 
+to the reference data used by the associated `signatureSearch` software package. 
+The latter allows to search with a query gene expression signature (GES) a 
+database of treatment GESs to identify cellular states sharing similar expression 
+responses (connections). This way one can identify drugs or gene knockouts that 
+induce expression phenotypes similar to a sample of interest. The resulting 
+associations may lead to novel functional insights how perturbagens of interest 
+interact with biological systems. 
 
 Currently, `signatureSearchData` includes GES data from the CMap (Connectivity
 Map) and LINCS (Library of Network-Based Cellular Signatures) projects that are
