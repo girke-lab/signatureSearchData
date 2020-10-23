@@ -1,6 +1,6 @@
 ---
 title: "_signatureSearchData_: Reference Data for Gene Expression Signature Searching"
-author: "Authors: Yuzhu Duan, Dan S Evans, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
+author: "Authors: Yuzhu Duan, Dan S. Evans, Richard A. Miller, Nicholas J. Schork, Steven R. Cummings and Thomas Girke"
 date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
 output:
   html_document:
@@ -42,8 +42,8 @@ suppressPackageStartupMessages({
 
 # Introduction
 
-The `signatureSearchData` package is published in @Duan2020-bj. It provides access 
-to the reference data used by the associated `signatureSearch` software package. 
+The `signatureSearchData` package provides access to the reference data used by 
+the associated `signatureSearch` software package [@Duan2020-bj]. 
 The latter allows to search with a query gene expression signature (GES) a 
 database of treatment GESs to identify cellular states sharing similar expression 
 responses (connections). This way one can identify drugs or gene knockouts that 
