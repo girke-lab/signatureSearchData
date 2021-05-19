@@ -2,7 +2,7 @@ Package: signatureSearchData
 Title: Datasets for signatureSearch package
 Description: CMAP/LINCS hdf5 databases and other annotations used for 
              signatureSearch software package.
-Version: 1.6.0
+Version: 1.7.0
 Author: Yuzhu Duan <yduan004@ucr.edu>,
         Thomas Girke <thomas.girke@ucr.edu>
 Maintainer: Yuzhu Duan <yduan004@ucr.edu>
