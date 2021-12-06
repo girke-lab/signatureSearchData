@@ -4,10 +4,12 @@
 \alias{getCmapCEL}
 \title{Download CMap2 CEL Files}
 \usage{
-getCmapCEL(rerun = TRUE)
+getCmapCEL(rerun = TRUE, dest_dir = tempdir())
 }
 \arguments{
 \item{rerun}{TRUE or FALSE, whether to download the data}
+
+\item{dest_dir}{character(1), path to the destination directory}
 }
 \value{
 download files
