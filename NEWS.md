@@ -1,3 +1,6 @@
+## Changes in version 1.9.2 (2021-12-06)
++ Add `dest_path` parameter to `getCmapCEL` function
+
 ## Changes in version 1.2.1 (2020-08-14)
 + Edited vignette containing 'DEGs and Cutoffs Definition' subsections to
 document how to defining query DEGs and gene set reference database by setting
