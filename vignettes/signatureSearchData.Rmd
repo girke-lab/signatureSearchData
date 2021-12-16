@@ -355,6 +355,7 @@ in batches to the corresponding HDF5 file.
 
 ```{r extract_expr, eval=FALSE}
 # It takes some time
+library(signatureSearch)
 meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx",
             inst=inst42_filter, h5file="./data/lincs_expr.h5") # 12328 X 38824
 ```
