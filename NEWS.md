@@ -1,3 +1,6 @@
+## Changes in version 1.9.3 (2021-12-16)
++ Add `lincs2020.h5` database
+
 ## Changes in version 1.9.2 (2021-12-06)
 + Add `dest_path` parameter to `getCmapCEL` function
 
