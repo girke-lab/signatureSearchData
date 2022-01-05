@@ -80,6 +80,13 @@ and treatment times to ~70 human non-cancer (normal) and cancer cell lines.
 Additionally, it includes several thousand genetic perturbagens composed of
 gene knockdown and over-expression experiments. 
 
+In 2020, the LINCS 2017 database is expanded to the beta release,
+here refer to as LINCS2. It contains >80k perturbations and >200 cell lines and 
+over 3M gene expression profiles. This represents roughly a 3-fold expansion on 
+the LINCS 2017 database and notable new subsets of data include CRISPSR knockout 
+of >5k genes and hematopoietic and non-cancer cell models. 
+The datasets can be accessed at https://clue.io/releases/data-dashboard.
+
 The data structures and search algorithms used by `signatureSearch` and
 `signatureSearchData` are designed to work with most genome-wide expression
 data including hybridization-based methods, such as Affymetrix or L1000, as
@@ -359,6 +366,51 @@ library(signatureSearch)
 meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.gctx",
             inst=inst42_filter, h5file="./data/lincs_expr.h5") # 12328 X 38824
 ```
+
+# LINCS2 Signature Database
+The LINCS2 dataset contains moderated z-scores from DE analysis
+of 12,328 genes from 30,456 compound treatments of 58 cell lines corresponding
+to a total of 136,460 signatures. To minimize redundancy of perturbagens having
+many signatures in different dosage and treatment time within the same cell line, 
+the 'exemplar' signature for each perturbagen in each cell line was assembled.
+These signatures are annotated from CLUE group and are generally picked based on 
+TAS (Transcriptional Activity Score), such that the signature with the highest 
+TAS is chosen as exemplar. The LINCS2 database is exactly the same as the 
+reference database used for the Query Tool in CLUE website. Like the LINCS 
+database, users have the option to assemble any custom collection 
+from the original LINCS 2020 beta release dataset.
+
+## Z-scores from `ExperimentHub`
+
+The LINCS2 database can be downloaded from Bioconductor's `ExperimentHub` as 
+HDF5 file. In the example below, the path to this file is assigned to a character 
+vector called `lincs2_path`. A summary of the content of the HDF5 file can be returned with
+the `h5ls` function. Note, due to the large size of the LINCS data set, its download 
+takes too much time to evaluate the following code section during the build time of 
+this vignette. 
+
+```{r lincs2, eval=FALSE}
+library(ExperimentHub); library(rhdf5)
+eh <- ExperimentHub()
+query(eh, c("signatureSearchData", "lincs2"))
+lincs2_path <- eh[['EH7297']]
+rhdf5::h5ls(lincs2_path) 
+```
+
+In this case the loaded data instance includes moderated Z-scores from DE
+analyses of 12,328 genes for 30,456 compound treatments across a total of 58
+cell lines corresponding to 136,460 expression signatures. This data set can be
+used by all set-based and correlation-based GESS methods provided by the 
+`signatureSearch` package.
+
+## Z-scores from CLUE 
+
+The following explains how to generate the above LINCS2 data object from
+scratch.
+
+### Download Level 5 Data 
+<span style="color:orange">YD: Hi Brendan, please fill out the instructions and 
+code of generating the LINCS2 database like we did for the LINCS database</span>
 
 # CMap2 Signature Database
 

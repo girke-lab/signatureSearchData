@@ -39,14 +39,21 @@ and treatment times to ~70 human non-cancer (normal) and cancer cell lines.
 Additionally, it includes several thousand genetic perturbagens composed of
 gene knockdown and over-expression experiments. 
 
+In 2020, the LINCS 2017 database is expanded to the beta release,
+here refer to as LINCS2. It contains >80k perturbations and >200 cell lines and 
+over 3M gene expression profiles. This represents roughly a 3-fold expansion on 
+the LINCS 2017 database and notable new subsets of data include CRISPSR knockout 
+of >5k genes and hematopoietic and non-cancer cell models. 
+The datasets can be accessed at https://clue.io/releases/data-dashboard.
+
 The data structures and search algorithms used by `signatureSearch` and
 `signatureSearchData` are designed to work with most genome-wide expression
 data including hybridization-based methods, such as Affymetrix or L1000, as
 well as sequencing-based methods, such as RNA-Seq. Currently,
 `signatureSearchData` does not include preconfigured RNA-Seq reference data mainly 
-due to the lack of large-scale perturbation studies (_e.g._ drug-based) available in the public
-domain that are based on RNA-Seq. This situation may change in the near future
-once the technology has become more affordable for this purpose. 
+due to the lack of large-scale perturbation studies (_e.g._ drug-based) available 
+in the public domain that are based on RNA-Seq. This situation may change in 
+the near future once the technology has become more affordable for this purpose. 
 
 # Vignette
 The vignette of this package is available at [here](https://www.bioconductor.org/packages/release/data/experiment/vignettes/signatureSearchData/inst/doc/signatureSearchData.html)
