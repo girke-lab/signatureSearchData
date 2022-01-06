@@ -368,26 +368,30 @@ meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.g
 ```
 
 # LINCS2 Signature Database
-The LINCS2 dataset contains moderated z-scores from DE analysis
-of 12,328 genes from 30,456 compound treatments of 58 cell lines corresponding
-to a total of 136,460 signatures. To minimize redundancy of perturbagens having
-many signatures in different dosage and treatment time within the same cell line, 
-the 'exemplar' signature for each perturbagen in each cell line was assembled.
-These signatures are annotated from CLUE group and are generally picked based on 
-TAS (Transcriptional Activity Score), such that the signature with the highest 
-TAS is chosen as exemplar. The LINCS2 database is exactly the same as the 
-reference database used for the Query Tool in CLUE website. Like the LINCS 
-database, users have the option to assemble any custom collection 
+The LINCS 2020 beta release data set contains 1.2 million signatures with 720,216
+compound treatments, 34,171 gene over-expression, 318,208 gene knockdowns using 
+shRNAs (177263) and CRISPR (140945). Out of 720,216 compound treatments, it 
+includes 34,418 drug-like small molecules tested on 230 different cell lines at 
+multiple concentrations and treatment times. To minimize redundancy of perturbagens
+having many signatures in different cell lines, dosage and treatment times, 
+the 'exemplar' signature for each perturbagen in selected cell lines was
+assembled. These signatures are annotated from CLUE group and are generally 
+picked based on TAS (Transcriptional Activity Score), such that the signature 
+with the highest TAS is chosen as exemplar. The generated LINCS2 dataset contains
+moderated z-scores from DE analysis of 12,328 genes from 30,456 compound treatments 
+of 58 cell lines corresponding to a total of 136,460 signatures. It is exactly 
+the same as the reference database used for the Query Tool in CLUE website.
+Like the LINCS database, users have the option to assemble any custom collection 
 from the original LINCS 2020 beta release dataset.
 
 ## Z-scores from `ExperimentHub`
 
 The LINCS2 database can be downloaded from Bioconductor's `ExperimentHub` as 
 HDF5 file. In the example below, the path to this file is assigned to a character 
-vector called `lincs2_path`. A summary of the content of the HDF5 file can be returned with
-the `h5ls` function. Note, due to the large size of the LINCS data set, its download 
-takes too much time to evaluate the following code section during the build time of 
-this vignette. 
+vector called `lincs2_path`. A summary of the content of the HDF5 file can be 
+returned with the `h5ls` function. Note, due to the large size of the LINCS 
+data set, its download takes too much time to evaluate the following code 
+section during the build time of this vignette. 
 
 ```{r lincs2, eval=FALSE}
 library(ExperimentHub); library(rhdf5)
