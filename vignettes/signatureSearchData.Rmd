@@ -369,8 +369,9 @@ meanExpr2h5(gctx="./data/GSE92742_Broad_LINCS_Level3_INF_mlr12k_n1319138x12328.g
 
 # LINCS2 Signature Database
 The LINCS 2020 beta release data set contains 1.2 million signatures with 720,216
-compound treatments, 34,171 gene over-expression, 318,208 gene knockdowns using 
-shRNAs (177263) and CRISPR (140945). Out of 720,216 compound treatments, it 
+compound treatment GESs of 34,418 compounds, 34,171 gene over-expression on 4,040 genes, 
+318,208 gene knockdowns on 7,976 genes using shRNAs on 4,917 genes (177263) and 
+CRISPR on 5,158 genes (140945). Out of 720,216 compound treatments, it 
 includes 34,418 drug-like small molecules tested on 230 different cell lines at 
 multiple concentrations and treatment times. To minimize redundancy of perturbagens
 having many signatures in different cell lines, dosage and treatment times, 
