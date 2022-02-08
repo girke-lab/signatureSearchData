@@ -80,12 +80,13 @@ and treatment times to ~70 human non-cancer (normal) and cancer cell lines.
 Additionally, it includes several thousand genetic perturbagens composed of
 gene knockdown and over-expression experiments. 
 
-In 2020, the LINCS 2017 database is expanded to the beta release,
-here refer to as LINCS2. It contains >80k perturbations and >200 cell lines and 
-over 3M gene expression profiles. This represents roughly a 3-fold expansion on 
-the LINCS 2017 database and notable new subsets of data include CRISPSR knockout 
+In 2020, the LINCS 2017 database was expanded to a new beta release,
+here refered to as LINCS2. It contains >80k perturbations and >200 cell lines and 
+over 3M gene expression profiles. This represents roughly a 3-fold expansion of 
+the LINCS 2017 database, and several new data sets including CRISPSR knockouts 
 of >5k genes and hematopoietic and non-cancer cell models. 
-The datasets can be accessed at https://clue.io/releases/data-dashboard.
+The new LINCS2 datasets can be downloaded from the [clue.io](https://clue.io/releases/data-dashboard) 
+site.
 
 The data structures and search algorithms used by `signatureSearch` and
 `signatureSearchData` are designed to work with most genome-wide expression
