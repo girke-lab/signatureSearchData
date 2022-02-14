@@ -415,8 +415,25 @@ The following explains how to generate the above LINCS2 data object from
 scratch.
 
 ### Download Level 5 Data 
-<span style="color:orange">YD: Hi Brendan, please fill out the instructions and 
-code of generating the LINCS2 database like we did for the LINCS database</span>
+
+Download level 5 data for compounds from [CLUE](https://clue.io/releases/data-dashboard) as a gctx file:
+
++ <tt>level5_beta_trt_cp_n720216x12328.gctx</tt>
+
+In the example below, examplar signatures are identified by downloading the meta data and selecting 
+records with `is_exemplar_sig` equal to one. These records are saved to an object called `exemplar` which is used to generate compound IDs and specify which records in the the level 5 data are imported stepwise and appended to an HDF5 file (here `lincs2.h5` referred to as LINCS2 in this vignette). Nesting the `SummarizedExperiment` and `HDF5Array` functions can load LINCS2 into a summarized experiment object called `sedb` that can be used with the `signatureSearch` package.
+
+```{r lincs2_hdf5, eval=FALSE}
+siginfo_beta <- fread("https://s3.amazonaws.com/macchiato.clue.io/builds/LINCS2020/siginfo_beta.txt")
+exemplar <- siginfo_beta %>% filter(pert_type=="trt_cp" & is_exemplar_sig == 1)
+new_cid <- paste(exemplar$pert_id, exemplar$cell_iname, rep("trt_cp", length(exemplar$cmap_name)), sep="__")
+gctx2h5("level5_beta_trt_cp_n720216x12328.gctx", cid=exemplar$sig_id, new_cid=new_cid,
+        h5file="lincs2.h5", by_ncol=5000, overwrite=TRUE)
+DBpath <- "lincs2.h5"
+sedb <- SummarizedExperiment(HDF5Array(DBpath, name="assay"))
+rownames(sedb) <- HDF5Array(DBpath, name="rownames")
+colnames(sedb) <- HDF5Array(DBpath, name="colnames")
+```
 
 # CMap2 Signature Database
 
