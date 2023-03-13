@@ -1,5 +1,5 @@
 #' SampleDEGdata
-#' @description A data table that contains sample differential gene expression data.
+#' @description A data table that contains sample differential gene expression data from 14 different data sets generated from mice administered either metformin or acarbose.
 #' @format A data table with 1001 rows and 73 columns.
 #' @examples
 #' data(SampleDEGdata)
